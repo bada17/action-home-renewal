@@ -1,0 +1,179 @@
+<style>
+  /* /69 전용: 기존 데이터와 섹션은 삭제하지 않고 미리보기에서만 감춥니다. */
+  #doz_header,#doz_footer,
+  #s20260824531954aa8efcb,#s2026082451de3e2a1b78b,#s20260824c19284ed30faf,
+  #s2026082441c7e5f034dc7,#s20260824709dc98874a00,#s202608242200af242e980,
+  #s20260824fa94b2e940a53,#s20260824df5fc00a21727,#s2026082430c467ccc3e38,
+  #s202608246b92851b5243b,#s20260824aafb54f880dd8,#s2026082417967410b547a {display:none!important}
+
+  #action-home-v2,#action-home-v2 *{box-sizing:border-box}
+  #action-home-v2{
+    --ink:#101a33;--blue:#1646d8;--deep:#0b2c79;--soft:#edf3ff;--signal:#ffd84a;
+    --paper:#f6f6f2;--warm:#f3efe6;--line:#d9dde7;--muted:#606a7d;
+    position:relative;left:50%;width:100vw;margin-left:-50vw;overflow:hidden;color:var(--ink);background:#fff;
+    font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo",Arial,sans-serif;word-break:keep-all;-webkit-font-smoothing:antialiased
+  }
+  #action-home-v2 a{color:inherit;text-decoration:none}#action-home-v2 img{display:block;width:100%}
+  #action-home-v2 .wrap{width:min(1240px,calc(100% - 72px));margin:0 auto}
+  #action-home-v2 .eyebrow{margin:0 0 16px;color:var(--blue);font-size:13px;font-weight:850;letter-spacing:.07em}
+  #action-home-v2 .section-title{margin:0;font-size:clamp(34px,4vw,58px);line-height:1.08;letter-spacing:-.055em;font-weight:900}
+  #action-home-v2 .section-copy{max-width:600px;margin:16px 0 0;color:var(--muted);font-size:16px;line-height:1.75}
+  #action-home-v2 .section-head{display:flex;align-items:end;justify-content:space-between;gap:32px;margin-bottom:42px}
+  #action-home-v2 .more{display:inline-flex;align-items:center;gap:12px;padding-bottom:5px;border-bottom:1px solid currentColor;color:var(--blue);font-size:14px;font-weight:800;white-space:nowrap}
+  #action-home-v2 .more:after{content:"↗"}
+
+  #action-home-v2 .site-header{position:relative;z-index:20;border-bottom:1px solid var(--line);background:#fff}
+  #action-home-v2 .header-inner{min-height:92px;display:flex;align-items:center;gap:48px}
+  #action-home-v2 .brand{display:inline-flex;align-items:center;gap:12px;flex:0 0 auto}
+  #action-home-v2 .brand-mark{position:relative;width:38px;height:32px}
+  #action-home-v2 .brand-mark i{position:absolute;width:12px;height:12px;background:var(--blue);transform:rotate(6deg)}
+  #action-home-v2 .brand-mark i:nth-child(1){left:1px;top:3px}#action-home-v2 .brand-mark i:nth-child(2){left:14px;top:10px;background:#58b6ed}
+  #action-home-v2 .brand-mark i:nth-child(3){left:26px;top:1px;background:var(--signal)}#action-home-v2 .brand-mark i:nth-child(4){left:8px;top:18px;background:#ef685d}
+  #action-home-v2 .brand-text{display:grid;gap:1px}#action-home-v2 .brand-text strong{font-size:18px;line-height:1;letter-spacing:-.045em}
+  #action-home-v2 .brand-text small{color:var(--muted);font-size:9px;letter-spacing:.07em}
+  #action-home-v2 .nav{display:flex;align-items:center;gap:clamp(20px,2.4vw,36px);margin-left:auto}
+  #action-home-v2 .nav a{position:relative;padding:34px 0 31px;font-size:15px;font-weight:750}
+  #action-home-v2 .nav a:after{content:"";position:absolute;left:0;right:100%;bottom:25px;height:2px;background:var(--blue);transition:right .2s}
+  #action-home-v2 .nav a:hover:after{right:0}#action-home-v2 .header-tools{display:flex;align-items:center;gap:14px}
+  #action-home-v2 .search{display:grid;place-items:center;width:42px;height:42px;border:1px solid var(--line);border-radius:50%;font-size:18px}
+  #action-home-v2 .donate{display:inline-flex;min-height:46px;align-items:center;justify-content:center;padding:0 20px;background:var(--blue);color:#fff;font-size:14px;font-weight:850}
+  #action-home-v2 .menu-toggle{display:none;width:44px;height:44px;border:1px solid var(--line);background:#fff;font-size:19px}
+
+  #action-home-v2 .hero{padding:48px 0 72px;background:#fff}#action-home-v2 .hero-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:clamp(44px,7vw,104px);align-items:center}
+  #action-home-v2 .hero-index{display:flex;align-items:center;gap:12px;margin-bottom:70px;color:#8a93a5;font-size:12px;font-weight:750}
+  #action-home-v2 .hero-index b{color:var(--ink)}#action-home-v2 .hero-index:after{content:"";width:58px;height:1px;background:var(--line)}
+  #action-home-v2 .status{display:inline-flex;align-items:center;gap:9px;margin-bottom:22px;color:var(--blue);font-size:13px;font-weight:850}
+  #action-home-v2 .status:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 5px var(--soft)}
+  #action-home-v2 .hero h1{margin:0;max-width:570px;font-size:clamp(45px,5.2vw,74px);line-height:1.05;letter-spacing:-.065em;font-weight:900}
+  #action-home-v2 .hero h1 em{color:var(--blue);font-style:normal}#action-home-v2 .hero-copy{max-width:570px;margin:26px 0 0;color:var(--muted);font-size:17px;line-height:1.8}
+  #action-home-v2 .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+  #action-home-v2 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 23px;border:1px solid var(--ink);font-size:14px;font-weight:850;transition:transform .2s}
+  #action-home-v2 .btn:hover{transform:translateY(-2px)}#action-home-v2 .btn-primary{border-color:var(--blue);background:var(--blue);color:#fff}
+  #action-home-v2 .hero-media{position:relative;min-height:610px;background:var(--soft)}#action-home-v2 .hero-media img{width:100%;height:610px;object-fit:cover;object-position:center}
+  #action-home-v2 .hero-caption{position:absolute;left:-42px;bottom:36px;width:min(370px,75%);padding:22px 24px;background:var(--signal);color:var(--ink)}
+  #action-home-v2 .hero-caption small{display:block;margin-bottom:7px;font-size:11px;font-weight:900;letter-spacing:.08em}#action-home-v2 .hero-caption strong{display:block;font-size:21px;line-height:1.35;letter-spacing:-.035em}
+
+  #action-home-v2 .now{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#fff}#action-home-v2 .now-grid{display:grid;grid-template-columns:1.1fr repeat(3,1fr)}
+  #action-home-v2 .now-title,#action-home-v2 .now-link{min-height:96px;padding:22px 26px;border-right:1px solid var(--line)}
+  #action-home-v2 .now-title{display:flex;align-items:center;gap:9px;font-size:17px;font-weight:900}#action-home-v2 .now-title b{color:var(--blue)}
+  #action-home-v2 .now-title span{margin-left:4px;padding:4px 7px;background:#ef524d;color:#fff;font-size:9px;letter-spacing:.06em}
+  #action-home-v2 .now-link{display:flex;align-items:center;gap:14px;font-size:14px;line-height:1.45;font-weight:750}#action-home-v2 .now-link:last-child{border-right:0}
+  #action-home-v2 .now-no{color:var(--blue);font-size:11px;font-weight:900}
+
+  #action-home-v2 .roles{padding:106px 0 112px;background:var(--paper)}#action-home-v2 .roles-intro{display:grid;grid-template-columns:.86fr 1.14fr;gap:90px;align-items:start}
+  #action-home-v2 .roles-copy{padding-top:10px}#action-home-v2 .roles-copy p{margin:0;color:var(--muted);font-size:17px;line-height:1.85}
+  #action-home-v2 .roles-grid{display:grid;grid-template-columns:repeat(3,1fr);margin-top:68px;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+  #action-home-v2 .role{min-height:280px;padding:34px 34px 30px;border-right:1px solid var(--line);background:#fff}#action-home-v2 .role:last-child{border-right:0}
+  #action-home-v2 .role-icon{display:grid;place-items:center;width:52px;height:52px;margin-bottom:56px;border:1px solid var(--ink);border-radius:50%;color:var(--blue);font-size:20px;font-weight:900}
+  #action-home-v2 .role h3{margin:0;font-size:25px;letter-spacing:-.045em}#action-home-v2 .role p{margin:12px 0 0;color:var(--muted);font-size:14px;line-height:1.7}
+
+  #action-home-v2 .news{padding:112px 0;background:#fff}#action-home-v2 .news-grid{display:grid;grid-template-columns:1.08fr 1.08fr .84fr;gap:22px;align-items:stretch}
+  #action-home-v2 .story{border-top:2px solid var(--ink)}#action-home-v2 .story-media{aspect-ratio:4/3;overflow:hidden;background:var(--paper)}
+  #action-home-v2 .story-media img{height:100%;object-fit:cover;transition:transform .35s}#action-home-v2 .story:hover img{transform:scale(1.025)}
+  #action-home-v2 .story-body{padding:22px 2px 4px}#action-home-v2 .tag{display:inline-flex;margin-bottom:13px;color:var(--blue);font-size:11px;font-weight:900;letter-spacing:.05em}
+  #action-home-v2 .story h3{margin:0;font-size:22px;line-height:1.43;letter-spacing:-.035em}#action-home-v2 .story p{margin:11px 0 0;color:var(--muted);font-size:14px;line-height:1.65}
+  #action-home-v2 .story time{display:block;margin-top:19px;color:#8a92a1;font-size:11px}#action-home-v2 .headlines{padding-left:10px;border-top:2px solid var(--ink)}
+  #action-home-v2 .headlines-title{display:flex;align-items:center;justify-content:space-between;min-height:68px;border-bottom:1px solid var(--ink);font-size:16px;font-weight:900}
+  #action-home-v2 .headlines-title span{padding:4px 7px;background:#ef524d;color:#fff;font-size:9px}#action-home-v2 .headlines a{display:grid;grid-template-columns:1fr auto;gap:14px;padding:19px 0;border-bottom:1px solid var(--line);font-size:14px;line-height:1.5;font-weight:720}
+  #action-home-v2 .headlines a:after{content:"↗";color:var(--blue)}
+
+  #action-home-v2 .campaigns{padding:112px 0;background:var(--ink);color:#fff}#action-home-v2 .campaigns .eyebrow{color:#79a2ff}#action-home-v2 .campaigns .section-copy{color:rgba(255,255,255,.64)}
+  #action-home-v2 .campaign-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:24px}#action-home-v2 .campaign-main{position:relative;min-height:560px;overflow:hidden;background:#172347}
+  #action-home-v2 .campaign-main img{position:absolute;inset:0;height:100%;object-fit:cover;opacity:.56}#action-home-v2 .campaign-main:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,19,43,.05),rgba(10,19,43,.92))}
+  #action-home-v2 .campaign-main-copy{position:absolute;z-index:1;left:42px;right:42px;bottom:40px}#action-home-v2 .campaign-main-copy small{display:inline-flex;margin-bottom:17px;padding:7px 10px;background:var(--signal);color:var(--ink);font-size:10px;font-weight:900}
+  #action-home-v2 .campaign-main-copy h3{margin:0;max-width:600px;font-size:clamp(31px,4vw,52px);line-height:1.14;letter-spacing:-.055em}#action-home-v2 .campaign-main-copy p{max-width:590px;margin:16px 0 0;color:rgba(255,255,255,.72);font-size:15px;line-height:1.7}
+  #action-home-v2 .campaign-side{display:grid;grid-template-rows:1fr 1fr;gap:24px}#action-home-v2 .campaign-step{display:flex;flex-direction:column;justify-content:space-between;min-height:260px;padding:31px;border:1px solid rgba(255,255,255,.22)}
+  #action-home-v2 .campaign-step:nth-child(2){background:var(--blue);border-color:var(--blue)}#action-home-v2 .campaign-step small{color:#9eafe0;font-size:11px;font-weight:850;letter-spacing:.06em}
+  #action-home-v2 .campaign-step:nth-child(2) small{color:#d5e1ff}#action-home-v2 .campaign-step strong{display:block;margin-top:auto;font-size:25px;line-height:1.38;letter-spacing:-.04em}
+  #action-home-v2 .campaign-step span{margin-top:18px;color:rgba(255,255,255,.65);font-size:13px}
+
+  #action-home-v2 .results{padding:112px 0;background:var(--warm)}#action-home-v2 .results-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  #action-home-v2 .result{min-height:430px;display:flex;flex-direction:column;background:#fff}#action-home-v2 .result-media{height:210px;overflow:hidden;background:var(--paper)}#action-home-v2 .result-media img{height:100%;object-fit:cover}
+  #action-home-v2 .result-body{flex:1;display:flex;flex-direction:column;padding:26px 26px 24px}#action-home-v2 .result small{color:var(--blue);font-size:11px;font-weight:900}
+  #action-home-v2 .result h3{margin:13px 0 9px;font-size:21px;line-height:1.42;letter-spacing:-.035em}#action-home-v2 .result p{margin:0;color:var(--muted);font-size:14px;line-height:1.65}
+  #action-home-v2 .result-link{margin-top:auto;padding-top:22px;color:var(--blue);font-size:13px;font-weight:850}
+
+  #action-home-v2 .fields{padding:112px 0;background:#fff}#action-home-v2 .field-grid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+  #action-home-v2 .field{min-height:310px;padding:28px 27px;border-right:1px solid var(--line)}#action-home-v2 .field:last-child{border-right:0}#action-home-v2 .field-no{color:var(--blue);font-size:12px;font-weight:900}
+  #action-home-v2 .field h3{margin:94px 0 13px;font-size:24px;line-height:1.3;letter-spacing:-.04em}#action-home-v2 .field p{margin:0;color:var(--muted);font-size:14px;line-height:1.65}
+  #action-home-v2 .field-arrow{display:block;margin-top:28px;color:var(--blue);font-weight:900}
+
+  #action-home-v2 .library{padding:112px 0;background:var(--paper)}#action-home-v2 .library-grid{display:grid;grid-template-columns:.66fr 1.34fr;gap:86px;align-items:start}
+  #action-home-v2 .library-nav{display:grid;margin-top:40px;border-top:1px solid var(--ink)}#action-home-v2 .library-nav a{display:flex;justify-content:space-between;padding:17px 0;border-bottom:1px solid var(--line);font-size:14px;font-weight:750}
+  #action-home-v2 .library-nav a:after{content:"→";color:var(--blue)}#action-home-v2 .publications{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+  #action-home-v2 .publication{border-top:2px solid var(--ink);background:#fff}#action-home-v2 .publication-media{aspect-ratio:16/10;overflow:hidden}#action-home-v2 .publication-media img{height:100%;object-fit:cover}
+  #action-home-v2 .publication-body{padding:24px}#action-home-v2 .publication small{color:var(--blue);font-size:11px;font-weight:900}#action-home-v2 .publication h3{margin:12px 0 0;font-size:19px;line-height:1.45;letter-spacing:-.03em}
+
+  #action-home-v2 .trust{padding:112px 0;background:var(--blue);color:#fff}#action-home-v2 .trust-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:end}#action-home-v2 .trust .eyebrow{color:var(--signal)}
+  #action-home-v2 .trust h2{margin:0;max-width:650px;font-size:clamp(39px,5vw,66px);line-height:1.1;letter-spacing:-.06em}#action-home-v2 .trust-copy{max-width:540px}
+  #action-home-v2 .trust-copy p{margin:0;color:rgba(255,255,255,.76);font-size:16px;line-height:1.8}#action-home-v2 .trust-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+  #action-home-v2 .trust .btn{border-color:rgba(255,255,255,.7);color:#fff}#action-home-v2 .trust .btn-primary{border-color:var(--signal);background:var(--signal);color:var(--ink)}
+  #action-home-v2 .newsletter{padding:74px 0;background:var(--ink);color:#fff}#action-home-v2 .newsletter-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center}
+  #action-home-v2 .newsletter h2{margin:0;font-size:29px;letter-spacing:-.04em}#action-home-v2 .newsletter p{margin:9px 0 0;color:rgba(255,255,255,.58);font-size:14px}#action-home-v2 .newsletter .btn{border-color:#fff;color:#fff}
+  #action-home-v2 .site-footer{padding:62px 0 42px;background:#fff}#action-home-v2 .footer-top{display:grid;grid-template-columns:1.2fr .8fr;gap:70px;padding-bottom:44px;border-bottom:1px solid var(--line)}
+  #action-home-v2 .footer-brand{font-size:20px;font-weight:900;letter-spacing:-.04em}#action-home-v2 .footer-info{margin-top:18px;color:var(--muted);font-size:12px;line-height:1.85}
+  #action-home-v2 .footer-links{display:grid;grid-template-columns:repeat(3,1fr);gap:18px 30px;align-content:start}#action-home-v2 .footer-links a{font-size:13px;font-weight:750}
+  #action-home-v2 .footer-bottom{display:flex;justify-content:space-between;gap:24px;padding-top:24px;color:#7e8796;font-size:11px}#action-home-v2 .legal{display:flex;flex-wrap:wrap;gap:18px}
+
+  @media(max-width:1080px){#action-home-v2 .nav{gap:18px}#action-home-v2 .nav a{font-size:14px}#action-home-v2 .search{display:none}#action-home-v2 .news-grid{grid-template-columns:1fr 1fr}#action-home-v2 .headlines{grid-column:1/-1;padding-left:0}#action-home-v2 .results-grid{grid-template-columns:1fr 1fr}#action-home-v2 .result:last-child{grid-column:1/-1}}
+  @media(max-width:820px){
+    #action-home-v2 .wrap{width:min(100% - 40px,1240px)}#action-home-v2 .header-inner{min-height:76px;gap:12px}#action-home-v2 .nav,#action-home-v2 .search{display:none}#action-home-v2 .header-tools{margin-left:auto}
+    #action-home-v2 .donate{min-height:42px;padding:0 15px}#action-home-v2 .menu-toggle{display:inline-grid;place-items:center}#action-home-v2 .hero{padding:44px 0 60px}
+    #action-home-v2 .hero-grid,#action-home-v2 .roles-intro,#action-home-v2 .campaign-grid,#action-home-v2 .library-grid,#action-home-v2 .trust-grid,#action-home-v2 .footer-top{grid-template-columns:1fr}
+    #action-home-v2 .hero-grid{gap:46px}#action-home-v2 .hero-index{margin-bottom:42px}#action-home-v2 .hero-media,#action-home-v2 .hero-media img{min-height:0;height:auto}#action-home-v2 .hero-caption{left:20px;bottom:-22px}
+    #action-home-v2 .now-grid{grid-template-columns:1fr 1fr}#action-home-v2 .now-title,#action-home-v2 .now-link{border-bottom:1px solid var(--line)}
+    #action-home-v2 .roles,#action-home-v2 .news,#action-home-v2 .campaigns,#action-home-v2 .results,#action-home-v2 .fields,#action-home-v2 .library,#action-home-v2 .trust{padding:82px 0}
+    #action-home-v2 .roles-grid{grid-template-columns:1fr}#action-home-v2 .role{min-height:220px;border-right:0;border-bottom:1px solid var(--line)}#action-home-v2 .role:last-child{border-bottom:0}#action-home-v2 .role-icon{margin-bottom:36px}
+    #action-home-v2 .campaign-main{min-height:500px}#action-home-v2 .campaign-side{grid-template-columns:1fr 1fr;grid-template-rows:auto}#action-home-v2 .field-grid{grid-template-columns:1fr 1fr}#action-home-v2 .field:nth-child(2){border-right:0}#action-home-v2 .field:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  }
+  @media(max-width:560px){
+    #action-home-v2 .wrap{width:min(100% - 30px,1240px)}#action-home-v2 .brand-mark{width:34px;transform:scale(.85);transform-origin:left center}#action-home-v2 .brand-text strong{font-size:15px}#action-home-v2 .brand-text small{display:none}#action-home-v2 .donate{font-size:12px}#action-home-v2 .menu-toggle{width:42px;height:42px}
+    #action-home-v2 .hero h1{font-size:43px}#action-home-v2 .hero-copy{font-size:15px}#action-home-v2 .actions{display:grid}#action-home-v2 .btn{width:100%}#action-home-v2 .hero-caption{position:relative;left:0;bottom:0;width:100%}
+    #action-home-v2 .now-grid,#action-home-v2 .news-grid,#action-home-v2 .results-grid,#action-home-v2 .field-grid,#action-home-v2 .publications,#action-home-v2 .campaign-side,#action-home-v2 .newsletter-grid{grid-template-columns:1fr}
+    #action-home-v2 .now-title,#action-home-v2 .now-link{min-height:72px;border-right:0}#action-home-v2 .section-head{align-items:start;flex-direction:column;margin-bottom:32px}#action-home-v2 .section-title{font-size:36px}
+    #action-home-v2 .roles-intro{gap:25px}#action-home-v2 .roles-grid{margin-top:44px}#action-home-v2 .result:last-child{grid-column:auto}#action-home-v2 .field{min-height:255px;border-right:0;border-bottom:1px solid var(--line)}#action-home-v2 .field:last-child{border-bottom:0}#action-home-v2 .field h3{margin-top:62px}
+    #action-home-v2 .campaign-main{min-height:450px}#action-home-v2 .campaign-main-copy{left:24px;right:24px;bottom:26px}#action-home-v2 .campaign-step{min-height:220px}#action-home-v2 .trust-actions{display:grid}#action-home-v2 .footer-links{grid-template-columns:1fr 1fr}#action-home-v2 .footer-bottom{flex-direction:column}
+  }
+</style>
+
+<div id="action-home-v2" aria-label="함께하는 시민행동 홈 개편안">
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/69?preview_mode=1" aria-label="함께하는 시민행동 홈"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="brand-text"><strong>함께하는 시민행동</strong><small>ACTION TOGETHER</small></span></a>
+    <nav class="nav" aria-label="주요 메뉴"><a href="/aboutus">소개</a><a href="/52">활동</a><a href="#campaigns">캠페인</a><a href="/26">소식</a><a href="/23">자료</a></nav>
+    <div class="header-tools"><a class="search" href="/search" aria-label="검색">⌕</a><a class="donate" href="https://donate.action.or.kr/">후원하기</a><button class="menu-toggle" type="button" aria-label="전체 메뉴">☰</button></div>
+  </div></header>
+
+  <main>
+    <section class="hero"><div class="wrap hero-grid">
+      <div><div class="hero-index"><b>01</b><span>03</span></div><div class="status">진행 중인 캠페인 · 8월 31일까지</div><h1>더 걷힐 세금,<br><em>어디에 쓸래?</em></h1><p class="hero-copy">반도체 호황으로 생긴 추가세수 100조. 정부만의 결정이 아니라 시민의 목소리로 우선순위를 정해야 합니다.</p><div class="actions"><a class="btn btn-primary" href="/27/?idx=173013295&amp;bmode=view">캠페인 참여하기 →</a><a class="btn" href="#now">지금 하는 일 보기</a></div></div>
+      <a class="hero-media" href="/27/?idx=173013295&amp;bmode=view"><img src="https://cdn.imweb.me/thumbnail/20260811/1d3d6fc5cc944.png" alt="더 걷힐 세금, 어디에 쓸래 캠페인"><span class="hero-caption"><small>CAMPAIGN 2026</small><strong>시민의 선택이<br>예산의 우선순위가 됩니다</strong></span></a>
+    </div></section>
+
+    <section class="now" id="now"><div class="wrap now-grid"><div class="now-title">시민행동 <b>NOW</b><span>NEW</span></div><a class="now-link" href="/27/?idx=173013295&amp;bmode=view"><span class="now-no">01</span>추가세수 시민의견 캠페인</a><a class="now-link" href="/51/?idx=172917373&amp;bmode=view"><span class="now-no">02</span>주민참여예산, 권한이 먼저</a><a class="now-link" href="#completed"><span class="now-no">03</span>완료된 캠페인과 변화</a></div></section>
+
+    <section class="roles"><div class="wrap"><div class="roles-intro"><div><p class="eyebrow">WHAT WE DO</p><h2 class="section-title">시민이 감시하고<br>시민이 결정하는 사회</h2></div><div class="roles-copy"><p>함께하는 시민행동은 시민의 세금과 권력이 투명하게 쓰이는지 살피고, 더 나은 제도를 제안하며, 시민이 결정 과정에 참여할 수 있도록 행동합니다.</p></div></div><div class="roles-grid"><a class="role" href="/57"><span class="role-icon">⌕</span><h3>감시합니다</h3><p>예산과 권력이 누구를 위해, 어떻게 쓰이는지 끝까지 확인합니다.</p></a><a class="role" href="/23"><span class="role-icon">＋</span><h3>대안을 제시합니다</h3><p>분석과 연구를 바탕으로 시민의 삶에 필요한 정책 대안을 만듭니다.</p></a><a class="role" href="/27"><span class="role-icon">↗</span><h3>시민과 행동합니다</h3><p>캠페인과 연대로 시민의 목소리가 실제 변화로 이어지게 합니다.</p></a></div></div></section>
+
+    <section class="news"><div class="wrap"><div class="section-head"><div><p class="eyebrow">LATEST STORIES</p><h2 class="section-title">지금 시민행동이<br>보고 있는 것</h2><p class="section-copy">중요한 이슈는 크게, 최신 글은 빠르게 찾을 수 있도록 편집했습니다.</p></div><a class="more" href="/27">활동소식 전체보기</a></div><div class="news-grid">
+      <article class="story"><a href="/51/?idx=172917373&amp;bmode=view"><div class="story-media"><img src="https://cdn.imweb.me/thumbnail/20260806/05e8f0421165c.png" alt="주민참여예산 관련 시민행동 활동"></div><div class="story-body"><span class="tag">주민참여예산</span><h3>주민참여예산 3조원 확대,<br>규모보다 주민 권한이 먼저다</h3><p>시민이 실제로 결정할 수 있는 제도로 가기 위한 핵심 쟁점을 살펴봅니다.</p><time>2026. 08. 06</time></div></a></article>
+      <article class="story"><a href="/27/?idx=172916152&amp;bmode=view"><div class="story-media"><img src="https://cdn.imweb.me/thumbnail/20260727/13dfc912734d3.png" alt="한강버스 예산감시 자료"></div><div class="story-body"><span class="tag">예산감시</span><h3>감사원 감사 결과로 다시 보는<br>한강버스 B/C 0.17</h3><p>경제성과 행정 절차, 시민의 세금이라는 관점에서 쟁점을 정리했습니다.</p><time>2026. 07. 27</time></div></a></article>
+      <aside class="headlines"><div class="headlines-title">중요한 글 <span>NOW</span></div><a href="/27/?idx=172690687&amp;bmode=view">미래대응기금, 충분한 사전논의가 먼저다</a><a href="/27/?idx=172603916&amp;bmode=view">초과세수? 추가세수? 그 정체는</a><a href="/57/?idx=172603339&amp;bmode=view">농어촌소득과 재정의 3대 기능</a><a href="/57/?idx=171879037&amp;bmode=view">지출구조조정 토론회 쟁점 정리</a></aside>
+    </div></div></section>
+
+    <section class="campaigns" id="campaigns"><div class="wrap"><div class="section-head"><div><p class="eyebrow">TAKE ACTION</p><h2 class="section-title">지금, 시민의 선택이<br>필요한 순간</h2><p class="section-copy">진행 중인 캠페인을 가장 앞에 두고, 참여에서 결과까지 한 흐름으로 보여줍니다.</p></div><a class="more" href="/27" style="color:#fff">캠페인 전체보기</a></div><div class="campaign-grid"><a class="campaign-main" href="/27/?idx=173013295&amp;bmode=view"><img src="https://cdn.imweb.me/thumbnail/20260811/1d3d6fc5cc944.png" alt="추가세수 시민의견 수렴 캠페인"><span class="campaign-main-copy"><small>참여 진행 중</small><h3>추가세수 100조,<br>시민은 어디에 쓰길 원할까요?</h3><p>시민이 직접 고른 우선순위를 모아 정부와 국회에 전달합니다.</p></span></a><div class="campaign-side"><a class="campaign-step" href="/27/?idx=173013295&amp;bmode=view"><small>STEP 01 · 참여</small><strong>의견을 남기고<br>주변에 알려주세요</strong><span>8월 31일까지 →</span></a><a class="campaign-step" href="#completed"><small>STEP 02 · 결과</small><strong>캠페인 이후<br>무엇이 달라졌는지</strong><span>완료된 캠페인 보기 →</span></a></div></div></div></section>
+
+    <section class="results" id="completed"><div class="wrap"><div class="section-head"><div><p class="eyebrow">CAMPAIGN ARCHIVE</p><h2 class="section-title">캠페인은 끝나도<br>변화는 남습니다</h2><p class="section-copy">완료된 캠페인을 참여 수치가 아니라 결과와 후속 활동 중심으로 정리합니다.</p></div><a class="more" href="/69#completed">완료 캠페인 모아보기</a></div><div class="results-grid">
+      <article class="result"><div class="result-media"><img src="https://cdn.imweb.me/thumbnail/20260406/7844f498c8653.png" alt="한강버스 주민감사청구 활동"></div><div class="result-body"><small>예산감시</small><h3>한강버스 주민감사청구</h3><p>문제 제기에서 감사 결과, 후속 감시까지 하나의 기록으로 연결합니다.</p><a class="result-link" href="/27/?idx=172916152&amp;bmode=view">결과 보기 →</a></div></article>
+      <article class="result"><div class="result-media"><img src="https://cdn.imweb.me/thumbnail/20260414/0452df930e6fb.jpg" alt="서울시민행동 정책제안 기자회견"></div><div class="result-body"><small>시민참여</small><h3>2026 지방선거 서울시민행동</h3><p>시민사회의 정책 제안과 후보자 검증 활동을 결과 중심으로 보여줍니다.</p><a class="result-link" href="/27/?idx=170844085&amp;bmode=view">활동 기록 보기 →</a></div></article>
+      <article class="result"><div class="result-media"><img src="https://cdn.imweb.me/thumbnail/20260520/7a7b4f380dac7.jpeg" alt="서울시장 후보자 초청 시민사회 간담회"></div><div class="result-body"><small>연대활동</small><h3>후보자 초청 시민사회 간담회</h3><p>시민의 질문을 공론장에 올리고 정책 답변을 기록한 연대 활동입니다.</p><a class="result-link" href="/27/?idx=171383524&amp;bmode=view">활동 기록 보기 →</a></div></article>
+    </div></div></section>
+
+    <section class="fields"><div class="wrap"><div class="section-head"><div><p class="eyebrow">OUR FOCUS</p><h2 class="section-title">시민행동이<br>집중하는 영역</h2></div><p class="section-copy">흩어진 사업명 대신 시민이 이해하기 쉬운 활동 주제로 다시 묶습니다.</p></div><div class="field-grid"><a class="field" href="/57"><span class="field-no">01</span><h3>예산 감시</h3><p>국가와 지방정부의 예산이 제대로 쓰이는지 분석하고 알립니다.</p><span class="field-arrow">→</span></a><a class="field" href="/51"><span class="field-no">02</span><h3>주민참여예산</h3><p>시민이 예산의 우선순위를 직접 결정할 수 있도록 제도를 바꿉니다.</p><span class="field-arrow">→</span></a><a class="field" href="/49"><span class="field-no">03</span><h3>지방의정 감시</h3><p>지역의회와 권력의 의사결정을 투명하게 기록하고 감시합니다.</p><span class="field-arrow">→</span></a><a class="field" href="/54"><span class="field-no">04</span><h3>연대와 행동</h3><p>시민사회와 함께 공동의 문제를 해결하는 캠페인을 만듭니다.</p><span class="field-arrow">→</span></a></div></div></section>
+
+    <section class="library"><div class="wrap library-grid"><div><p class="eyebrow">REPORTS &amp; DATA</p><h2 class="section-title">세상을 이해하는<br>근거와 기록</h2><p class="section-copy">논평, 보고서, 발행물을 한곳에서 찾을 수 있도록 자료 접근성을 높입니다.</p><div class="library-nav"><a href="/23">발행물</a><a href="/23">보도자료</a><a href="/57">예산 브리핑</a><a href="/26">뉴스레터</a></div></div><div class="publications"><article class="publication"><a href="/27/?idx=172690687&amp;bmode=view"><div class="publication-media"><img src="https://cdn.imweb.me/thumbnail/20260727/13dfc912734d3.png" alt="미래대응기금 논평"></div><div class="publication-body"><small>논평</small><h3>미래대응기금, 빠른 추진보다 충분한 사전논의가 먼저다</h3></div></a></article><article class="publication"><a href="/27/?idx=172603916&amp;bmode=view"><div class="publication-media"><img src="https://cdn.imweb.me/thumbnail/20260723/1818552e76e22.png" alt="초과세수 논의 현황 정리"></div><div class="publication-body"><small>예산 브리핑</small><h3>2026년 초과세수 논의 현황, 그 정체는 무엇인가</h3></div></a></article></div></div></section>
+
+    <section class="trust"><div class="wrap trust-grid"><div><p class="eyebrow">INDEPENDENT &amp; TRANSPARENT</p><h2>독립적으로 감시하고<br>투명하게 활동합니다</h2></div><div class="trust-copy"><p>시민의 후원은 권력과 자본으로부터 독립된 감시 활동을 가능하게 합니다. 운영 자료와 지속가능보고서를 공개하고, 후원의 결과를 활동으로 증명하겠습니다.</p><div class="trust-actions"><a class="btn btn-primary" href="https://donate.action.or.kr/">후원으로 함께하기 →</a><a class="btn" href="/aboutus">단체 투명성 보기</a></div></div></div></section>
+    <section class="newsletter"><div class="wrap newsletter-grid"><div><h2>시민행동의 소식을 이메일로 받아보세요</h2><p>예산과 권력을 감시하는 새로운 활동, 캠페인, 자료를 전합니다.</p></div><a class="btn" href="/newsletter">뉴스레터 신청하기 →</a></div></section>
+  </main>
+
+  <footer class="site-footer"><div class="wrap"><div class="footer-top"><div><div class="footer-brand">함께하는 시민행동</div><div class="footer-info">서울 마포구 월드컵로26길 39 시민공간 나루 5층 03969<br>대표 김주일 · 고유번호 101-82-60646 · 후원계좌 신한 325-01-167213<br>action@action.or.kr · 02-921-4709</div></div><nav class="footer-links"><a href="/aboutus">단체소개</a><a href="/52">활동</a><a href="#campaigns">캠페인</a><a href="/26">소식</a><a href="/23">자료</a><a href="https://donate.action.or.kr/">후원하기</a></nav></div><div class="footer-bottom"><div class="legal"><a href="/37">단체 규약</a><a href="/8">개인정보처리방침</a><a href="/34">이용약관</a></div><span>© 함께하는 시민행동. All rights reserved.</span></div></div></footer>
+</div>
