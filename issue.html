@@ -1,0 +1,211 @@
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   이슈 목록 페이지 — 아름다운재단 캠페인 목록(/campaign/campaign_on/) 스타일
+
+   구성: 빵부스러기(홈 > 이슈) → 두 줄 제목 띠 → [진행 중 / 종료] 탭 → 3열 카드
+
+   이슈 = 끝나는 날짜가 있는 것. 마감이 지나면 종료 탭으로 내려가고,
+   그 결과는 해당 활동 페이지의 '결과' 칸에 사건으로 정리됩니다.
+
+   ⚠️ 이 페이지의 주소는 아직 없습니다. index.html 에서 /issue/ 로 걸어 두었는데
+      그건 로컬 미리보기 전용이라, 캠페이너스 페이지가 생기면 그 번호로 바꿔야 합니다.
+   ═══════════════════════════════════════════════════════════════ */
+
+@font-face{font-family:'GmarketSans';src:url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');font-weight:700;font-display:swap}
+
+#iss{
+  --brand:#00afec; --deep:#0079a6; --band:#eef7fb;
+  --ink:#0b1e28; --soft:#4a6473; --faint:#7d95a3; --line:#d5e4eb; --paper:#f1f6f8;
+  --flag:#9a5c06; --flag-bg:#fff4e1; --flag-line:#ecd3a2;
+  position:relative; left:50%; width:100vw; margin-left:-50vw;
+  background:#fff; color:var(--ink); line-height:1.6;
+  font-family:'Pretendard Variable',Pretendard,'Noto Sans KR',-apple-system,sans-serif;
+  word-break:keep-all; -webkit-font-smoothing:antialiased;
+}
+#iss *{box-sizing:border-box}
+#iss h1,#iss h2,#iss h3{margin:0; letter-spacing:-.022em}
+#iss p{margin:0}
+#iss a{color:inherit; text-decoration:none}
+#iss ul{list-style:none; margin:0; padding:0}
+#iss :focus-visible{outline:2.5px solid var(--brand); outline-offset:3px}
+#iss .wrap{width:min(1120px,calc(100% - 48px)); margin:0 auto}
+#iss .tbd{background:var(--flag-bg); color:var(--flag); border:1px dashed var(--flag-line); border-radius:5px; padding:1px 6px; font-size:.8em; font-weight:600}
+
+/* ───── 제목 띠 ───── */
+#iss .band{background:var(--band); padding:22px 0 clamp(38px,4.5vw,58px)}
+#iss .crumb{font-size:12.5px; color:var(--deep); font-weight:600; margin-bottom:clamp(24px,3vw,40px)}
+#iss .crumb span{opacity:.5; margin:0 5px}
+#iss .band h1{font-family:GmarketSans,sans-serif; font-weight:700; font-size:clamp(22px,3vw,32px); line-height:1.45}
+#iss .band h1 em{display:block; font-style:normal; color:var(--brand)}
+
+/* ───── 탭 ───── */
+#iss .tabs{display:flex; justify-content:center; gap:8px; padding:clamp(32px,4vw,52px) 0 clamp(22px,2.6vw,32px)}
+#iss .tab{
+  border:1.5px solid var(--line); background:#fff; color:var(--soft);
+  padding:11px 24px; font-size:14.5px; font-weight:700; font-family:inherit; cursor:pointer;
+}
+#iss .tab:hover{border-color:var(--brand); color:var(--deep)}
+#iss .tab[aria-selected="true"]{background:var(--brand); border-color:var(--brand); color:#fff}
+
+/* ───── 카드 ───── */
+#iss .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(18px,2vw,26px); padding-bottom:clamp(48px,6vw,88px)}
+#iss .card{border:1px solid var(--line); display:flex; flex-direction:column}
+#iss .card:hover{border-color:var(--brand)}
+#iss .card-media{position:relative; aspect-ratio:4/3; overflow:hidden; background:var(--paper); display:grid; place-items:center}
+#iss .card-media img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s}
+#iss .card:hover .card-media img{transform:scale(1.04)}
+/* 사진이 없을 때 자리. <img> 를 넣으면 이 span 을 지우세요. */
+#iss .card-note{
+  display:grid; place-items:center; gap:3px; width:100%; height:100%;
+  border:2px dashed var(--line); font-size:12.5px; font-weight:700; color:var(--faint); text-align:center;
+}
+#iss .card-note small{font-weight:500; font-size:11px}
+#iss .card-body{padding:17px 18px 20px; flex:1}
+#iss .card-body h3{font-family:GmarketSans,sans-serif; font-weight:700; font-size:15.5px; line-height:1.5}
+#iss .card:hover h3{color:var(--deep)}
+#iss .card-body p{margin-top:8px; font-size:13.5px; color:var(--soft); line-height:1.6}
+/* 마감일. 이슈가 이슈인 이유이자 언제 종료로 내릴지 알려 주는 표시입니다. */
+#iss .due{display:inline-block; margin-top:11px; background:var(--band); color:var(--deep); border-radius:12px; padding:3px 11px; font-size:12px; font-weight:700}
+#iss .card.done .due{background:var(--paper); color:var(--faint)}
+
+#iss .empty{grid-column:1/-1; border:1px dashed var(--line); padding:56px 20px; text-align:center; color:var(--faint); font-size:14.5px}
+
+@media(max-width:900px){ #iss .grid{grid-template-columns:1fr 1fr} }
+@media(max-width:560px){
+  #iss .wrap{width:min(100% - 32px,1120px)}
+  #iss .band{padding:16px 0 30px}
+  #iss .crumb{margin-bottom:18px}
+  #iss .tabs{padding:26px 0 18px}
+  #iss .tab{flex:1; padding:11px 10px; font-size:14px}
+  #iss .grid{grid-template-columns:1fr; gap:16px}
+  #iss .card-media{aspect-ratio:16/9}
+}
+@media(prefers-reduced-motion:reduce){ #iss *{transition:none!important; animation:none!important} }
+</style>
+
+<div id="iss" aria-label="이슈">
+
+  <!-- ⚠️ 두 줄 제목은 제가 지은 초안입니다. 실제 표현으로 바꿔 주세요. -->
+  <section class="band"><div class="wrap">
+    <p class="crumb"><a href="/69?preview_mode=1">홈</a><span>&gt;</span>이슈</p>
+    <h1>지금 시민의 선택이 필요한<em>이슈에 함께해 주세요.</em></h1>
+  </div></section>
+
+  <div class="wrap">
+    <div class="tabs" role="tablist">
+      <button class="tab" type="button" role="tab" id="tab-on" aria-selected="true" aria-controls="list-on">진행 중 이슈</button>
+      <button class="tab" type="button" role="tab" id="tab-off" aria-selected="false" aria-controls="list-off">종료된 이슈</button>
+    </div>
+
+    <!-- ───────── 진행 중 ─────────
+         ⚠️ 첫 번째만 실제로 진행 중인 캠페인이고 사진도 실물입니다.
+            나머지 셋은 임시로 넣은 것이라 주소와 사진이 아직 없습니다
+            (밑빠진독상만 자기 사이트로 갑니다). 설명 한 줄도 초안입니다. -->
+    <div class="grid" id="list-on" role="tabpanel" aria-labelledby="tab-on">
+
+      <a class="card" href="/27/?idx=173013295&amp;bmode=view">
+        <span class="card-media">
+          <img src="https://cdn.imweb.me/thumbnail/20260811/b10debcac3f42.png" alt="추가세수 시민의견 수렴 캠페인">
+        </span>
+        <span class="card-body">
+          <h3>더 걷힐 세금, 어디에 쓸래?</h3>
+          <p>추가세수 100조의 쓰임을 시민이 직접 고르고, 그 순위를 정부와 국회에 전합니다.</p>
+          <span class="due">8월 31일 마감</span>
+        </span>
+      </a>
+
+      <a class="card" href="https://dok.action.or.kr/">
+        <span class="card-media">
+          <!-- 사진 자리 → <img src="이미지주소" alt="2026 하반기 밑빠진독상"> -->
+          <span class="card-note">이미지 자리<small>가로 4:3</small></span>
+        </span>
+        <span class="card-body">
+          <h3>2026 하반기 밑빠진독상</h3>
+          <p>세금이 새는 현장을 시민이 제보하고, 그중 최악의 사업을 함께 고릅니다.</p>
+          <span class="due">9월 15일 제보 마감</span>
+        </span>
+      </a>
+
+      <a class="card" href="https://vote.action.or.kr/">
+        <span class="card-media">
+          <!-- 사진 자리 → <img src="이미지주소" alt="10만원 예산편성"> -->
+          <span class="card-note">이미지 자리<small>가로 4:3</small></span>
+        </span>
+        <span class="card-body">
+          <h3>10만원 예산편성</h3>
+          <p>내 몫의 예산 10만원을 어디에 쓸지 직접 편성해 봅니다.</p>
+          <span class="due">기간 미정</span>
+        </span>
+      </a>
+
+      <a class="card" href="#">
+        <span class="card-media">
+          <!-- 사진 자리 → <img src="이미지주소" alt="1회 참여예산 고민대회"> -->
+          <span class="card-note">이미지 자리<small>가로 4:3</small></span>
+        </span>
+        <span class="card-body">
+          <h3>1회 참여예산 고민대회 <span class="tbd">확인 필요</span></h3>
+          <p>참여예산위원들이 현장에서 부딪히는 고민을 모아 함께 풀어 봅니다.</p>
+          <span class="due">기간 미정</span>
+        </span>
+      </a>
+
+    </div>
+
+    <!-- ───────── 종료 ─────────
+         ⚠️ 아래 둘은 마감이 있었던 실제 활동이지만, '이슈'로 분류할지는 확인이 필요합니다.
+            지금 캠페이너스에서는 일반 활동(/27) 게시판에 올라가 있습니다.
+            종료된 이슈의 결과는 해당 활동 페이지의 '결과' 칸에도 사건으로 정리해 두세요. -->
+    <div class="grid" id="list-off" role="tabpanel" aria-labelledby="tab-off" hidden>
+
+      <a class="card done" href="/27/?idx=170844085&amp;bmode=view">
+        <span class="card-media">
+          <!-- 사진 자리 → <img src="이미지주소" alt="2026 지방선거 서울시민행동"> -->
+          <span class="card-note">이미지 자리<small>가로 4:3</small></span>
+        </span>
+        <span class="card-body">
+          <h3>2026 지방선거 서울시민행동 <span class="tbd">확인 필요</span></h3>
+          <p>시민사회가 함께 정책을 제안하고 후보자의 답을 기록했습니다.</p>
+          <span class="due">2026년 6월 종료</span>
+        </span>
+      </a>
+
+      <a class="card done" href="/27/?idx=172916152&amp;bmode=view">
+        <span class="card-media">
+          <!-- 사진 자리 → <img src="이미지주소" alt="한강버스 주민감사청구"> -->
+          <span class="card-note">이미지 자리<small>가로 4:3</small></span>
+        </span>
+        <span class="card-body">
+          <h3>한강버스 주민감사청구 <span class="tbd">확인 필요</span></h3>
+          <p>경제성 근거 없이 추진된 사업에 주민감사를 청구했고, 감사 결과가 나왔습니다.</p>
+          <span class="due">2026년 8월 종료</span>
+        </span>
+      </a>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* 진행 중 / 종료 탭. 목록 두 개를 번갈아 보여 주기만 합니다.
+   ⚠️ 캠페이너스 코드 위젯이 <script> 를 실행해 주는지는 /69 에서 확인해야 합니다.
+      막히면 탭이 안 넘어가니, 그때는 두 목록을 위아래로 나란히 두는 쪽으로 바꿉니다. */
+(function () {
+  var tabs = [
+    { btn: document.getElementById('tab-on'),  panel: document.getElementById('list-on') },
+    { btn: document.getElementById('tab-off'), panel: document.getElementById('list-off') }
+  ];
+  if (tabs.some(function (t) { return !t.btn || !t.panel; })) return;
+
+  tabs.forEach(function (t) {
+    t.btn.addEventListener('click', function () {
+      tabs.forEach(function (o) {
+        var on = o === t;
+        o.btn.setAttribute('aria-selected', on ? 'true' : 'false');
+        o.panel.hidden = !on;
+      });
+    });
+  });
+})();
+</script>
