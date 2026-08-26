@@ -101,7 +101,8 @@
   #action-home-v2 .mega-in{width:min(1280px,calc(100% - 48px));margin:0 auto;padding:26px 0 32px}
   #action-home-v2 .mega-hd{font-size:15px;font-weight:700;color:var(--ink-soft);margin-bottom:18px}
   #action-home-v2 .mega-hd b{color:var(--brand-deep)}
-  #action-home-v2 .mega-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) minmax(200px,.8fr);gap:20px}
+  /* 이슈 카드 수가 바뀌면 아래 5 만 고치면 됩니다(마지막 minmax 는 오른쪽 버튼 묶음). */
+  #action-home-v2 .mega-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) minmax(190px,.7fr);gap:18px}
   #action-home-v2 .icard{display:block;white-space:normal}
   #action-home-v2 .icard-media{
     display:grid;place-items:center;position:relative;aspect-ratio:4/3;overflow:hidden;
@@ -171,42 +172,93 @@
   }
   #action-home-v2 .float-cta:hover .arrow{transform:translateX(3px)}
 
-  /* ───────── 첫 화면 카드 ─────────
-     한 줄에 넷. 예전에는 둘씩 크게 놓았는데 화면을 너무 잡아먹어 줄였습니다.
-     카드를 다시 키우려면 grid-template-columns 의 4 를 3 이나 2 로 낮추면 됩니다. */
-  #action-home-v2 .feature{padding:clamp(52px,6.5vw,96px) 0}
-  #action-home-v2 .feature-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(22px,2.4vw,32px)}
-  #action-home-v2 .fcard-media{border-radius:10px;overflow:hidden;background:var(--paper);aspect-ratio:4/3}
-  #action-home-v2 .fcard-media img{height:100%;object-fit:cover;transition:transform .5s}
-  #action-home-v2 .fcard:hover .fcard-media img{transform:scale(1.05)}
-  #action-home-v2 .tags{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 9px}
-  #action-home-v2 .tags span{border:1px solid var(--line);border-radius:999px;padding:4px 11px;font-size:12px;font-weight:700;color:var(--ink-soft)}
-  #action-home-v2 .tags span:first-child{border-color:var(--brand);color:var(--brand-deep)}
-  #action-home-v2 .fcard h3{font-size:clamp(15px,1.15vw,16.5px);font-weight:700;line-height:1.5;letter-spacing:-.015em}
-  #action-home-v2 .fcard:hover h3{color:var(--brand-deep)}
-  #action-home-v2 .fcard time{display:block;margin-top:9px;font-size:12.5px;color:var(--ink-soft)}
-
-  /* ───────── 최신 소식 — 왼쪽 목록 + 오른쪽 3블록 ───────── */
-  #action-home-v2 .news{background:var(--paper);padding:clamp(48px,6vw,86px) 0}
-  #action-home-v2 .news-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(30px,4vw,64px)}
-  #action-home-v2 .sec-hd{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:22px}
-  #action-home-v2 .sec-hd h2{font-family:GmarketSans,sans-serif;font-weight:700;font-size:clamp(24px,2.6vw,36px);letter-spacing:-.02em}
-  #action-home-v2 .more{font-size:14px;font-weight:700;color:var(--ink-soft)}
+  /* ───────── 두 줄 큰 제목 ─────────
+     서울환경연합 홈처럼 제목을 두 줄로 크게 놓고, '전체보기'를 오른쪽 끝에 둡니다. */
+  #action-home-v2 .sec-hd{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:clamp(26px,3vw,44px)}
+  #action-home-v2 .sec-hd h2{font-family:GmarketSans,sans-serif;font-weight:700;line-height:1.32;letter-spacing:-.025em;
+    font-size:clamp(26px,3.4vw,46px)}
+  #action-home-v2 .more{flex:none;font-size:14px;font-weight:700;color:var(--ink-soft);padding-bottom:6px}
   #action-home-v2 .more:hover{color:var(--brand-deep)}
-  #action-home-v2 .nlist li{border-top:1px solid var(--line)}
-  #action-home-v2 .nlist li:last-child{border-bottom:1px solid var(--line)}
-  #action-home-v2 .nlist a{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 4px;transition:padding-left .15s}
-  #action-home-v2 .nlist a:hover{padding-left:10px;color:var(--brand-deep)}
-  #action-home-v2 .nlist strong{font-weight:600;font-size:16px;line-height:1.5}
-  #action-home-v2 .nlist time{flex:none;font-size:13px;color:var(--ink-soft)}
-  #action-home-v2 .nblocks{display:grid;gap:22px;align-content:start}
-  #action-home-v2 .nblock{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px}
-  #action-home-v2 .nblock h3{font-size:16px;font-weight:800;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
-  #action-home-v2 .nblock h3 .more{font-size:13px}
-  #action-home-v2 .nblock li+li{margin-top:9px}
-  #action-home-v2 .nblock li a{display:flex;justify-content:space-between;gap:14px;font-size:14.5px;line-height:1.5}
-  #action-home-v2 .nblock li a:hover{color:var(--brand-deep)}
-  #action-home-v2 .nblock time{flex:none;font-size:12.5px;color:var(--ink-soft)}
+
+  /* ───────── 카드 한 벌 (.pcard) ─────────
+     맨 위 '진행 중인 이슈' 칸과 아래 '소식' 칸이 이 한 벌을 같이 씁니다.
+     한쪽만 고치고 싶으면 .live .pcard / .news .pcard 로 덧씌우세요.
+
+     ⚠️ 사진 비율 주의 — 우리 글 썸네일은 대부분 가로 16:9(700×394)이고
+        포스터(700×990)는 몇 장뿐이라, 한 틀에 다 넣으면 뭔가는 잘립니다.
+        그래서 4:3 틀에 object-position 을 위쪽으로 두었습니다.
+        카드뉴스는 제목이 위에 있어서 이렇게 해야 글자가 안 잘립니다.
+        나중에 포스터 비율을 통일하면 --card-ratio 만 3/4 로 바꾸면 됩니다. */
+  #action-home-v2 .pgrid{--card-ratio:4/3;
+    display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(20px,2.2vw,30px)}
+  #action-home-v2 .pcard{display:flex;flex-direction:column;background:#fff;
+    border:1px solid var(--line);transition:border-color .18s,transform .18s}
+  #action-home-v2 .pcard:hover{border-color:var(--brand);transform:translateY(-3px)}
+  #action-home-v2 .pcard-media{position:relative;overflow:hidden;background:var(--paper);
+    aspect-ratio:var(--card-ratio);border-bottom:1px solid var(--line)}
+  #action-home-v2 .pcard-media img{height:100%;object-fit:cover;object-position:center top;transition:transform .5s}
+  #action-home-v2 .pcard:hover .pcard-media img{transform:scale(1.04)}
+  /* 사진이 아직 없는 칸 — 점선은 '미정' 표시라 공개 전에 없어져야 합니다 */
+  #action-home-v2 .pcard-media.is-empty{display:grid;place-items:center;border:2px dashed var(--line);
+    border-bottom-width:2px;font-size:12.5px;font-weight:700;color:var(--ink-soft);text-align:center;line-height:1.6}
+  #action-home-v2 .pcard-body{display:flex;flex-direction:column;flex:1;padding:16px 18px 18px;gap:10px}
+  #action-home-v2 .pbadge{align-self:flex-start;background:var(--ink);color:#fff;
+    font-size:12px;font-weight:800;letter-spacing:-.01em;padding:5px 10px}
+  #action-home-v2 .pbadge.is-live{background:var(--brand-deep)}
+  #action-home-v2 .pbadge.is-todo{background:none;color:var(--ink-soft);border:1px dashed var(--line)}
+  #action-home-v2 .pcard strong{font-size:clamp(15px,1.15vw,16.5px);font-weight:700;line-height:1.5;letter-spacing:-.02em;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  #action-home-v2 .pcard:hover strong{color:var(--brand-deep)}
+  #action-home-v2 .pcard time{margin-top:auto;font-size:12.5px;color:var(--ink-soft)}
+
+  /* ───────── 맨 위 — 진행 중인 이슈, 가로로 미는 줄 ─────────
+     카드가 화면 오른쪽 밖까지 이어지고 손으로(또는 ‹ ›) 밀어서 봅니다.
+     자동으로 안 넘어갑니다 — 자동 슬라이드는 2번째 칸부터 안 보게 돼서 안 씁니다.
+
+     줄이 .wrap 밖으로 나가야 오른쪽 끝이 잘려 보이고 "더 있다"가 전달됩니다.
+     그래서 줄만 화면 전체 폭을 쓰고, 좌우 여백을 .wrap 과 같은 값으로 직접 줍니다. */
+  #action-home-v2 .live{padding:clamp(44px,5.5vw,84px) 0 clamp(52px,6.5vw,96px)}
+  #action-home-v2 .rail-scroll{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none}
+  #action-home-v2 .rail-scroll::-webkit-scrollbar{display:none}
+  #action-home-v2 .rail{display:flex;gap:clamp(14px,1.5vw,20px);
+    padding-inline:max(24px,calc((100vw - 1280px) / 2));
+    padding-bottom:4px}
+  #action-home-v2 .rail .pcard{flex:0 0 clamp(238px,23vw,296px);scroll-snap-align:start}
+  /* 줄 끝에 빈 칸을 하나 둬서, 마지막 카드가 화면 끝에 딱 붙지 않게 합니다 */
+  #action-home-v2 .rail::after{content:"";flex:0 0 max(8px,calc((100vw - 1280px) / 2))}
+
+  /* 남은 날짜 */
+  #action-home-v2 .dday-row{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-top:auto;padding-top:2px}
+  #action-home-v2 .dday{font-family:GmarketSans,sans-serif;font-weight:700;line-height:1;
+    font-size:clamp(19px,1.7vw,24px);color:var(--brand-deep);letter-spacing:-.02em}
+  #action-home-v2 .due-line{font-size:12.5px;color:var(--ink-soft)}
+
+  /* ‹ › 단추 — 스크립트가 켜 줍니다. 스크립트가 막히면 안 보이고,
+     그래도 손가락·트랙패드로는 그냥 밀립니다(브라우저 기본 기능이라). */
+  #action-home-v2 .rail-nav{display:none;gap:8px;flex:none;padding-bottom:4px}
+  #action-home-v2 .rail-nav.is-on{display:flex}
+  #action-home-v2 .rail-nav button{width:42px;height:42px;border-radius:50%;cursor:pointer;
+    border:1.5px solid var(--line);background:#fff;color:var(--ink);font-size:18px;line-height:1;
+    display:grid;place-items:center;transition:.15s}
+  #action-home-v2 .rail-nav button:hover:not(:disabled){border-color:var(--brand);color:var(--brand-deep)}
+  #action-home-v2 .rail-nav button:disabled{opacity:.3;cursor:default}
+  #action-home-v2 .rail-foot{margin-top:clamp(16px,1.8vw,24px);display:flex;justify-content:flex-end}
+  #action-home-v2 .pcard-media.is-empty small{display:block;margin-top:3px;font-weight:600;opacity:.75}
+
+  /* 스크롤로 들어올 때 살짝 올라오기.
+     숨기는 상태(.is-armed)는 스크립트가 직접 붙입니다. 스크립트가 막히면
+     아무것도 안 숨겨져서 내용이 그냥 다 보입니다 — 그게 맞는 실패 방향입니다. */
+  #action-home-v2 .reveal.is-armed{opacity:0;transform:translateY(14px)}
+  #action-home-v2 .reveal.is-in{opacity:1;transform:none;
+    transition:opacity .5s ease,transform .5s cubic-bezier(.22,.61,.36,1)}
+  @media(prefers-reduced-motion:reduce){
+    #action-home-v2 .reveal.is-armed{opacity:1;transform:none}
+    #action-home-v2 .reveal.is-in{transition:none}
+  }
+
+  /* ───────── 소식 ───────── */
+  #action-home-v2 .news{background:var(--paper);padding:clamp(48px,6vw,86px) 0}
 
   /* ───────── 하는 일 3분류 ───────── */
   #action-home-v2 .work{padding:clamp(48px,6vw,86px) 0}
@@ -230,16 +282,24 @@
   #action-home-v2 .cta a:hover{transform:translateY(-2px)}
 
   /* ───────── 뉴스레터 ───────── */
-  /* ───────── 뉴스레터 ─────────
-     스티비 기본 폼은 칸마다 라벨이 붙어 세로로 길어집니다. 홈에서는 그만한
-     자리를 줄 수 없어, 이메일·이름을 한 줄에 놓고 라벨을 감춰 낮게 눌렀습니다.
-     (라벨은 지우지 않고 화면에서만 감춥니다 — 화면 읽기 프로그램에는 그대로 읽힙니다.) */
-  #action-home-v2 .nl{padding:clamp(34px,3.6vw,52px) 0}
-  #action-home-v2 .nl-in{display:flex;align-items:center;justify-content:space-between;gap:24px 32px;flex-wrap:wrap;border:2px solid var(--brand);border-radius:16px;padding:clamp(22px,2.4vw,30px) clamp(22px,2.6vw,34px)}
-  #action-home-v2 .nl-copy{flex:1 1 280px}
-  #action-home-v2 .nl h2{font-family:GmarketSans,sans-serif;font-weight:700;font-size:clamp(18px,1.8vw,24px);letter-spacing:-.02em}
-  #action-home-v2 .nl-copy p{margin-top:7px;color:var(--ink-soft);font-size:14px}
-  #action-home-v2 .nl-form{flex:1 1 400px;max-width:480px}
+  /* ───────── 뉴스레터 — 왼쪽 색 블록 + 오른쪽 흰 폼 ─────────
+     서울환경연합 방식입니다. 왼쪽은 뉴스레터가 무엇인지, 오른쪽은 신청 칸.
+     화면 끝까지 꽉 채우고 가운데 선으로만 나눕니다(.wrap 을 안 씁니다).
+
+     스티비 기본 폼은 칸마다 라벨이 붙어 세로로 길어집니다. 라벨은 지우지 않고
+     화면에서만 감췄습니다 — 화면 읽기 프로그램에는 그대로 읽힙니다. */
+  #action-home-v2 .nl{border-top:1px solid var(--line)}
+  #action-home-v2 .nl-in{display:grid;grid-template-columns:1fr 1fr;align-items:stretch}
+  #action-home-v2 .nl-copy{background:var(--brand);color:#fff;
+    display:flex;flex-direction:column;justify-content:space-between;gap:28px;
+    padding:clamp(30px,3.6vw,54px) clamp(26px,3vw,48px)}
+  #action-home-v2 .nl-tag{align-self:flex-start;border:1.5px solid rgba(255,255,255,.85);border-radius:999px;
+    padding:6px 15px;font-size:13px;font-weight:800}
+  #action-home-v2 .nl h2{font-family:GmarketSans,sans-serif;font-weight:700;line-height:1.35;
+    font-size:clamp(21px,2.3vw,32px);letter-spacing:-.025em}
+  #action-home-v2 .nl-copy p{font-size:14.5px;line-height:1.65;color:rgba(255,255,255,.9)}
+  #action-home-v2 .nl-form{background:#fff;display:flex;flex-direction:column;justify-content:center;
+    padding:clamp(30px,3.6vw,54px) clamp(26px,3vw,48px)}
   #action-home-v2 .nl-note{margin-top:8px;font-size:12px;color:var(--ink-soft)}
 
   /* 스티비 폼 눌러 담기 */
@@ -317,8 +377,7 @@
     #action-home-v2 .hd-tools{margin-left:auto}
   }
   @media(max-width:1100px){
-    #action-home-v2 .feature-grid{grid-template-columns:1fr 1fr}
-    #action-home-v2 .news-grid{grid-template-columns:1fr}
+    #action-home-v2 .pgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
     #action-home-v2 .work-grid{grid-template-columns:1fr}
     #action-home-v2 .ft-grid{grid-template-columns:1fr 1fr}
     #action-home-v2 .ft-org{grid-column:1/-1}
@@ -331,27 +390,23 @@
     #action-home-v2 .ico{width:38px;height:38px}
     /* 섹션 제목과 '전체보기'가 한 줄에서 서로 밀지 않게 줄바꿈을 허용합니다. */
     #action-home-v2 .sec-hd{flex-wrap:wrap;gap:8px 16px}
-    #action-home-v2 .feature{padding:34px 0 40px}
-    #action-home-v2 .feature-grid{grid-template-columns:1fr 1fr;gap:18px 14px}
-    #action-home-v2 .fcard h3{font-size:14.5px;line-height:1.45;
-      display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-    #action-home-v2 .tags{margin:11px 0 7px}
+    #action-home-v2 .live{padding:32px 0 40px}
+    /* 좁으면 ‹ › 단추를 감춥니다 — 손가락으로 미는 게 더 빠릅니다 */
+    #action-home-v2 .rail-nav.is-on{display:none}
+    #action-home-v2 .rail .pcard{flex:0 0 76vw}
+    #action-home-v2 .pgrid{gap:16px 14px}
+    #action-home-v2 .pcard-body{padding:13px 14px 15px;gap:8px}
+    #action-home-v2 .pcard strong{font-size:14.5px;line-height:1.45}
     #action-home-v2 .news{padding:40px 0}
     #action-home-v2 .work{padding:40px 0}
     #action-home-v2 .cta2{grid-template-columns:1fr}
-    #action-home-v2 .nl-in{flex-direction:column;align-items:stretch}
-    #action-home-v2 .nl-form{max-width:none}
+    /* 좁으면 색 블록이 위, 폼이 아래 */
+    #action-home-v2 .nl-in{grid-template-columns:1fr}
     /* 좁으면 이메일·이름을 한 줄에 둘 수 없으니 한 칸씩 */
     #action-home-v2 .nl-form form{grid-template-columns:1fr}
     #action-home-v2 .ft-grid{grid-template-columns:1fr}
     #action-home-v2 .ft-org dl{grid-template-columns:1fr}
     #action-home-v2 .ft-org dt{margin-top:6px}
-
-    /* 제목과 날짜가 한 줄에서 서로 밀어내지 않도록 아래위로 놓습니다. */
-    #action-home-v2 .nlist a{flex-direction:column;align-items:flex-start;gap:5px;padding:14px 2px}
-    #action-home-v2 .nlist strong{font-size:15px}
-    #action-home-v2 .nblock{padding:18px 18px}
-    #action-home-v2 .nblock li a{flex-direction:column;align-items:flex-start;gap:4px}
 
     /* 떠 있는 버튼이 맨 아래 내용을 가리지 않게 푸터에 그만큼 자리를 비웁니다.
        env(safe-area-inset-bottom) 은 아이폰 아래쪽 홈 표시줄을 피하는 값입니다. */
@@ -366,11 +421,16 @@
   @media(max-width:430px){
     #action-home-v2 .wrap{width:min(100% - 28px,1280px)}
     #action-home-v2 .logo small{display:none}
-    #action-home-v2 .feature-grid{grid-template-columns:1fr;gap:22px}
-    #action-home-v2 .fcard{display:grid;grid-template-columns:112px 1fr;gap:14px;align-items:start}
-    #action-home-v2 .fcard-media{aspect-ratio:1}
-    #action-home-v2 .fcard h3{-webkit-line-clamp:3}
-    #action-home-v2 .tags{margin:0 0 6px}
+    /* 아주 좁으면 아래 '소식' 카드만 한 줄에 하나씩, 사진은 왼쪽에 작게 붙입니다.
+       맨 위 가로 줄(.rail)은 그대로 밀어서 봅니다 — 거기까지 세로로 쌓으면
+       첫 화면이 한없이 길어집니다. */
+    #action-home-v2 .pgrid{grid-template-columns:1fr;gap:12px}
+    #action-home-v2 .pgrid .pcard{flex-direction:row}
+    #action-home-v2 .pgrid .pcard-media{flex:none;width:118px;aspect-ratio:1;
+      border-bottom:none;border-right:1px solid var(--line)}
+    #action-home-v2 .pgrid .pcard-media.is-empty{border-right-width:2px;font-size:11px}
+    #action-home-v2 .rail .pcard{flex:0 0 82vw}
+    #action-home-v2 .pcard strong{-webkit-line-clamp:3}
     #action-home-v2 .float-cta span:first-child br{display:none}
     #action-home-v2 .float-cta{font-size:13.5px}
   }
@@ -406,30 +466,38 @@
         </ul></div>
       </div>
       <!-- 활동 = 끝나는 날짜가 없는 일. 마감이 있으면 '이슈'로 갑니다.
-           · 예산 모니터링   /57
+           2026-08-25 에 셋으로 바뀌었습니다.
            · 지방 의정 감시  /49  (페이지 생김새는 activity.html 에 잡아 둠)
-           · 참여예산 상담소 별도 저장소 participatory-budget
+           · 참여예산        /51
+           · 밑빠진 독상     상설 소개 페이지 (회차 하나가 아니라 상 자체를 설명하는 칸)
 
-           ⚠️ 참여예산 상담소의 /pb/ 는 로컬 미리보기 전용 경로입니다.
-              캠페이너스 페이지가 생기면 그 번호로 바꾸세요. 이대로 올리면 404 입니다.
-           ⚠️ 밑빠진독상은 여기 없습니다. 회차가 아직 한 번도 안 돌아 상설 페이지에
-              넣을 내용(역대 수상 기록)이 없기 때문입니다. 지금은 '이슈'에만 있고,
-              회차가 두세 번 쌓인 뒤에 활동으로 올리기로 했습니다. -->
+           ⚠️ '참여예산' 을 /51(주민참여예산 활성화)로 걸어 뒀습니다. 확인 필요.
+
+           '밑빠진 독상' (2026-08-25 결정) — 밑빠진 독상 사이트 한 장을 둘로 가릅니다.
+             활동 ← 역대 40회 기록 · 지도 · 숫자 3개(40회/사업비 합계/26년)
+                   = 끝난 것이라 안 바뀜. awards.json 만 있으면 되고 API 가 필요 없음
+             이슈 ← 제보 접수 · 진행 중인 감시 · 투표
+                   = 이번 회차라 끝나는 날짜가 있음(9/15). /api/report 가 필요함
+           역대 결과 페이지는 이 저장소의 dok-history.html 입니다.
+           원본을 복사한 게 아니라, 화면이 뜰 때 원본에서 awards.json 을 받아 그립니다.
+           ⚠️ /dok-history 는 미리보기 전용 경로입니다.
+              캠페이너스에 페이지를 만들면 그 번호로 바꾸세요.
+           · 예산 모니터링(/57)은 '자리 미정'으로 옮겼습니다.
+           · 참여예산 상담소는 '이슈'로 옮겼습니다. -->
       <div class="gnb-item">
         <a href="/52">활동</a>
         <div class="drop"><ul>
-          <li><a href="/57">예산 모니터링</a></li>
           <li><a href="/49">지방 의정 감시</a></li>
-          <li><a href="/pb/">참여예산 상담소</a></li>
+          <li><a href="/51">참여예산<span class="todo-mark">확인</span></a></li>
+          <li><a href="/dok-history">밑빠진 독상</a></li>
         </ul></div>
       </div>
 
       <!-- 이슈 = 끝나는 날짜가 있는 것. 마감이 지나면 내리고, 그 결과는 해당
            활동 페이지의 '결과' 칸으로 내려갑니다.
-           ⚠️ 첫 번째만 실제로 진행 중인 캠페인이고, 나머지 셋은 임시로 넣은 것이라
-              주소가 없습니다(밑빠진독상만 자기 사이트로 갑니다).
-           ⚠️ 사진은 각 칸 주석 자리에 <img src="..." alt="..."> 를 넣으면
-              점선 자리표시가 사라집니다. 가로 4:3 을 권합니다. -->
+           2026-08-25 에 '참여예산 상담소'가 활동에서 여기로 넘어와 다섯이 됐습니다.
+           ⚠️ 상담소는 끝나는 날짜가 아직 없습니다. 이슈에 두려면 마감일이 있어야 합니다.
+           ⚠️ '1회 참여예산 고민대회'는 주소·기간·사진이 전부 없습니다. -->
       <div class="gnb-item is-mega">
         <a href="/issue/">이슈</a>
         <div class="drop mega"><div class="mega-in">
@@ -438,16 +506,16 @@
 
             <a class="icard" href="/27/?idx=173013295&amp;bmode=view">
               <span class="icard-media">
-                <img src="https://cdn.imweb.me/thumbnail/20260811/b10debcac3f42.png" alt="추가세수 시민의견 수렴 캠페인">
+                <img src="https://cdn.imweb.me/thumbnail/20260811/59d0381d6c5b7.png" alt="추가세수 시민의견 수렴 캠페인">
               </span>
               <strong>더 걷힐 세금, 어디에 쓸래?</strong>
               <span class="icard-due">8월 31일 마감</span>
             </a>
 
-            <a class="icard" href="https://dok.action.or.kr/">
+            <!-- ⚠️ 사진은 '밑빠진 독상 vol.2' 글 썸네일입니다. 대표 이미지가 나오면 교체. -->
+            <a class="icard" href="https://dokseong-action.bada523082.chatgpt.site/">
               <span class="icard-media">
-                <!-- 사진 자리 → <img src="이미지주소" alt="하반기 밑빠진독상"> -->
-                <span class="icard-note">이미지 자리<small>가로 4:3</small></span>
+                <img src="https://cdn.imweb.me/thumbnail/20260825/c4b8e2d1b259d.png" alt="2026 하반기 밑빠진 독상">
               </span>
               <strong>2026 하반기 밑빠진독상</strong>
               <span class="icard-due">9월 15일 제보 마감</span>
@@ -455,11 +523,21 @@
 
             <a class="icard" href="https://vote.action.or.kr/">
               <span class="icard-media">
-                <!-- 사진 자리 → <img src="이미지주소" alt="10만원 예산편성"> -->
-                <span class="icard-note">이미지 자리<small>가로 4:3</small></span>
+                <img src="https://vote.action.or.kr/og-budget-vote-v1.png?v=2" alt="10만원 예산 편성 투표">
               </span>
               <strong>10만원 예산편성</strong>
-              <span class="icard-due">기간 미정</span>
+              <span class="icard-due">기간 확인 필요</span>
+            </a>
+
+            <!-- ⚠️ /pb/ 는 로컬 미리보기 전용 경로입니다.
+                 캠페이너스 페이지 번호로 안 바꾸면 404 입니다. -->
+            <a class="icard" href="/pb/">
+              <span class="icard-media">
+                <!-- 사진 자리 → <img src="이미지주소" alt="참여예산 상담소"> -->
+                <span class="icard-note">이미지 자리<small>가로 4:3</small></span>
+              </span>
+              <strong>참여예산 상담소</strong>
+              <span class="icard-due">마감일 확인 필요</span>
             </a>
 
             <a class="icard" href="#">
@@ -499,9 +577,9 @@
       <div class="gnb-item">
         <a class="is-todo" href="#">자리 미정</a>
         <div class="drop"><ul>
+          <li><a href="/57">예산 모니터링</a></li>
           <li><a href="/50">지자체 ESG 평가</a></li>
           <li><a href="/54">연대 활동</a></li>
-          <li><a href="/51">주민참여예산 활성화</a></li>
           <li><a href="/27">일반 활동</a></li>
           <li><a href="/46">지역 예산 감시 사례</a></li>
           <li><a href="/40">회원 공간</a></li>
@@ -540,17 +618,18 @@
       <li>
         <a href="/52">활동</a>
         <ul class="msub">
-          <li><a href="/57">예산 모니터링</a></li>
           <li><a href="/49">지방 의정 감시</a></li>
-          <li><a href="/pb/">참여예산 상담소</a></li>
+          <li><a href="/51">참여예산(확인 필요)</a></li>
+          <li><a href="/dok-history">밑빠진 독상(역대 결과)</a></li>
         </ul>
       </li>
       <li>
         <a href="/issue/">이슈</a>
         <ul class="msub">
           <li><a href="/27/?idx=173013295&amp;bmode=view">더 걷힐 세금, 어디에 쓸래?</a></li>
-          <li><a href="https://dok.action.or.kr/">2026 하반기 밑빠진독상</a></li>
+          <li><a href="https://dokseong-action.bada523082.chatgpt.site/">2026 하반기 밑빠진독상</a></li>
           <li><a href="https://vote.action.or.kr/">10만원 예산편성</a></li>
+          <li><a href="/pb/">참여예산 상담소</a></li>
           <li><a href="#">1회 참여예산 고민대회</a></li>
         </ul>
       </li>
@@ -579,91 +658,173 @@
     </ul></div></nav>
   </header>
 
-  <!-- ───────── 큰 카드 2열 ─────────
-       글·사진·날짜·주소 모두 현재 action.or.kr 에서 그대로 가져온 것입니다.
-       ⚠️ 앞의 태그(캠페인·예산감시…)는 제가 내용 보고 붙였습니다. 실제 분류가 아닙니다. -->
-  <section class="feature"><div class="wrap">
-    <div class="feature-grid">
+  <!-- ───────── 맨 위 — 지금 하고 있는 이슈만 ─────────
+       여기에는 최신 글을 올리지 않습니다. '이슈' 메뉴에 있는 것과 같은 넷만 올립니다.
+       (이슈 = 끝나는 날짜가 있는 것. 끝나면 여기서 내리고 활동 페이지 '결과' 칸으로 내려갑니다.)
 
-      <a class="fcard" href="/27/?idx=173013295&amp;bmode=view">
-        <div class="fcard-media"><img src="https://cdn.imweb.me/thumbnail/20260811/b10debcac3f42.png" alt="추가세수 시민의견 수렴 캠페인"></div>
-        <div class="tags"><span>캠페인</span><span>추가세수</span></div>
-        <h3>더 걷힐 세금, 어디에 쓸래? 추가세수 시민의견 수렴 캠페인(~8.31.)</h3>
-        <time>2026.08.11</time>
+       뱃지·마감일은 지어낸 값이 아니라 확정된 것만 적었습니다.
+       넷 중 '참여예산 고민대회'만 주소도 기간도 아직 없어 딱지를 붙여 뒀습니다. -->
+  <section class="live">
+    <div class="wrap">
+      <div class="sec-hd">
+        <!-- 제목 문구는 초안입니다. 확정되면 이 두 줄만 고치면 됩니다. -->
+        <h2>지금 참여할 수 있는 이슈,<br>마감 전에 확인하세요</h2>
+        <div class="rail-nav" id="rail-nav">
+          <button type="button" data-rail="prev" aria-label="이전 이슈 보기">&#8249;</button>
+          <button type="button" data-rail="next" aria-label="다음 이슈 보기">&#8250;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 가로로 미는 줄. .wrap 밖에 두어야 오른쪽 끝이 잘려 보입니다.
+         카드는 다섯 = 이슈 메뉴와 같습니다. 순서는 마감이 급한 것부터입니다.
+         마감일이 바뀌면 data-due 도 같이 고치세요 — 스크립트가 그걸로 남은 날짜를 셉니다. -->
+    <div class="rail-scroll" id="issue-rail">
+      <div class="rail">
+
+        <a class="pcard reveal" href="/27/?idx=173013295&amp;bmode=view" data-due="2026-08-31">
+          <span class="pcard-media"><img src="https://cdn.imweb.me/thumbnail/20260811/59d0381d6c5b7.png" alt="더 걷힐 세금, 어디에 쓸래? 추가세수 시민의견 수렴 캠페인"></span>
+          <span class="pcard-body">
+            <span class="pbadge is-live">진행 중</span>
+            <strong>더 걷힐 세금, 어디에 쓸래? 추가세수 시민의견 수렴 캠페인</strong>
+            <span class="dday-row">
+              <!-- 스크립트가 돌면 'D-6' 으로 바뀝니다. 막히면 '8/31' 이 그대로 보입니다. -->
+              <b class="dday" data-dday>8/31</b>
+              <span class="due-line">8월 31일 마감</span>
+            </span>
+          </span>
+        </a>
+
+        <!-- ⚠️ 사진은 8/25 에 올라온 '밑빠진 독상 vol.2' 글의 썸네일입니다.
+             캠페인 대표 이미지가 따로 나오면 이 한 줄만 바꾸세요.
+             주소는 GPT 가 배포한 곳입니다(2026-08-25 확인, GitHub main 과 내용 동일).
+             dok.action.or.kr 은 인증서가 없어 안 열리므로 쓰지 않습니다. -->
+        <a class="pcard reveal" href="https://dokseong-action.bada523082.chatgpt.site/" data-due="2026-09-15">
+          <span class="pcard-media"><img src="https://cdn.imweb.me/thumbnail/20260825/c4b8e2d1b259d.png" alt="2026 하반기 밑빠진 독상"></span>
+          <span class="pcard-body">
+            <span class="pbadge is-live">진행 중</span>
+            <strong>2026 하반기 밑빠진 독상</strong>
+            <span class="dday-row">
+              <b class="dday" data-dday>9/15</b>
+              <span class="due-line">9월 15일 제보 마감</span>
+            </span>
+          </span>
+        </a>
+
+        <a class="pcard reveal" href="https://vote.action.or.kr/">
+          <span class="pcard-media"><img src="https://vote.action.or.kr/og-budget-vote-v1.png?v=2" alt="10만원 예산 편성 투표"></span>
+          <span class="pcard-body">
+            <span class="pbadge is-live">진행 중</span>
+            <strong>10만원 예산 편성</strong>
+            <span class="dday-row">
+              <span class="due-line">마감일 확인 필요</span>
+            </span>
+          </span>
+        </a>
+
+        <!-- ⚠️ /pb/ 는 로컬 미리보기 전용 경로입니다.
+             캠페이너스 페이지 번호로 안 바꾸면 404 입니다.
+             ⚠️ 끝나는 날짜가 없습니다. 이슈에 두려면 마감일이 있어야 합니다. -->
+        <a class="pcard reveal" href="/pb/">
+          <span class="pcard-media is-empty">이미지 자리<small>가로 4:3</small></span>
+          <span class="pcard-body">
+            <span class="pbadge is-todo">확인 필요</span>
+            <strong>참여예산 상담소</strong>
+            <span class="dday-row">
+              <span class="due-line">마감일 확인 필요</span>
+            </span>
+          </span>
+        </a>
+
+        <!-- ⚠️ 이 칸만 확정된 게 없습니다 — 주소·기간·사진 셋 다 없습니다. -->
+        <a class="pcard reveal" href="#">
+          <span class="pcard-media is-empty">이미지 자리<small>가로 4:3</small></span>
+          <span class="pcard-body">
+            <span class="pbadge is-todo">확인 필요</span>
+            <strong>1회 참여예산 고민대회</strong>
+            <span class="dday-row">
+              <span class="due-line">주소·기간 확인 필요</span>
+            </span>
+          </span>
+        </a>
+
+      </div>
+    </div>
+
+    <div class="wrap rail-foot">
+      <a class="more" href="/issue/">이슈 전체보기 →</a>
+    </div>
+  </section>
+
+  <!-- ───────── 소식 ─────────
+       글 목록이 아니라 사진 카드로 놓습니다(서울환경연합 홈 방식).
+
+       위 '이슈' 칸에 올라간 넷과는 겹치지 않게 골랐습니다.
+       뱃지는 그 글이 실린 게시판 이름입니다 — 제가 붙인 분류가 아니라 주소로 정해집니다.
+         /51 주민참여예산 · /27 일반 활동 · /57 예산 모니터링
+       제목·날짜·주소·사진은 2026-08-25 action.or.kr/rss 에서 그대로 받은 것입니다.
+
+       ⚠️ 코드에 박아 둔 목록이라 새 글이 자동으로 안 올라옵니다.
+          디자인 확정 후 캠페이너스 기본 게시판 위젯으로 바꿀 자리입니다. -->
+  <section class="news"><div class="wrap">
+    <div class="sec-hd">
+      <!-- 제목 문구는 초안입니다. -->
+      <h2>시민행동이 무엇을 보고 있는지,<br>새로 올라온 글에서 확인하세요</h2>
+      <a class="more" href="/26">소식 전체보기 →</a>
+    </div>
+
+    <div class="pgrid">
+
+      <a class="pcard reveal" href="/51/?idx=172917373&amp;bmode=view">
+        <span class="pcard-media"><img src="https://cdn.imweb.me/thumbnail/20260807/57e3e1c9b91f7.jpeg" alt=""></span>
+        <span class="pcard-body">
+          <span class="pbadge">주민참여예산</span>
+          <strong>주민참여예산 3조원 확대, 규모보다 ‘주민 권한’이 먼저다</strong>
+          <time>2026.08.06</time>
+        </span>
       </a>
 
-      <a class="fcard" href="/51/?idx=172917373&amp;bmode=view">
-        <div class="fcard-media"><img src="https://cdn.imweb.me/thumbnail/20260806/f8f8c5a09b364.jpeg" alt="주민참여예산 관련 활동"></div>
-        <div class="tags"><span>주민참여예산</span><span>제도개선</span></div>
-        <h3>주민참여예산 3조원 확대, 규모보다 ‘주민 권한’이 먼저다</h3>
-        <time>2026.08.06</time>
+      <a class="pcard reveal" href="/27/?idx=172916152&amp;bmode=view">
+        <span class="pcard-media"><img src="https://cdn.imweb.me/thumbnail/20260810/50abe1798d723.png" alt=""></span>
+        <span class="pcard-body">
+          <span class="pbadge">일반 활동</span>
+          <strong>한강버스 감사원 감사 결과, 경제성 B/C 0.17 — 무엇이 문제였나</strong>
+          <time>2026.08.06</time>
+        </span>
       </a>
 
-      <a class="fcard" href="/27/?idx=172916152&amp;bmode=view">
-        <div class="fcard-media"><img src="https://cdn.imweb.me/thumbnail/20260806/42a591c3952af.png" alt="한강버스 감사원 감사 결과"></div>
-        <div class="tags"><span>예산감시</span><span>한강버스</span></div>
-        <h3>한강버스 감사원 감사 결과, 경제성 B/C 0.17 — 무엇이 문제였나</h3>
-        <time>2026.08.06</time>
+      <a class="pcard reveal" href="/27/?idx=172690687&amp;bmode=view">
+        <span class="pcard-media"><img src="https://cdn.imweb.me/thumbnail/20260728/b2cfb64a380c4.png" alt=""></span>
+        <span class="pcard-body">
+          <span class="pbadge">일반 활동</span>
+          <strong>[논평] 미래대응기금, 빠른 추진보다 충분한 사전논의가 먼저다.</strong>
+          <time>2026.07.27</time>
+        </span>
       </a>
 
-      <a class="fcard" href="/27/?idx=172690687&amp;bmode=view">
-        <div class="fcard-media"><img src="https://cdn.imweb.me/thumbnail/20260727/d76453bb69359.png" alt="미래대응기금 논평"></div>
-        <div class="tags"><span>논평</span><span>미래대응기금</span></div>
-        <h3>[논평] 미래대응기금, 빠른 추진보다 충분한 사전논의가 먼저다.</h3>
-        <time>2026.07.27</time>
+      <a class="pcard reveal" href="/57/?idx=172603339&amp;bmode=view">
+        <span class="pcard-media"><img src="https://cdn.imweb.me/thumbnail/20260723/ae5e63babbaf2.png" alt=""></span>
+        <span class="pcard-body">
+          <span class="pbadge">예산 모니터링</span>
+          <strong>활동가 수첩_농어촌소득에 재정의 3대 기능이?</strong>
+          <time>2026.07.23</time>
+        </span>
       </a>
 
     </div>
-  </div></section>
 
-  <!-- ───────── 최신 소식 ─────────
-       왼쪽은 게시판을 가리지 않은 최신순, 오른쪽은 게시판별 블록입니다.
-       ⚠️ 코드 위젯이라 새 글이 자동으로 올라오지 않습니다. 이 부분은 캠페이너스
-          기본 게시판 위젯으로 바꾸는 게 맞습니다(디자인 확정 후). -->
-  <section class="news"><div class="wrap news-grid">
-    <div>
-      <div class="sec-hd"><h2>최신 소식</h2><a class="more" href="/26">소식 전체보기 →</a></div>
-      <ul class="nlist">
-        <li><a href="/27/?idx=173013295&amp;bmode=view"><strong>더 걷힐 세금, 어디에 쓸래? 추가세수 시민의견 수렴 캠페인(~8.31.)</strong><time>2026.08.11</time></a></li>
-        <li><a href="/51/?idx=172917373&amp;bmode=view"><strong>주민참여예산 3조원 확대, 규모보다 ‘주민 권한’이 먼저다</strong><time>2026.08.06</time></a></li>
-        <li><a href="/27/?idx=172916152&amp;bmode=view"><strong>한강버스 감사원 감사 결과, 경제성 B/C 0.17 — 무엇이 문제였나</strong><time>2026.08.06</time></a></li>
-        <li><a href="/27/?idx=172690687&amp;bmode=view"><strong>[논평] 미래대응기금, 빠른 추진보다 충분한 사전논의가 먼저다.</strong><time>2026.07.27</time></a></li>
-        <li><a href="/27/?idx=172603916&amp;bmode=view"><strong>2026년 초과세수 논의 현황 정리_초과세수? 추가세수? 그 정체는?</strong><time>2026.07.23</time></a></li>
-        <li><a href="/57/?idx=172603339&amp;bmode=view"><strong>활동가 수첩_농어촌소득에 재정의 3대 기능이?</strong><time>2026.07.23</time></a></li>
-      </ul>
-    </div>
-
-    <div class="nblocks">
-      <div class="nblock">
-        <h3>공지사항 <a class="more" href="/26">더보기</a></h3>
-        <ul>
-          <li><a href="/26/?idx=170469577&amp;bmode=view">2026년 함께하는 시민행동 회원 총회 보고<time>2026.03.20</time></a></li>
-          <li><a href="/26/?idx=170223540&amp;bmode=view">2026년도 함께하는 시민행동 회원 총회 소집 공고<time>2026.03.02</time></a></li>
-        </ul>
-      </div>
-      <div class="nblock">
-        <h3>회원 총회 <a class="more" href="/35">더보기</a></h3>
-        <ul>
-          <li><a href="/35/?idx=170293961&amp;bmode=view">[안건 5] 함께하는 시민행동 2026년 재정 계획<time>2026.03.07</time></a></li>
-          <li><a href="/35/?idx=170293643&amp;bmode=view">[안건 4] 함께하는 시민행동 2026년 사업 계획<time>2026.03.07</time></a></li>
-          <li><a href="/35/?idx=170292339&amp;bmode=view">[안건 1] 함께하는 시민행동 2025년 사업보고<time>2026.03.07</time></a></li>
-        </ul>
-      </div>
-      <div class="nblock">
-        <h3>예산 브리핑 <a class="more" href="/57">더보기</a></h3>
-        <ul>
-          <li><a href="/57/?idx=172188605&amp;bmode=view">그놈의 업무추진비, 축구협회와 양궁협회의 사정<time>2026.07.03</time></a></li>
-          <li><a href="/57/?idx=171879037&amp;bmode=view">국민과 함께하는 지출구조조정 토론회 쟁점, 질문 정리<time>2026.06.18</time></a></li>
-        </ul>
-      </div>
-    </div>
+    <!-- 공지사항·회원 총회·예산 브리핑은 홈에서 뺐습니다(2026-08-25).
+         자주 쓰는 것이 아니라 첫 화면 자리를 줄 이유가 없습니다.
+         상단 '소식' 메뉴와 각 게시판 주소는 그대로 살아 있습니다. -->
   </div></section>
 
   <!-- ───────── 하는 일 3분류 ─────────
        현재 홈의 세 칸(예산 감시 / 시민 참여 문화 / 기업의 사회적 책임)을 그대로 쓰고,
        아래 알약에 실제 활동 메뉴 6개를 나눠 붙였습니다. -->
   <section class="work"><div class="wrap">
-    <div class="sec-hd"><h2>시민행동답게, 우리가 하는 일</h2><a class="more" href="/52">활동 전체보기 →</a></div>
+    <!-- 원래 '시민행동답게, 우리가 하는 일' 이었는데, 아름다운재단 홈의
+         '아름다운재단답게, 우리가 하는 일' 을 그대로 가져온 문구라 2026-08-25 에 바꿨습니다. -->
+    <div class="sec-hd"><h2>시민행동이 하는 일</h2><a class="more" href="/52">활동 전체보기 →</a></div>
     <div class="work-grid">
       <div class="wcard">
         <span class="no">01</span>
@@ -689,7 +850,10 @@
   <!-- ───────── CTA 둘 ───────── -->
   <section class="cta2">
     <div class="cta a">
-      <h3>세금은 저절로 지켜지지 않으니까,<br>감시의 시작을 함께해 주세요!</h3>
+      <!-- 원래 '세금은 저절로 지켜지지 않으니까' 였는데, 아름다운재단 홈의
+           '세상은 저절로 좋아지지 않으니까' 를 바꿔 쓴 문구라 2026-08-25 에 갈아냈습니다.
+           아래는 랜딩(donate.action.or.kr)이 쓰는 말투를 따라 새로 쓴 초안입니다. -->
+      <h3>당신이 낸 세금,<br>누가 지켜보고 있을까요?</h3>
       <a href="https://donate.action.or.kr/">후원으로 함께하기 →</a>
     </div>
     <div class="cta b">
@@ -705,10 +869,16 @@
        ⚠️ 주소록을 바꾸려면 form 의 action 하나만 고치면 됩니다. 랜딩과 같은
           주소록이라, 한쪽을 바꾸면 다른 쪽도 같이 볼 것. -->
   <link rel="stylesheet" href="https://resource.stibee.com/subscribe/stb_subscribe_form_style.css">
-  <section class="nl"><div class="wrap nl-in">
+  <section class="nl"><div class="nl-in">
     <div class="nl-copy">
-      <h2>시민행동의 소식을 이메일로 받아보세요</h2>
-      <p>예산과 권력을 감시하는 새로운 활동, 캠페인, 자료를 전합니다.</p>
+      <!-- ⚠️ 뉴스레터 이름과 발행 주기가 확인 안 됐습니다.
+           서울환경연합은 이 자리에 '위클리어스' 로고와 "매주 금요일 오후 2시"가 들어갑니다.
+           이름·주기가 정해지면 아래 알약과 마지막 줄을 그것으로 바꾸세요. -->
+      <span class="nl-tag">함께하는 시민행동 뉴스레터</span>
+      <div>
+        <h2>세금이 어디로 갔는지,<br>메일로 먼저 알려드립니다</h2>
+        <p>예산과 권력을 감시하며 찾아낸 것, 지금 참여할 수 있는 이슈를 보냅니다.</p>
+      </div>
     </div>
     <div class="nl-form" id="stb_subscribe">
       <form action="https://stibee.com/api/v1.0/lists/i2kxt4l2oVkd9DLWMV8LVupmkvw=/public/subscribers" method="POST" target="_blank" accept-charset="utf-8" class="stb_form" name="stb_subscribe_form" id="stb_subscribe_form" data-lang="" novalidate>
@@ -870,5 +1040,95 @@
   // passive: 스크롤을 막지 않겠다는 표시. 없으면 스크롤이 버벅일 수 있습니다.
   window.addEventListener('scroll', update, { passive: true });
   window.addEventListener('resize', update);
+})();
+
+/* 남은 날짜 세기.
+   카드의 data-due="2026-08-31" 을 읽어 data-dday 자리 글자를 'D-6' 으로 바꿉니다.
+   HTML 에는 '8/31' 처럼 날짜를 그대로 써 뒀기 때문에, 이 스크립트가 막혀도
+   틀린 값이 뜨지 않고 날짜가 그대로 보입니다. 날짜를 손으로 D-day 로 적지 마세요 —
+   내일이면 틀립니다. */
+(function () {
+  var cards = document.querySelectorAll('#action-home-v2 [data-due]');
+  if (!cards.length) return;
+
+  var now = new Date();
+  var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  Array.prototype.forEach.call(cards, function (card) {
+    var slot = card.querySelector('[data-dday]');
+    if (!slot) return;
+
+    var p = card.getAttribute('data-due').split('-');
+    var due = new Date(+p[0], +p[1] - 1, +p[2]);
+    if (isNaN(due)) return;
+
+    var days = Math.round((due - today) / 86400000);
+    if (days < 0) return;                       // 이미 지난 것은 건드리지 않습니다
+    slot.textContent = days === 0 ? '오늘 마감' : 'D-' + days;
+  });
+})();
+
+/* 맨 위 가로 줄의 ‹ › 단추.
+   단추는 CSS 에서 숨겨 두고 여기서 켭니다. 스크립트가 막히면 단추가 아예 안 보이고,
+   그래도 손가락·트랙패드로는 그냥 밀립니다(브라우저 기본 가로 스크롤이라).
+   자동으로 넘기지 않습니다 — 누른 만큼만 움직입니다. */
+(function () {
+  var rail = document.getElementById('issue-rail');
+  var nav = document.getElementById('rail-nav');
+  if (!rail || !nav) return;
+
+  var prev = nav.querySelector('[data-rail="prev"]');
+  var next = nav.querySelector('[data-rail="next"]');
+  if (!prev || !next) return;
+
+  // 카드 한 장 + 사이 간격만큼 움직입니다.
+  function step() {
+    var card = rail.querySelector('.pcard');
+    if (!card) return rail.clientWidth * 0.8;
+    var gap = parseFloat(getComputedStyle(card.parentNode).columnGap) || 0;
+    return card.getBoundingClientRect().width + gap;
+  }
+
+  function sync() {
+    var max = rail.scrollWidth - rail.clientWidth;
+    prev.disabled = rail.scrollLeft <= 2;
+    next.disabled = rail.scrollLeft >= max - 2;
+    // 밀 것이 없으면(카드가 다 보이면) 단추를 아예 안 보여 줍니다.
+    nav.classList.toggle('is-on', max > 4);
+  }
+
+  prev.addEventListener('click', function () { rail.scrollBy({ left: -step(), behavior: 'smooth' }); });
+  next.addEventListener('click', function () { rail.scrollBy({ left: step(), behavior: 'smooth' }); });
+
+  rail.addEventListener('scroll', sync, { passive: true });
+  window.addEventListener('resize', sync);
+  sync();
+})();
+
+/* 스크롤로 들어올 때 살짝 올라오기.
+   숨기는 상태(.is-armed)를 스크립트가 직접 붙입니다. 그래서 스크립트가 막히면
+   아무것도 안 숨겨지고 내용이 그냥 다 보입니다.
+   IntersectionObserver 를 못 쓰는 브라우저에서도 마찬가지로 그냥 보입니다. */
+(function () {
+  var items = document.querySelectorAll('#action-home-v2 .reveal');
+  if (!items.length || !('IntersectionObserver' in window)) return;
+
+  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (still) return;
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('is-in');
+      io.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -12% 0px' });
+
+  Array.prototype.forEach.call(items, function (el, i) {
+    el.classList.add('is-armed');
+    // 차례로 올라오게 아주 짧은 시간차만 줍니다.
+    el.style.transitionDelay = Math.min(i, 4) * 70 + 'ms';
+    io.observe(el);
+  });
 })();
 </script>

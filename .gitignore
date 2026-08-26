@@ -22,3 +22,7 @@ Thumbs.db
 # 편집기 설정
 .vscode/
 .idea/
+
+# 파이썬 도구 부산물
+__pycache__/
+*.pyc

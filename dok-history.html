@@ -1,0 +1,1062 @@
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   활동 > 밑빠진 독상 — 상(賞) 전체를 설명하는 상설 페이지
+
+   무엇이 여기 있고 무엇이 없는가
+     있음 : 상이 무엇인지 · 숫자 · 지역 지도 · 역대 수상 40회
+     없음 : 예산낭비 제보 · 감시 참여(서명) · 이번 회차 투표
+            → 그건 '이슈 > 하반기 밑빠진 독상'(원본 사이트)의 몫입니다.
+
+   왜 나눴나
+     끝나는 날짜가 있으면 이슈, 없으면 활동 — 이 홈의 분류 기준 그대로입니다.
+     역대 기록은 끝난 것이라 안 바뀌고, 제보·투표는 회차마다 끝납니다.
+
+   ★ 원본과 어떻게 연결되나 (중요)
+     원본 사이트를 복사해 온 게 아닙니다. 화면이 뜰 때 원본 주소에서
+     data/awards.json 을 받아 지도와 표를 그립니다.
+     그래서 원본에 수상 기록이 한 건 추가되면 이 페이지도 같이 바뀝니다.
+     회차 수(40회)도 그 파일을 세서 씁니다 — 손으로 안 적습니다.
+
+     ⚠️ 다른 도메인에서 받아오는 것이라 원본 쪽에 CORS 허용이 있어야 합니다.
+        밑빠진 독상 저장소 public/_headers 에 /data/* 규칙을 넣어 뒀습니다.
+        그게 배포되기 전에는 지도와 표가 비어 보입니다(안내 문구가 대신 뜹니다).
+
+   CSS 는 원본에서 골라 왔습니다(제보·사업목록·투표 규칙은 뺐습니다).
+   원본과 마찬가지로 전부 #dok 안에 갇혀 있어 캠페이너스 레이아웃을 건드리지 않습니다.
+   원본 디자인이 바뀌면 tools/sync-dok.py 로 어긋난 곳을 찾을 수 있습니다.
+   ═══════════════════════════════════════════════════════════════ */
+
+
+@font-face {
+  font-family: 'GmarketSans';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'GmarketSans';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+  font-weight: 500;
+  font-display: swap;
+}
+
+/* ── 범위 격리 ──────────────────────────────────────────────
+   이 페이지는 캠페이너스 홈페이지 안에 통째로 붙여넣을 수 있어야 한다.
+   그래서 모든 규칙을 #dok 안에 가둔다. 전역 선택자(*, html, body)를
+   쓰면 붙여넣는 순간 홈페이지 전체 레이아웃이 깨진다. 새 스타일을
+   추가할 때도 반드시 #dok 으로 시작할 것.
+   ──────────────────────────────────────────────────────── */
+#dok {
+  --brand: #00afec;
+  --brand-deep: #0087b8;
+  --brand-tint: #e5f7fe;
+  --ink: #0d1c26;
+  --ink-soft: #47606f;
+  --alert: #ff4a3d;
+  --alert-tint: #ffedeb;
+  --bg: #ffffff;
+  --line: #d8e6ed;
+  --cream: #fbf4e9;      /* 첫 화면 바탕 */
+  --cream-line: #d9c3a2; /* 크림 위 테두리 */
+  --cream-ink: #6b5a4a;  /* 크림 위 보조 글씨 */
+
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+#dok *, #dok *::before, #dok *::after { box-sizing: border-box; margin: 0; padding: 0; }
+#dok a { color: inherit; }
+
+/* 유일한 전역 규칙. 캠페이너스에 이식할 때 이 두 줄만 지우면 된다. */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  #dok *, #dok *::before, #dok *::after { animation: none !important; transition: none !important; }
+}
+
+/* ── 스크롤 리빌 ──
+   화면에 들어오는 순간 한 번만 미끄러지며 나타난다.
+   감추는 규칙을 #dok.dok-reveal-on 안에만 둔 이유 — 스크립트가 실행되기 전이거나
+   실패했을 때 내용이 안 보이는 사고를 막기 위함이다. 그 클래스를 붙이는 곳은
+   맨 아래 '스크롤 리빌' 스크립트 하나뿐이다. */
+#dok.dok-reveal-on [data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .6s cubic-bezier(.22,.61,.36,1),
+              transform .6s cubic-bezier(.22,.61,.36,1);
+  transition-delay: var(--dok-reveal-delay, 0ms);
+}
+#dok.dok-reveal-on [data-reveal="left"]  { transform: translateX(-24px); }
+#dok.dok-reveal-on [data-reveal="right"] { transform: translateX(24px); }
+#dok.dok-reveal-on [data-reveal].is-in { opacity: 1; transform: none; }
+
+/* 좁은 화면에서는 좌우로 밀지 않는다 — 가로 스크롤이 생길 수 있다 */
+@media (max-width: 719px) {
+  #dok.dok-reveal-on [data-reveal="left"],
+  #dok.dok-reveal-on [data-reveal="right"] { transform: translateY(18px); }
+}
+
+/* 움직임을 줄여 달라고 한 사람에게는 리빌을 걸지 않는다.
+   아래 스크립트도 같은 조건에서 아예 켜지지 않지만, 두 겹으로 막아 둔다. */
+@media (prefers-reduced-motion: reduce) {
+  #dok.dok-reveal-on [data-reveal] { opacity: 1; transform: none; }
+}
+
+/* ── 지역 지도 ── */
+#dok .dok-map-wrap {
+  display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 40px;
+  align-items: start; margin-top: 36px;
+}
+#dok .dok-map-figure { position: relative; }
+#dok .dok-map-svg { width: 100%; height: auto; display: block; }
+#dok .dok-map-area {
+  fill: #eaf1f5; stroke: #fff; stroke-width: 2;
+  cursor: pointer; transition: fill .15s;
+}
+#dok .dok-map-area:hover { fill: var(--brand); }
+#dok .dok-map-area.is-on { fill: var(--brand-deep); }
+/* 글자 크기는 스크립트가 지도 폭을 재서 넣어 준다(fitMapText).
+   아래 값은 스크립트가 돌기 전까지 쓰이는 기본값이다. */
+#dok .dok-map-label {
+  font-size: var(--dok-map-label, 21px); font-weight: 700; fill: var(--ink);
+  text-anchor: middle; pointer-events: none; paint-order: stroke;
+  stroke: #fff; stroke-width: 4px; stroke-linejoin: round;
+}
+#dok .dok-map-label.is-light { fill: #fff; stroke: none; }
+/* 지도 위 건수 숫자. 지금은 그려지지 않습니다 —
+   스크립트의 SHOW_MAP_COUNT 를 true 로 바꾸면 다시 나옵니다. */
+#dok .dok-map-dot {
+  font-size: var(--dok-map-dot, 16px); font-weight: 800; fill: var(--alert);
+  text-anchor: middle; pointer-events: none;
+  /* 진하게 칠해진 지역 위에서도 읽히도록 흰 테두리를 두른다 */
+  paint-order: stroke; stroke: #fff; stroke-width: 5px; stroke-linejoin: round;
+}
+
+#dok .dok-map-modes { display: flex; gap: 8px; margin-bottom: 18px; }
+#dok .dok-map-mode {
+  display: inline-flex; align-items: center; min-height: 44px;
+  font-size: 13.5px; font-weight: 700; padding: 0 18px; border-radius: 999px;
+  border: 1.5px solid var(--line); background: #fff; color: var(--ink-soft); cursor: pointer;
+}
+#dok .dok-map-mode[aria-pressed="true"] {
+  background: var(--ink); border-color: var(--ink); color: #fff;
+}
+
+#dok .dok-map-side {
+  border: 1px solid var(--line); border-radius: 16px; padding: 28px 26px;
+  position: sticky; top: 84px;
+}
+#dok .dok-map-side h3 { font-size: 22px; margin-bottom: 4px; }
+#dok .dok-map-side .dok-map-sub { font-size: 14px; color: var(--ink-soft); margin-bottom: 20px; }
+#dok .dok-map-stats { display: flex; gap: 10px; margin-bottom: 22px; }
+#dok .dok-map-stat {
+  flex: 1; background: var(--brand-tint); border-radius: 10px;
+  padding: 14px 12px; text-align: center;
+}
+#dok .dok-map-stat b { display: block; font-size: 26px; line-height: 1.2; color: var(--brand-deep); }
+#dok .dok-map-stat span { font-size: 12.5px; color: var(--ink-soft); font-weight: 600; }
+#dok .dok-map-list {
+  list-style: none;
+  /* 중앙정부 목록은 21건이라 패널이 화면보다 길어진다.
+     목록만 따로 스크롤시켜 위쪽 닫기 줄이 늘 보이게 한다. */
+  max-height: 46vh; overflow-y: auto;
+  margin-right: -8px; padding-right: 8px;
+}
+#dok .dok-map-list::-webkit-scrollbar { width: 6px; }
+#dok .dok-map-list::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+#dok .dok-map-list li { padding: 13px 0; border-top: 1px solid var(--line); }
+#dok .dok-map-list li:first-child { border-top: 0; }
+#dok .dok-map-round { font-size: 12.5px; font-weight: 700; color: var(--alert); }
+#dok .dok-map-proj { font-size: 15px; font-weight: 700; word-break: keep-all; margin-top: 2px; }
+#dok .dok-map-who { font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
+#dok .dok-map-none { font-size: 14.5px; color: var(--ink-soft); padding: 18px 0; word-break: keep-all; }
+#dok .dok-map-report-cta {
+  display: inline-flex; align-items: center; min-height: 44px;
+  margin-top: 16px; padding: 0 20px; border-radius: 999px;
+  font-family: 'GmarketSans', sans-serif; font-size: 14px; font-weight: 700;
+  color: #fff; background: var(--brand-deep); border: 0;
+  text-decoration: none; cursor: pointer; transition: background .15s;
+}
+#dok .dok-map-report-cta:hover { background: var(--ink); }
+#dok .dok-map-offmap {
+  margin-top: 26px; padding: 18px 20px; border: 1px dashed var(--line);
+  border-radius: 12px; font-size: 14px; color: var(--ink-soft); word-break: keep-all;
+}
+#dok .dok-map-offmap b { color: var(--ink); }
+#dok .dok-map-offmap button {
+  margin-top: 6px; min-height: 44px; font-size: 14px; font-weight: 700; cursor: pointer;
+  background: none; border: 0; color: var(--brand-deep); text-decoration: underline; padding: 0;
+}
+@media (max-width: 860px) {
+  #dok .dok-map-wrap { grid-template-columns: 1fr; gap: 24px; }
+  #dok .dok-map-side { position: static; padding: 22px 20px; }
+  /* 지도가 작아지므로 라벨은 상대적으로 키운다 */
+  #dok .dok-map-label { font-size: var(--dok-map-label, 30px); }
+  #dok .dok-map-dot { font-size: var(--dok-map-dot, 24px); }
+  #dok .dok-map-mode { min-height: 44px; padding: 0 18px; }
+  #dok .dok-map-offmap button { min-height: 44px; }
+  #dok .dok-map-stat b { font-size: 30px; }
+  #dok .dok-map-list { max-height: 60vh; }
+}
+@media (max-width: 700px) {
+  #dok.dok-has-bar { padding-bottom: 84px; }
+}
+
+/* ── 시도 칩 ──
+   작은 시도(인천·대전·세종…)는 지도에서 손가락으로 누르기 어렵다.
+   지도는 '보는 것', 칩은 '누르는 것'으로 역할을 나눈다. */
+#dok .dok-map-chips {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px;
+}
+#dok .dok-map-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 44px; padding: 0 16px; border-radius: 999px;
+  border: 1.5px solid var(--line); background: #fff;
+  font-size: 14.5px; font-weight: 700; color: var(--ink-soft);
+  cursor: pointer; transition: all .15s;
+}
+#dok .dok-map-chip:hover { border-color: var(--brand); color: var(--brand-deep); }
+#dok .dok-map-chip[aria-pressed="true"] {
+  background: var(--brand-deep); border-color: var(--brand-deep); color: #fff;
+}
+#dok .dok-map-chip .dok-chip-n:empty { display: none; }
+#dok .dok-map-chip .dok-chip-n {
+  font-size: 12.5px; font-weight: 700; color: var(--alert);
+  background: var(--alert-tint); border-radius: 999px; padding: 1px 7px;
+}
+#dok .dok-map-chip[aria-pressed="true"] .dok-chip-n { background: rgba(255,255,255,.2); color: #fff; }
+#dok .dok-map-chip.is-empty { opacity: .55; }
+
+/* 후원 바에 가리지 않도록 아래를 비워 둔다 */
+#dok.dok-has-bar { padding-bottom: 96px; }
+
+/* ── 히어로 아래 지표 띠 ──
+   크림 히어로의 아랫단. 문구를 읽고 버튼을 누르기 직전에 숫자가 한 번 받쳐 준다. */
+#dok .dok-stats {
+  background: var(--cream);
+  padding: 0 24px 64px;
+}
+#dok .dok-stats-inner {
+  max-width: 860px; margin: 0 auto;
+  padding-top: 34px; border-top: 1px solid var(--cream-line);
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+}
+#dok .dok-stat-item { text-align: center; }
+#dok .dok-stat-num {
+  font-family: 'GmarketSans', sans-serif;
+  font-variant-numeric: tabular-nums;   /* 올라가는 동안 자릿수가 흔들리지 않게 */
+  font-size: 42px; font-weight: 700; line-height: 1.1;
+  color: var(--ink); letter-spacing: -0.01em;
+}
+#dok .dok-stat-item.is-lead .dok-stat-num { color: #e0392c; }
+#dok .dok-stat-num .dok-stat-unit { font-size: 22px; margin-left: 2px; }
+#dok .dok-stat-label {
+  font-size: 14px; font-weight: 700; color: var(--ink); margin-top: 10px;
+  word-break: keep-all;
+}
+#dok .dok-stat-sub {
+  font-size: 12.5px; color: var(--cream-ink); margin-top: 4px; word-break: keep-all;
+}
+
+@media (max-width: 700px) {
+  #dok .dok-stats { padding-bottom: 44px; }
+  #dok .dok-stats-inner { gap: 12px; padding-top: 26px; }
+  #dok .dok-stat-num { font-size: 27px; }
+  #dok .dok-stat-num .dok-stat-unit { font-size: 15px; }
+  #dok .dok-stat-label { font-size: 12.5px; margin-top: 7px; }
+  #dok .dok-stat-sub { display: none; }
+}
+
+/* ── 접어 둔 섹션 ──
+   투표는 12월 왕중왕전으로 미뤘다. 지우지 않고 접어 둔다. */
+#dok .dok-fold-head {
+  max-width: 1080px; margin: 0 auto; padding: 0 24px;
+}
+#dok .dok-fold-btn {
+  width: 100%; display: flex; align-items: center; gap: 12px;
+  min-height: 64px; padding: 0 4px; cursor: pointer;
+  background: none; border: 0; text-align: left; color: var(--ink-soft);
+  font-family: inherit; font-size: 15px; font-weight: 700;
+}
+#dok .dok-fold-btn:hover { color: var(--brand-deep); }
+#dok .dok-fold-btn .dok-fold-badge {
+  font-size: 11.5px; font-weight: 700; letter-spacing: .02em;
+  background: #eef3f6; color: var(--ink-soft);
+  padding: 4px 10px; border-radius: 999px; flex-shrink: 0;
+}
+#dok .dok-fold-btn .dok-fold-arrow { margin-left: auto; font-size: 13px; }
+#dok .dok-fold-body { display: none; }
+#dok .dok-fold-body.is-open { display: block; }
+@media (max-width: 620px) {
+  #dok .dok-fold-btn { font-size: 14px; gap: 8px; }
+}
+
+/* ── 지도 패널 닫기 ──
+   지역이나 중앙정부 목록을 열면 돌아갈 방법이 지도 클릭뿐이라 안 보였다.
+   패널 위에 명시적인 닫기 줄을 둔다. */
+#dok .dok-map-panelbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin: -6px -6px 14px;
+}
+#dok .dok-map-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 40px; padding: 0 12px; border-radius: 999px;
+  border: 0; background: none; cursor: pointer;
+  font-family: inherit; font-size: 13.5px; font-weight: 700; color: var(--ink-soft);
+}
+#dok .dok-map-back:hover { background: #eef3f6; color: var(--brand-deep); }
+#dok .dok-map-panel-close {
+  width: 40px; height: 40px; flex-shrink: 0;
+  border: 0; border-radius: 50%; background: #eef3f6; color: var(--ink-soft);
+  font-size: 15px; cursor: pointer;
+}
+#dok .dok-map-panel-close:hover { background: var(--line); color: var(--ink); }
+
+/* ── 제보 사진 ── */
+#dok .dok-or {
+  font-size: 12px; font-weight: 600; color: rgba(255,255,255,.55);
+  margin-left: 6px; word-break: keep-all;
+}
+#dok .dok-photo-label {
+  display: block; font-size: 13.5px; font-weight: 700;
+  margin: 18px 0 8px; color: rgba(255,255,255,.9);
+}
+#dok .dok-photo-box { }
+#dok .dok-photo-pick {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; padding: 22px 16px; cursor: pointer;
+  border: 1.5px dashed rgba(255,255,255,.28); border-radius: 12px;
+  background: rgba(255,255,255,.04); transition: all .15s;
+  text-align: center;
+}
+#dok .dok-photo-pick:hover { border-color: var(--brand); background: rgba(0,175,236,.08); }
+#dok .dok-photo-icon { font-size: 22px; color: var(--brand); line-height: 1; }
+#dok .dok-photo-pick > span:nth-child(2) { font-size: 14.5px; font-weight: 700; color: #fff; }
+#dok .dok-photo-hint { font-size: 12.5px; color: rgba(255,255,255,.5); word-break: keep-all; }
+#dok .dok-photo-list {
+  display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px;
+}
+#dok .dok-photo-thumb {
+  position: relative; width: 84px; height: 84px; border-radius: 10px;
+  overflow: hidden; background: rgba(255,255,255,.08);
+}
+#dok .dok-photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+#dok .dok-photo-del {
+  position: absolute; top: 3px; right: 3px;
+  width: 24px; height: 24px; border: 0; border-radius: 50%;
+  background: rgba(13,28,38,.78); color: #fff; font-size: 12px; cursor: pointer;
+  line-height: 1;
+}
+#dok .dok-photo-warn {
+  font-size: 12.5px; color: rgba(255,255,255,.5);
+  margin-top: 10px; word-break: keep-all; line-height: 1.6;
+}
+
+/* ── Top bar ── */
+#dok .dok-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(8px);
+  z-index: 50;
+}
+#dok .dok-topbar .dok-org {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 700; font-size: 15px; text-decoration: none;
+}
+#dok .dok-topbar .dok-org img { height: 26px; display: block; }
+#dok .dok-topbar nav { display: flex; gap: 8px; align-items: center; }
+#dok .dok-topbar .dok-nav-link {
+  font-size: 13.5px; font-weight: 600; color: var(--ink-soft);
+  text-decoration: none; padding: 8px 12px;
+}
+#dok .dok-topbar .dok-nav-link:hover { color: var(--brand-deep); }
+#dok .dok-topbar .dok-top-cta {
+  font-family: 'GmarketSans', sans-serif;
+  font-weight: 700; font-size: 13px; color: #fff;
+  background: var(--brand); text-decoration: none;
+  padding: 10px 18px; border-radius: 999px;
+  transition: background 0.15s;
+}
+#dok .dok-topbar .dok-top-cta:hover { background: var(--brand-deep); }
+
+/* ── Hero ── */
+#dok .dok-hero {
+  /* 크림 바탕. 나머지 화면이 흰색·하늘색이라 첫 화면만 따뜻한 색으로 구분한다.
+     아래 지표 띠(.dok-stats)가 같은 크림으로 이어지므로 아래 여백은 그쪽에서 준다. */
+  background: var(--cream);
+  color: var(--ink);
+  padding: 72px 24px 56px;
+}
+#dok .dok-hero-inner {
+  max-width: 1080px; margin: 0 auto;
+  max-width: 760px;
+  text-align: center;
+}
+#dok .dok-hero .dok-eyebrow {
+  display: inline-block;
+  font-family: 'GmarketSans', sans-serif;
+  font-weight: 700; font-size: 13px; letter-spacing: 0.16em;
+  color: #8a6a3a; background: #fff;
+  border: 1.5px solid var(--cream-line);
+  padding: 7px 16px; border-radius: 999px;
+  margin-bottom: 26px;
+}
+#dok .dok-hero h1 {
+  font-family: 'GmarketSans', sans-serif;
+  font-weight: 700;
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1.3;
+  margin-bottom: 22px;
+  word-break: keep-all;
+}
+#dok .dok-hero h1 .dok-red { color: #e0392c; }
+#dok .dok-hero p {
+  font-size: 17px; color: var(--cream-ink);
+  max-width: 520px; word-break: keep-all;
+  margin: 0 auto 34px;
+}
+
+/* ── Section shared ── */
+#dok .dok-section { max-width: 1080px; margin: 0 auto; padding: 88px 24px; }
+#dok .dok-section-tag {
+  font-family: 'GmarketSans', sans-serif;
+  font-weight: 700; font-size: 13px; letter-spacing: 0.2em;
+  color: var(--brand-deep); margin-bottom: 14px;
+}
+#dok .dok-section h2 {
+  font-family: 'GmarketSans', sans-serif;
+  font-weight: 700;
+  font-size: clamp(26px, 3.4vw, 36px);
+  line-height: 1.35; margin-bottom: 18px;
+  word-break: keep-all;
+}
+#dok .dok-section .dok-lead {
+  font-size: 16.5px; color: var(--ink-soft);
+  max-width: 680px; word-break: keep-all;
+}
+
+/* ── History cases ── */
+/* ── 활동가·후원자 이야기 ── */
+#dok .dok-story-wrap { margin-top: 40px; }
+#dok .dok-story-head { font-size: 20px; font-weight: 700; word-break: keep-all; }
+#dok .dok-story-sub {
+  font-size: 14.5px; color: var(--ink-soft); margin-top: 6px; word-break: keep-all;
+}
+#dok .dok-story-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 18px; margin-top: 22px;
+  align-items: start;
+}
+#dok .dok-story-card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 26px 24px;
+  background: #fff;
+}
+#dok .dok-story-meta {
+  font-family: 'GmarketSans', sans-serif;
+  font-weight: 700; font-size: 12px;
+  color: var(--brand-deep);
+  margin-bottom: 12px; word-break: keep-all;
+}
+#dok .dok-story-card h4 {
+  font-size: 18px; font-weight: 700; margin-bottom: 8px; word-break: keep-all;
+}
+#dok .dok-story-excerpt {
+  font-size: 14.5px; line-height: 1.7; color: var(--ink-soft); word-break: keep-all;
+}
+#dok .dok-story-more {
+  display: inline-flex; align-items: center; min-height: 44px;
+  font-size: 14px; font-weight: 700; color: var(--brand-deep);
+  background: none; border: 0; padding: 0; margin-top: 6px;
+  cursor: pointer; text-decoration: none;
+}
+#dok .dok-story-more:hover { text-decoration: underline; }
+#dok .dok-story-body {
+  margin-top: 8px; padding-top: 16px; border-top: 1px solid var(--line);
+  font-size: 15px; line-height: 1.8; color: var(--ink); word-break: keep-all;
+}
+#dok .dok-story-body > * + * { margin-top: 12px; }
+#dok .dok-story-body a { color: var(--brand-deep); }
+
+#dok .dok-all-toggle {
+  margin-top: 40px;
+  font-family: 'GmarketSans', sans-serif;
+  font-weight: 700; font-size: 15px;
+  color: var(--brand-deep);
+  background: var(--brand-tint);
+  border: none; border-radius: 12px;
+  padding: 16px 28px; cursor: pointer;
+  transition: background 0.15s;
+}
+#dok .dok-all-toggle:hover { background: #d2f0fc; }
+#dok .dok-all-table-wrap {
+  display: none;
+  margin-top: 28px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  overflow-x: auto;
+}
+#dok .dok-all-table-wrap.open { display: block; }
+#dok .dok-all-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 560px; }
+#dok .dok-all-table th {
+  background: var(--ink); color: #fff;
+  font-weight: 700; text-align: left;
+  padding: 12px 16px; font-size: 13px;
+}
+#dok .dok-all-table td { padding: 11px 16px; border-bottom: 1px solid var(--line); word-break: keep-all; }
+#dok .dok-all-table tr:last-child td { border-bottom: none; }
+#dok .dok-all-table tr:nth-child(even) td { background: #f7fbfd; }
+#dok .dok-all-table .dok-no { font-weight: 700; color: var(--brand-deep); white-space: nowrap; }
+#dok .dok-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* ── Footer CTA ── */
+#dok .dok-bottom-cta {
+  text-align: center;
+  padding: 88px 24px;
+}
+#dok .dok-bottom-cta h2 {
+  font-family: 'GmarketSans', sans-serif;
+  font-weight: 700; font-size: clamp(24px, 3.4vw, 34px);
+  margin-bottom: 16px; word-break: keep-all;
+}
+#dok .dok-bottom-cta p { color: var(--ink-soft); margin-bottom: 30px; word-break: keep-all; }
+#dok .dok-bottom-cta .dok-btn-donate {
+  display: inline-block;
+  font-family: 'GmarketSans', sans-serif;
+  font-weight: 700; font-size: 16px; color: #fff;
+  background: var(--brand); text-decoration: none;
+  padding: 18px 38px; border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0,175,236,0.35);
+  transition: transform 0.15s, background 0.15s;
+}
+#dok .dok-bottom-cta .dok-btn-donate:hover { background: var(--brand-deep); transform: translateY(-2px); }
+
+#dok footer { border-top: 1px solid var(--line); padding: 36px 24px; }
+#dok .dok-footer-inner {
+  max-width: 1080px; margin: 0 auto;
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px;
+  font-size: 13px; color: var(--ink-soft);
+}
+#dok .dok-footer-inner a { color: var(--brand-deep); text-decoration: none; }
+#dok .dok-footer-inner a:hover { text-decoration: underline; }
+
+@media (max-width: 820px) {
+      #dok .dok-section { padding: 60px 20px; }
+  #dok .dok-topbar nav .dok-nav-link { display: none; }
+}
+#dok :focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+
+/* ── 이 페이지에서만 쓰는 몇 줄 ── */
+#dok .dokh-crumb{max-width:1120px;margin:0 auto;padding:22px 20px 0;font-size:13.5px;color:#6b8290}
+#dok .dokh-crumb a:hover{text-decoration:underline}
+#dok .dokh-note{max-width:1120px;margin:0 auto;padding:14px 20px}
+#dok .dokh-note p{border:1px dashed #c9d8e0;background:#f7fafb;color:#4a6473;
+  padding:14px 16px;font-size:14px;line-height:1.6;border-radius:8px}
+#dok .dokh-now{max-width:1120px;margin:0 auto;padding:0 20px 72px}
+#dok .dokh-now-in{border:2px solid #0087b8;padding:26px 28px;display:flex;
+  align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+#dok .dokh-now-in h3{font-size:clamp(17px,1.6vw,21px);line-height:1.45;margin:0}
+#dok .dokh-now-in p{margin:6px 0 0;font-size:14px;color:#4a6473}
+#dok .dokh-now-in a{flex:none;background:#0087b8;color:#fff;font-weight:800;
+  padding:13px 22px;font-size:15px}
+#dok .dokh-now-in a:hover{background:#00648a}
+@media(max-width:640px){
+  #dok .dokh-now-in{padding:20px}
+  #dok .dokh-now-in a{width:100%;text-align:center}
+}
+</style>
+
+<div id="dok" aria-label="밑빠진 독상">
+
+  <nav class="dokh-crumb"><a href="/">홈</a> &rsaquo; <a href="/52">활동</a> &rsaquo; 밑빠진 독상</nav>
+
+  <!-- 원본 히어로에서 '제보하기'·'감시 참여하기' 버튼만 뺐습니다. -->
+  <section class="dok-hero">
+    <div class="dok-hero-inner">
+      <div>
+        <span class="dok-eyebrow" id="dokh-eyebrow">2000년부터</span>
+        <h1>
+          세금이 새는 곳에<br>
+          <span class="dok-red">밑빠진 독상</span>을<br>
+          수여합니다
+        </h1>
+        <p>
+          아무리 부어도 채워지지 않는 독처럼, 밑빠진 예산 사업에 시민이 직접 주는 상.
+          2000년 하남국제환경박람회부터 2025년 서울시 한강 리버버스까지,
+          예산낭비의 기록을 이어오고 있습니다.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="dok-stats">
+    <div class="dok-stats-inner">
+      <div class="dok-stat-item">
+        <!-- data-to 는 스크립트가 awards.json 을 세서 채웁니다. 손으로 적지 마세요. -->
+        <div class="dok-stat-num"><span class="dok-count" id="dokh-rounds" data-to="0">0</span><span class="dok-stat-unit">회</span></div>
+        <div class="dok-stat-label">수여한 밑빠진 독상</div>
+        <div class="dok-stat-sub">2000년 8월 제1회부터</div>
+      </div>
+      <div class="dok-stat-item is-lead">
+        <!-- ⚠️ 이 숫자만 awards.json 에 없어 자동으로 못 맞춥니다(사업비 항목이 없음).
+             원본 사이트에 적힌 값을 그대로 옮겼습니다. 근거 확인이 필요합니다. -->
+        <div class="dok-stat-num"><span class="dok-count" data-to="1000">0</span><span class="dok-stat-unit">억 원</span></div>
+        <div class="dok-stat-label">밑빠진 독을 감시한 세금</div>
+        <div class="dok-stat-sub">역대 수상 사업의 사업비 합계</div>
+      </div>
+      <div class="dok-stat-item">
+        <div class="dok-stat-num"><span class="dok-count" id="dokh-years" data-to="0">0</span><span class="dok-stat-unit">년</span></div>
+        <div class="dok-stat-label">이어온 예산감시</div>
+        <div class="dok-stat-sub">정부·기업 지원 없이</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 원본 지도에서 '시민 제보' 모드와 제보 버튼을 뺐습니다. 수상 기록만 그립니다. -->
+  <section class="dok-section" id="dok-map">
+    <div class="dok-section-tag">MAP</div>
+    <h2>우리 동네 밑빠진 독</h2>
+    <p class="dok-lead">
+      밑빠진 독상이 어디에 수여됐는지 지도에서 확인하세요.
+      지도나 아래 목록에서 지역을 누르면 그곳의 기록이 보입니다.
+    </p>
+
+    <div class="dok-map-wrap">
+      <div class="dok-map-figure">
+        <svg class="dok-map-svg" id="dok-map-svg" role="img" aria-label="대한민국 시도별 밑빠진 독상 지도"></svg>
+        <div class="dok-map-chips" id="dok-map-chips" role="group" aria-label="지역 고르기"></div>
+      </div>
+      <aside class="dok-map-side" id="dok-map-side"></aside>
+    </div>
+
+    <div class="dok-map-offmap" id="dok-map-offmap"></div>
+  </section>
+
+  <section class="dok-section" id="dok-history">
+    <div class="dok-section-tag">HISTORY</div>
+    <h2>밑빠진 독상이 지목해온 것들</h2>
+    <p class="dok-lead">
+      2000년 8월 제1회부터, 중앙정부·지자체·공공기관을 가리지 않고 예산낭비 사례를
+      기록해 왔습니다. 수상에 그치지 않고 사업 중단, 주민소송, 법령·조례 개정으로
+      이어지는 후속 활동을 함께 진행합니다.
+    </p>
+
+    <button type="button" class="dok-all-toggle" id="dok-all-toggle">역대 수상 내역 전체 보기 ▾</button>
+    <div class="dok-all-table-wrap" id="dok-all-table">
+      <table class="dok-all-table">
+        <thead>
+          <tr><th>회차</th><th>수상 시기</th><th>수상자</th><th>대상 사업</th></tr>
+        </thead>
+        <!-- 표는 awards.json 으로 그립니다. 여기에 손으로 줄을 넣지 마세요. -->
+        <tbody id="dokh-rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="dokh-note" id="dokh-error" hidden>
+    <p>수상 기록을 불러오지 못했습니다. 밑빠진 독상 사이트에서 바로 확인하실 수 있습니다.</p>
+  </div>
+
+  <!-- 활동(끝난 것) → 이슈(지금 하는 것)로 건너가는 다리 -->
+  <section class="dokh-now">
+    <div class="dokh-now-in">
+      <div>
+        <h3>지금 회차는 진행 중입니다</h3>
+        <p>제보하기와 이번 회차 감시 참여는 밑빠진 독상 사이트에서 하실 수 있습니다.</p>
+      </div>
+      <a href="https://dokseong-action.bada523082.chatgpt.site/" id="dokh-live">밑빠진 독상 사이트로 →</a>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* 활동 > 밑빠진 독상 — 역대 기록 화면.
+
+   원본(밑빠진 독상 사이트)의 지도 코드를 가져와 제보 관련 부분을 걷어낸 것입니다.
+   원본과 달라진 곳은 세 군데뿐입니다.
+     1. '시민 제보' 보기 모드와 제보 건수를 뺐습니다 (수상 기록만 그립니다)
+     2. 제보하기 버튼과 제보 폼 지역 채우기를 뺐습니다
+     3. 역대 표를 HTML 에 박지 않고 awards.json 으로 그립니다 (원본은 손으로 적어 둠)
+
+   원본 지도 코드가 바뀌면 tools/sync-dok.py 가 알려 줍니다. */
+(function () {
+  'use strict';
+
+  // ── 어디서 데이터를 받아올지 ──
+  // 배포된 밑빠진 독상 사이트가 원본입니다. 여기 것을 받아 그리므로,
+  // 원본에 수상 기록이 늘면 이 화면도 같이 늘어납니다.
+  var LIVE = 'https://dokseong-action.bada523082.chatgpt.site/';
+  // 로컬 미리보기에서는 같은 서버가 /dok/ 로 저장소를 그대로 물려 줍니다.
+  // 같은 출처라 CORS 없이 확인할 수 있습니다.
+  var isLocal = location.hostname === '127.0.0.1' || location.hostname === 'localhost';
+  var BASE = isLocal ? '/dok/' : LIVE;
+
+  var esc = function (v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  };
+
+  // 원본에는 통계 수집 함수가 있습니다. 여기서는 붙이지 않았으므로 빈 함수로 둡니다.
+  var track = function () {};
+
+  var awards = [];
+  var lastRound = 0;   // 표 접기 단추 문구에 씁니다
+
+  // ── 역대 수상 표 ──
+  // 원본은 40줄을 HTML 에 손으로 적어 두었습니다. 여기서는 데이터로 그립니다.
+  // 그래야 원본에 41회가 추가될 때 이 화면도 따라옵니다.
+  function drawTable() {
+    var tbody = document.getElementById('dokh-rows');
+    if (!tbody) return;
+    var rows = awards.slice().sort(function (a, b) { return a.round - b.round; });
+    tbody.innerHTML = rows.map(function (a) {
+      return '<tr>' +
+        '<td class="dok-no">' + esc(a.round) + '회</td>' +
+        '<td>' + esc(a.date) + '</td>' +
+        '<td>' + esc(a.awardee) + '</td>' +
+        '<td>' + esc(a.project) + '</td>' +
+        '</tr>';
+    }).join('');
+
+    lastRound = rows.length ? rows[rows.length - 1].round : 0;
+    var toggle = document.getElementById('dok-all-toggle');
+    if (toggle && lastRound && !document.getElementById('dok-all-table').classList.contains('open')) {
+      toggle.textContent = '역대 수상 내역 전체 보기 (1~' + lastRound + '회) ▾';
+    }
+  }
+
+  // ── 위쪽 숫자 ──
+  // 회차와 햇수는 데이터에서 셉니다. 손으로 적으면 회차가 늘 때마다 틀립니다.
+  function fillStats() {
+    var rounds = document.getElementById('dokh-rounds');
+    var years = document.getElementById('dokh-years');
+    var eyebrow = document.getElementById('dokh-eyebrow');
+    var last = awards.reduce(function (m, a) { return Math.max(m, a.round || 0); }, 0);
+
+    if (rounds && last) rounds.setAttribute('data-to', String(last));
+    if (years) years.setAttribute('data-to', String(new Date().getFullYear() - 2000));
+    if (eyebrow && last) eyebrow.textContent = '2000년부터 ' + last + '회';
+  }
+
+  // ── 지역 지도 ──
+  // 원본 코드입니다. 시도 단위(16개)까지만 그립니다.
+  var svg = document.getElementById('dok-map-svg');
+  var side = document.getElementById('dok-map-side');
+  var off = document.getElementById('dok-map-offmap');
+
+  var NUDGE = {
+    '11': [14, -20],   // 서울
+    '23': [-46, 4],    // 인천
+    '31': [46, 34],    // 경기
+    '29': [-30, -10],  // 세종
+    '25': [16, 14],    // 대전
+    '22': [10, -6]     // 대구
+  };
+
+  // 지도 위 건수 숫자는 원본과 똑같이 꺼 둡니다(바로 아래 칩에 같은 숫자가 나옵니다).
+  var SHOW_MAP_COUNT = false;
+
+  var areas = [];
+  var selected = null;
+
+  function awardsOf(code) {
+    return awards.filter(function (a) { return a.sido === code; });
+  }
+  function countOf(code) { return awardsOf(code).length; }
+
+  function paint() {
+    if (!svg) return;
+    var max = 1;
+    areas.forEach(function (a) { max = Math.max(max, countOf(a.code)); });
+
+    areas.forEach(function (a) {
+      var el = svg.querySelector('[data-code="' + a.code + '"]');
+      if (!el) return;
+      var n = countOf(a.code);
+      var t = n / max;
+      // 수상이 1건뿐인 시도가 여럿이라, 가장 옅은 칸을 0.34 에서 시작합니다.
+      el.style.fill = n === 0 ? '#eaf1f5' : 'rgba(0, 135, 184, ' + (0.34 + t * 0.56) + ')';
+      el.classList.toggle('is-on', selected === a.code);
+
+      var label = svg.querySelector('.dok-map-label[data-code="' + a.code + '"]');
+      if (label) label.classList.toggle('is-light', t > 0.55);
+      var dot = svg.querySelector('.dok-map-dot[data-code="' + a.code + '"]');
+      if (dot) dot.textContent = n ? n : '';
+
+      var chip = document.querySelector('.dok-map-chip[data-code="' + a.code + '"]');
+      if (chip) {
+        chip.setAttribute('aria-pressed', String(selected === a.code));
+        chip.classList.toggle('is-empty', n === 0);
+        chip.querySelector('.dok-chip-n').textContent = n ? n : '';
+      }
+    });
+  }
+
+  var PANEL_BAR =
+    '<div class="dok-map-panelbar">' +
+      '<button type="button" class="dok-map-back">← 전국 보기</button>' +
+      '<button type="button" class="dok-map-panel-close" aria-label="닫고 전국으로">✕</button>' +
+    '</div>';
+
+  function wirePanelBar() {
+    side.querySelectorAll('.dok-map-back, .dok-map-panel-close').forEach(function (el) {
+      el.addEventListener('click', function () {
+        selected = null;
+        paint();
+        renderSide();
+      });
+    });
+  }
+
+  function listHtml(list) {
+    return '<ul class="dok-map-list">' + list.map(function (a) {
+      return '<li>' +
+        '<div class="dok-map-round">제' + esc(a.round) + '회 · ' + esc(a.date) + '</div>' +
+        '<div class="dok-map-proj">' + esc(a.project) + '</div>' +
+        '<div class="dok-map-who">' + esc(a.awardee) + '</div>' +
+        '</li>';
+    }).join('') + '</ul>';
+  }
+
+  function renderSide() {
+    if (!side) return;
+    if (!selected) {
+      var totalAwards = awards.filter(function (a) { return a.scope === 'local'; }).length;
+      side.innerHTML =
+        '<h3>전국</h3>' +
+        '<p class="dok-map-sub">지도나 아래 지역 목록을 눌러보세요.</p>' +
+        '<div class="dok-map-stats">' +
+          '<div class="dok-map-stat"><b>' + totalAwards + '</b><span>지역에 수여된 독상</span></div>' +
+          '<div class="dok-map-stat"><b>' + awards.length + '</b><span>전체 수상</span></div>' +
+        '</div>';
+      return;
+    }
+
+    var area = areas.filter(function (a) { return a.code === selected; })[0];
+    var list = awardsOf(selected).sort(function (a, b) { return b.round - a.round; });
+
+    side.innerHTML =
+      PANEL_BAR +
+      '<h3>' + esc(area.name) + '</h3>' +
+      '<p class="dok-map-sub">밑빠진 독상 수여 기록</p>' +
+      '<div class="dok-map-stats">' +
+        '<div class="dok-map-stat"><b>' + list.length + '</b><span>수여된 독상</span></div>' +
+      '</div>' +
+      (list.length
+        ? listHtml(list)
+        : '<p class="dok-map-none">아직 이 지역에 수여된 밑빠진 독상은 없습니다.</p>');
+
+    wirePanelBar();
+  }
+
+  function renderOffmap() {
+    if (!off) return;
+    var central = awards.filter(function (a) { return a.scope === 'central'; });
+    var multi = awards.filter(function (a) { return a.scope === 'multi'; });
+    var unknown = awards.filter(function (a) { return a.scope === 'unknown'; });
+
+    off.innerHTML =
+      '<b>지도에 찍히지 않는 ' + (central.length + multi.length + unknown.length) + '건</b><br>' +
+      '중앙정부·공공기관 ' + central.length + '건, 여러 지자체에 걸친 사업 ' + multi.length + '건' +
+      (unknown.length ? ', 지역 확인이 필요한 ' + unknown.length + '건' : '') +
+      '. 밑빠진 독상의 절반 이상은 특정 지역이 아니라 중앙정부를 향했습니다.' +
+      '<br><button type="button" id="dok-map-central">중앙정부 수상 내역 보기</button>';
+
+    document.getElementById('dok-map-central').addEventListener('click', function () {
+      selected = null;
+      paint();
+      var list = central.sort(function (a, b) { return b.round - a.round; });
+      side.innerHTML =
+        PANEL_BAR +
+        '<h3>중앙정부·공공기관</h3>' +
+        '<p class="dok-map-sub">특정 지역에 속하지 않는 수상 내역 ' + list.length + '건</p>' +
+        listHtml(list);
+      wirePanelBar();
+      if (window.matchMedia('(max-width: 860px)').matches) {
+        side.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  }
+
+  function drawMap(data) {
+    areas = data.areas;
+    svg.setAttribute('viewBox', data.viewBox);
+    svg.innerHTML =
+      areas.map(function (a) {
+        return '<path class="dok-map-area" data-code="' + a.code + '" d="' + a.d + '">' +
+               '<title>' + esc(a.name) + '</title></path>';
+      }).join('') +
+      areas.map(function (a) {
+        var nud = NUDGE[a.code] || [0, 0];
+        var x = a.cx + nud[0], y = a.cy + nud[1];
+        return '<text class="dok-map-label" data-code="' + a.code + '" x="' + x + '" y="' + y + '">' +
+                 esc(a.short || a.name) + '</text>' +
+               (SHOW_MAP_COUNT
+                 ? '<text class="dok-map-dot" data-code="' + a.code + '" x="' + x + '" y="' + (y + 22) + '" data-y="' + y + '"></text>'
+                 : '');
+      }).join('');
+
+    svg.querySelectorAll('.dok-map-area').forEach(function (el) {
+      el.addEventListener('click', function () { select(el.dataset.code); });
+    });
+    fitMapText();
+  }
+
+  // SVG 안 글자는 viewBox 단위라 지도가 좁아지면 같이 줄어듭니다.
+  // 실제로 그려진 폭을 재서 화면에서 늘 같은 크기로 보이게 되돌립니다.
+  function fitMapText() {
+    if (!svg) return;
+    var w = svg.clientWidth;
+    if (!w) return;
+    var vb = svg.viewBox.baseVal.width || 857;
+    var scale = w / vb;
+    var label = Math.max(18, Math.min(46, Math.round(13.5 / scale)));
+    var dot = Math.max(16, Math.min(42, Math.round(13 / scale)));
+    svg.style.setProperty('--dok-map-label', label + 'px');
+    svg.style.setProperty('--dok-map-dot', dot + 'px');
+    svg.querySelectorAll('.dok-map-dot').forEach(function (el) {
+      var base = Number(el.dataset.y);
+      if (!isNaN(base)) el.setAttribute('y', base + label * 0.92);
+    });
+  }
+
+  function select(code) {
+    selected = selected === code ? null : code;
+    paint();
+    renderSide();
+    if (selected && window.matchMedia('(max-width: 860px)').matches && side) {
+      side.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  function drawChips() {
+    var box = document.getElementById('dok-map-chips');
+    if (!box) return;
+    box.innerHTML = areas.map(function (a) {
+      return '<button type="button" class="dok-map-chip" data-code="' + a.code + '" aria-pressed="false">' +
+             '<span>' + esc(a.short || a.name) + '</span><span class="dok-chip-n"></span></button>';
+    }).join('');
+    box.querySelectorAll('.dok-map-chip').forEach(function (el) {
+      el.addEventListener('click', function () { select(el.dataset.code); });
+    });
+  }
+
+  if (svg) {
+    if ('ResizeObserver' in window) new ResizeObserver(fitMapText).observe(svg);
+    else window.addEventListener('resize', fitMapText);
+  }
+
+  // ── 원본에서 받아오기 ──
+  function failed(err) {
+    console.error('밑빠진 독상 기록을 불러오지 못했습니다', err);
+    var note = document.getElementById('dokh-error');
+    if (note) note.hidden = false;
+    if (side) side.innerHTML = '<p class="dok-map-none">지도를 불러오지 못했습니다.</p>';
+  }
+
+  Promise.all([
+    fetch(BASE + 'data/map-sido.json').then(function (r) { return r.json(); }),
+    fetch(BASE + 'data/awards.json').then(function (r) { return r.json(); })
+  ]).then(function (res) {
+    awards = res[1].awards || [];
+    fillStats();
+    drawTable();
+    if (svg) {
+      drawMap(res[0]);
+      drawChips();
+      paint();
+      renderSide();
+      renderOffmap();
+    }
+    startCounters();
+  }).catch(failed);
+
+  // ── 숫자 올리기 ──
+  // 화면에 들어왔을 때 한 번만 0 에서 목표까지 올립니다.
+  function startCounters() {
+    var nums = document.querySelectorAll('#dok .dok-count');
+    if (!nums.length) return;
+
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var run = function (el) {
+      var to = Number(el.getAttribute('data-to')) || 0;
+      if (still || !('requestAnimationFrame' in window)) { el.textContent = to; return; }
+      var t0 = null, dur = 900;
+      var tick = function (t) {
+        if (t0 === null) t0 = t;
+        var p = Math.min(1, (t - t0) / dur);
+        el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+
+    if (!('IntersectionObserver' in window)) {
+      nums.forEach(run);
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        run(e.target);
+        io.unobserve(e.target);
+      });
+    }, { threshold: 0.4 });
+    nums.forEach(function (el) { io.observe(el); });
+  }
+
+  // ── 전체 수상 내역 접기·펴기 ──
+  // 원본과 같은 클래스(.open)를 씁니다. CSS 를 원본에서 가져왔기 때문입니다.
+  (function () {
+    var btn = document.getElementById('dok-all-toggle');
+    var box = document.getElementById('dok-all-table');
+    if (!btn || !box) return;
+    btn.setAttribute('aria-expanded', 'false');
+    btn.addEventListener('click', function () {
+      var open = box.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.textContent = open
+        ? '역대 수상 내역 접기 ▴'
+        : '역대 수상 내역 전체 보기 (1~' + lastRound + '회) ▾';
+    });
+  })();
+
+  // ── 스크롤로 들어올 때 살짝 올라오기 ──
+  // 원본과 같은 방식입니다. 감추는 CSS 가 #dok.dok-reveal-on 안에만 있어서,
+  // 스크립트가 막히면 그 클래스가 안 붙고 내용이 그냥 다 보입니다.
+  (function () {
+    var root = document.getElementById('dok');
+    var items = document.querySelectorAll('#dok .dok-section, #dok .dok-stats, #dok .dokh-now');
+    if (!root || !items.length || !('IntersectionObserver' in window)) return;
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('is-in');
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -10% 0px' });
+
+    items.forEach(function (el) {
+      el.setAttribute('data-reveal', '');
+      io.observe(el);
+    });
+    root.classList.add('dok-reveal-on');
+  })();
+})();
+
+</script>
