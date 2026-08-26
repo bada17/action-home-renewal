@@ -1,152 +1,216 @@
 <style>
 /* ═══════════════════════════════════════════════════════════════
-   이슈 목록 페이지 — 아름다운재단 캠페인 목록(/campaign/campaign_on/) 스타일
+   이슈 목록 페이지
 
-   구성: 빵부스러기(홈 > 이슈) → 두 줄 제목 띠 → [진행 중 / 종료] 탭 → 3열 카드
-
-   이슈 = 끝나는 날짜가 있는 것. 마감이 지나면 종료 탭으로 내려가고,
+   이슈 = 끝나는 날짜가 있는 것. 마감이 지나면 '종료' 탭으로 내려가고,
    그 결과는 해당 활동 페이지의 '결과' 칸에 사건으로 정리됩니다.
 
+   ★ 2026-08-26 재작업 — 왜 다시 짰나
+     사진이 있는 카드와 없는 카드가 한 격자 안에서 따로 놀았습니다.
+     사진 있는 것은 꽉 찬 그림, 없는 것은 점선 빈 칸이라 "같은 단체가 만든 화면"으로
+     안 보였습니다. 사진 수급이 쉽지 않다는 것이 전제이므로, **사진에 기대지 않는 틀**로
+     바꿨습니다.
+
+     새 틀 : 모든 카드가 [색 타일] 위에 [같은 어둠] 을 덮고 [흰 글씨] 를 얹습니다.
+             사진이 있으면 그 색 타일 자리에 사진이 옅게 깔릴 뿐, 나머지는 똑같습니다.
+             그래서 사진이 있든 없든 카드의 무게가 같습니다.
+     이 방식은 홈 첫 화면(.slide)과 같은 것입니다 — 두 화면이 한 벌로 읽힙니다.
+
+   색·글꼴·모양은 DESIGN.md 의 한 벌을 그대로 씁니다.
+
    ⚠️ 이 페이지의 주소는 아직 없습니다. index.html 에서 /issue/ 로 걸어 두었는데
-      그건 로컬 미리보기 전용이라, 캠페이너스 페이지가 생기면 그 번호로 바꿔야 합니다.
+      그건 미리보기 전용이라, 캠페이너스 페이지가 생기면 그 번호로 바꿔야 합니다.
    ═══════════════════════════════════════════════════════════════ */
 
 @font-face{font-family:'GmarketSans';src:url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');font-weight:700;font-display:swap}
 
 #iss{
-  --brand:#00afec; --deep:#0079a6; --band:#eef7fb;
+  /* ── DESIGN.md 의 한 벌. 다섯 화면이 같은 값을 씁니다 ── */
+  --brand:#00afec; --deep:#0079a6; --tint:#e2f5fd; --band:#eef7fb; --navy:#062330;
   --ink:#0b1e28; --soft:#4a6473; --faint:#7d95a3; --line:#d5e4eb; --paper:#f1f6f8;
   --flag:#9a5c06; --flag-bg:#fff4e1; --flag-line:#ecd3a2;
+
   position:relative; left:50%; width:100vw; margin-left:-50vw;
-  background:#fff; color:var(--ink); line-height:1.6;
+  background:#fff; color:var(--ink); line-height:1.65;
   font-family:'Pretendard Variable',Pretendard,'Noto Sans KR',-apple-system,sans-serif;
   word-break:keep-all; -webkit-font-smoothing:antialiased;
 }
 #iss *{box-sizing:border-box}
-#iss h1,#iss h2,#iss h3{margin:0; letter-spacing:-.022em}
+#iss h1,#iss h2,#iss h3{margin:0; letter-spacing:-.022em; font-family:GmarketSans,'Pretendard Variable',sans-serif}
 #iss p{margin:0}
 #iss a{color:inherit; text-decoration:none}
 #iss ul{list-style:none; margin:0; padding:0}
 #iss :focus-visible{outline:2.5px solid var(--brand); outline-offset:3px}
 #iss .wrap{width:min(1120px,calc(100% - 48px)); margin:0 auto}
-#iss .tbd{background:var(--flag-bg); color:var(--flag); border:1px dashed var(--flag-line); border-radius:5px; padding:1px 6px; font-size:.8em; font-weight:600}
+#iss .tbd{background:var(--flag-bg); color:var(--flag); border:1px dashed var(--flag-line);
+  border-radius:999px; padding:1px 8px; font-size:.78em; font-weight:700; white-space:nowrap}
 
-/* ───── 제목 띠 ───── */
-#iss .band{background:var(--band); padding:22px 0 clamp(38px,4.5vw,58px)}
-#iss .crumb{font-size:12.5px; color:var(--deep); font-weight:600; margin-bottom:clamp(24px,3vw,40px)}
-#iss .crumb span{opacity:.5; margin:0 5px}
-#iss .band h1{font-family:GmarketSans,sans-serif; font-weight:700; font-size:clamp(22px,3vw,32px); line-height:1.45}
-#iss .band h1 em{display:block; font-style:normal; color:var(--brand)}
+/* ───── 히어로 ─────
+   활동 페이지와 같은 짙은 남색 히어로입니다. 홈 → 이슈 → 활동으로 오갈 때
+   같은 문이 반복되는 느낌을 주려고 맞췄습니다. */
+#iss .hero{background:var(--navy); color:#fff; padding:clamp(40px,5vw,72px) 0}
+#iss .crumb{font-size:12.5px; font-weight:600; color:#7fb7ce; margin-bottom:clamp(22px,2.6vw,34px)}
+#iss .crumb a{color:#7fb7ce}
+#iss .crumb a:hover{text-decoration:underline; text-underline-offset:3px}
+#iss .crumb span{opacity:.45; margin:0 6px}
+#iss .hero h1{font-size:clamp(26px,4vw,42px); font-weight:700; line-height:1.3; text-wrap:balance}
+#iss .hero h1 em{display:block; font-style:normal; color:#5fcdf5}
+#iss .hero .by{margin-top:15px; font-size:clamp(14.5px,1.2vw,16.5px); color:#a8cddc; max-width:54ch; line-height:1.7}
 
-/* ───── 탭 ───── */
-#iss .tabs{display:flex; justify-content:center; gap:8px; padding:clamp(32px,4vw,52px) 0 clamp(22px,2.6vw,32px)}
+/* ───── 탭 ─────
+   왼쪽 정렬입니다. 가운데 정렬은 탭이 둘뿐일 때 허전해 보입니다. */
+#iss .tabs{display:flex; gap:8px; padding:clamp(28px,3.4vw,44px) 0 clamp(20px,2.4vw,28px)}
 #iss .tab{
-  border:1.5px solid var(--line); background:#fff; color:var(--soft);
+  border:1.5px solid var(--line); background:#fff; color:var(--soft); border-radius:999px;
   padding:11px 24px; font-size:14.5px; font-weight:700; font-family:inherit; cursor:pointer;
+  transition:.15s
 }
 #iss .tab:hover{border-color:var(--brand); color:var(--deep)}
 #iss .tab[aria-selected="true"]{background:var(--brand); border-color:var(--brand); color:#fff}
+#iss .tab .n{opacity:.65; margin-left:6px; font-variant-numeric:tabular-nums}
 
-/* ───── 카드 ───── */
-#iss .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(18px,2vw,26px); padding-bottom:clamp(48px,6vw,88px)}
-#iss .card{border:1px solid var(--line); display:flex; flex-direction:column}
-#iss .card:hover{border-color:var(--brand)}
-#iss .card-media{position:relative; aspect-ratio:4/3; overflow:hidden; background:var(--paper); display:grid; place-items:center}
-#iss .card-media img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s}
-#iss .card:hover .card-media img{transform:scale(1.04)}
-/* 사진이 없을 때 자리. <img> 를 넣으면 이 span 을 지우세요. */
-#iss .card-note{
-  display:grid; place-items:center; gap:3px; width:100%; height:100%;
-  border:2px dashed var(--line); font-size:12.5px; font-weight:700; color:var(--faint); text-align:center;
+/* ───── 카드 ─────
+   사진이 있든 없든 같은 틀입니다. 다른 것은 --tile 색 하나뿐입니다. */
+#iss .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(16px,1.8vw,22px); padding-bottom:clamp(48px,6vw,88px)}
+#iss .card{
+  position:relative; display:block; aspect-ratio:4/5; overflow:hidden;
+  background:var(--tile,var(--navy)); transition:transform .2s
 }
-#iss .card-note small{font-weight:500; font-size:11px}
-#iss .card-body{padding:17px 18px 20px; flex:1}
-#iss .card-body h3{font-family:GmarketSans,sans-serif; font-weight:700; font-size:15.5px; line-height:1.5}
-#iss .card:hover h3{color:var(--deep)}
-#iss .card-body p{margin-top:8px; font-size:13.5px; color:var(--soft); line-height:1.6}
+#iss .card:hover{transform:translateY(-4px)}
+/* 사진은 옅게 깔립니다 — 주인공은 글씨입니다. 그래야 사진 품질이 제각각이어도
+   카드가 서로 달라 보이지 않습니다. */
+#iss .card-bg{position:absolute; inset:0; overflow:hidden}
+#iss .card-bg img{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
+  opacity:.4; transition:transform .5s
+}
+#iss .card:hover .card-bg img{transform:scale(1.05)}
+/* 모든 카드에 똑같이 덮이는 어둠. 이 한 겹이 통일감의 핵심입니다. */
+#iss .card-bg::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg,rgba(6,35,48,.10) 0%,rgba(6,35,48,.55) 48%,rgba(6,35,48,.92) 100%)
+}
+/* 사진이 없는 카드에 깔리는 큰 글자 무늬. 빈 색면으로 안 보이게 합니다. */
+#iss .card-bg .mark{
+  position:absolute; right:-.05em; bottom:-.26em; margin:0;
+  font-family:GmarketSans,sans-serif; font-size:clamp(96px,12vw,150px); font-weight:700;
+  line-height:.8; color:rgba(255,255,255,.075); letter-spacing:-.05em
+}
+#iss .card-in{
+  position:absolute; inset:auto 0 0 0; display:flex; flex-direction:column;
+  align-items:flex-start; gap:9px; padding:clamp(18px,2vw,24px); color:#fff
+}
+#iss .card-in h3{font-size:clamp(17px,1.5vw,21px); font-weight:700; line-height:1.35}
+#iss .card:hover h3{text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:2px}
+#iss .card-in p{font-size:13.5px; line-height:1.6; color:rgba(255,255,255,.84)}
 /* 마감일. 이슈가 이슈인 이유이자 언제 종료로 내릴지 알려 주는 표시입니다. */
-#iss .due{display:inline-block; margin-top:11px; background:var(--band); color:var(--deep); border-radius:12px; padding:3px 11px; font-size:12px; font-weight:700}
-#iss .card.done .due{background:var(--paper); color:var(--faint)}
+#iss .due{
+  border:1.5px solid rgba(255,255,255,.62); border-radius:999px; padding:4px 12px;
+  font-size:12px; font-weight:800
+}
+#iss .card.done .due{border-style:dashed; color:rgba(255,255,255,.8)}
+/* 위쪽 모서리에 붙는 남은 날짜 */
+#iss .dday{
+  position:absolute; top:clamp(14px,1.6vw,18px); left:clamp(14px,1.6vw,18px);
+  font-family:GmarketSans,sans-serif; font-size:clamp(19px,1.9vw,26px); font-weight:700;
+  line-height:1; color:#fff; letter-spacing:-.02em; text-shadow:0 1px 12px rgba(6,35,48,.5)
+}
+#iss .card.done .dday{font-size:14px; color:rgba(255,255,255,.75)}
 
-#iss .empty{grid-column:1/-1; border:1px dashed var(--line); padding:56px 20px; text-align:center; color:var(--faint); font-size:14.5px}
+#iss .empty{grid-column:1/-1; border:1px dashed var(--line); padding:56px 20px;
+  text-align:center; color:var(--faint); font-size:14.5px}
+
+/* ───── 아래 안내 ───── */
+#iss .foot{border-top:1px solid var(--line); padding:clamp(30px,3.4vw,46px) 0 clamp(44px,5vw,70px)}
+#iss .foot h2{font-size:clamp(17px,1.7vw,21px); font-weight:700}
+#iss .foot p{margin-top:9px; font-size:14.5px; color:var(--soft); line-height:1.7; max-width:62ch}
+#iss .foot .go{display:inline-block; margin-top:16px; font-size:14px; font-weight:700; color:var(--deep)}
+#iss .foot .go:hover{text-decoration:underline; text-underline-offset:3px}
 
 @media(max-width:900px){ #iss .grid{grid-template-columns:1fr 1fr} }
 @media(max-width:560px){
   #iss .wrap{width:min(100% - 32px,1120px)}
-  #iss .band{padding:16px 0 30px}
+  #iss .hero{padding:30px 0}
   #iss .crumb{margin-bottom:18px}
-  #iss .tabs{padding:26px 0 18px}
-  #iss .tab{flex:1; padding:11px 10px; font-size:14px}
-  #iss .grid{grid-template-columns:1fr; gap:16px}
-  #iss .card-media{aspect-ratio:16/9}
+  #iss .tabs{padding:24px 0 16px}
+  #iss .tab{flex:1; padding:11px 8px; font-size:14px}
+  #iss .grid{grid-template-columns:1fr; gap:14px}
+  /* 한 줄에 하나면 세로로 긴 카드가 화면을 다 먹습니다. 가로로 눕힙니다. */
+  #iss .card{aspect-ratio:16/10}
 }
 @media(prefers-reduced-motion:reduce){ #iss *{transition:none!important; animation:none!important} }
 </style>
 
 <div id="iss" aria-label="이슈">
 
-  <!-- ⚠️ 두 줄 제목은 제가 지은 초안입니다. 실제 표현으로 바꿔 주세요. -->
-  <section class="band"><div class="wrap">
-    <p class="crumb"><a href="/69?preview_mode=1">홈</a><span>&gt;</span>이슈</p>
+  <!-- ⚠️ 두 줄 제목은 초안입니다. 실제 표현으로 바꿔 주세요. -->
+  <section class="hero"><div class="wrap">
+    <nav class="crumb"><a href="/69?preview_mode=1">홈</a><span>&rsaquo;</span>이슈</nav>
     <h1>지금 시민의 선택이 필요한<em>이슈에 함께해 주세요.</em></h1>
+    <p class="by">끝나는 날짜가 있는 일을 모았습니다. 마감이 지나면 그 결과는 해당 활동 페이지로 내려갑니다.</p>
   </div></section>
 
   <div class="wrap">
     <div class="tabs" role="tablist">
-      <button class="tab" type="button" role="tab" id="tab-on" aria-selected="true" aria-controls="list-on">진행 중 이슈</button>
-      <button class="tab" type="button" role="tab" id="tab-off" aria-selected="false" aria-controls="list-off">종료된 이슈</button>
+      <button class="tab" type="button" role="tab" id="tab-on" aria-selected="true" aria-controls="list-on">진행 중<span class="n">5</span></button>
+      <button class="tab" type="button" role="tab" id="tab-off" aria-selected="false" aria-controls="list-off">종료<span class="n">2</span></button>
     </div>
 
     <!-- ───────── 진행 중 ─────────
-         ⚠️ 첫 번째만 실제로 진행 중인 캠페인이고 사진도 실물입니다.
-            나머지 셋은 임시로 넣은 것이라 주소와 사진이 아직 없습니다
-            (밑빠진독상만 자기 사이트로 갑니다). 설명 한 줄도 초안입니다. -->
+         홈 첫 화면(.slide)에 올라간 다섯과 **같은 다섯**입니다. 한쪽을 고치면 여기도 고칠 것.
+         ⚠️ 첫 둘만 사진이 실물이고, 셋은 아직 없어 색 타일로 채웠습니다.
+            사진이 생기면 card-bg 안의 <span class="mark"> 를 <img> 로 바꾸면 됩니다.
+         ⚠️ 마감일을 손으로 D-day 로 적지 마세요 — data-due 를 스크립트가 셉니다. -->
     <div class="grid" id="list-on" role="tabpanel" aria-labelledby="tab-on">
 
-      <a class="card" href="/27/?idx=173013295&amp;bmode=view">
-        <span class="card-media">
-          <img src="https://cdn.imweb.me/thumbnail/20260811/b10debcac3f42.png" alt="추가세수 시민의견 수렴 캠페인">
-        </span>
-        <span class="card-body">
+      <a class="card" href="/27/?idx=173013295&amp;bmode=view" style="--tile:#0079a6" data-due="2026-08-31">
+        <span class="card-bg"><img src="https://cdn.imweb.me/thumbnail/20260811/59d0381d6c5b7.png" alt="추가세수 시민의견 수렴 캠페인"></span>
+        <span class="dday" data-dday>8/31</span>
+        <span class="card-in">
           <h3>더 걷힐 세금, 어디에 쓸래?</h3>
           <p>추가세수 100조의 쓰임을 시민이 직접 고르고, 그 순위를 정부와 국회에 전합니다.</p>
           <span class="due">8월 31일 마감</span>
         </span>
       </a>
 
-      <a class="card" href="https://dokseong-action.bada523082.chatgpt.site/">
-        <span class="card-media">
-          <!-- 사진 자리 → <img src="이미지주소" alt="2026 하반기 밑빠진독상"> -->
-          <span class="card-note">이미지 자리<small>가로 4:3</small></span>
-        </span>
-        <span class="card-body">
+      <a class="card" href="https://dokseong-action.bada523082.chatgpt.site/" style="--tile:#062330" data-due="2026-09-15">
+        <span class="card-bg"><img src="https://cdn.imweb.me/thumbnail/20260825/c4b8e2d1b259d.png" alt="2026 하반기 밑빠진 독상"></span>
+        <span class="dday" data-dday>9/15</span>
+        <span class="card-in">
           <h3>2026 하반기 밑빠진독상</h3>
           <p>세금이 새는 현장을 시민이 제보하고, 그중 최악의 사업을 함께 고릅니다.</p>
           <span class="due">9월 15일 제보 마감</span>
         </span>
       </a>
 
-      <a class="card" href="https://vote.action.or.kr/">
-        <span class="card-media">
-          <!-- 사진 자리 → <img src="이미지주소" alt="10만원 예산편성"> -->
-          <span class="card-note">이미지 자리<small>가로 4:3</small></span>
-        </span>
-        <span class="card-body">
+      <a class="card" href="https://vote.action.or.kr/" style="--tile:#0d4f66">
+        <span class="card-bg"><img src="https://vote.action.or.kr/og-budget-vote-v1.png?v=2" alt="10만원 예산 편성"></span>
+        <span class="card-in">
           <h3>10만원 예산편성</h3>
           <p>내 몫의 예산 10만원을 어디에 쓸지 직접 편성해 봅니다.</p>
-          <span class="due">기간 미정</span>
+          <span class="due">마감일 <span class="tbd">확인 필요</span></span>
         </span>
       </a>
 
-      <a class="card" href="#">
-        <span class="card-media">
-          <!-- 사진 자리 → <img src="이미지주소" alt="1회 참여예산 고민대회"> -->
-          <span class="card-note">이미지 자리<small>가로 4:3</small></span>
+      <!-- ⚠️ /pb/ 는 미리보기 전용 경로입니다. 캠페이너스 페이지 번호로 바꾸세요.
+           ⚠️ 끝나는 날짜가 없습니다. 이슈에 두려면 마감일이 있어야 합니다. -->
+      <a class="card" href="/pb/" style="--tile:#062330">
+        <span class="card-bg"><span class="mark" aria-hidden="true">상담</span></span>
+        <span class="card-in">
+          <h3>참여예산 상담소</h3>
+          <p>참여예산을 두고 생기는 궁금증과 고민을 상담합니다.</p>
+          <span class="due">마감일 <span class="tbd">확인 필요</span></span>
         </span>
-        <span class="card-body">
-          <h3>1회 참여예산 고민대회 <span class="tbd">확인 필요</span></h3>
+      </a>
+
+      <!-- ⚠️ 이 칸만 확정된 게 없습니다 — 주소·기간·사진 셋 다 없습니다. -->
+      <a class="card" href="#" style="--tile:#0d4f66">
+        <span class="card-bg"><span class="mark" aria-hidden="true">대회</span></span>
+        <span class="card-in">
+          <h3>1회 참여예산 고민대회</h3>
           <p>참여예산위원들이 현장에서 부딪히는 고민을 모아 함께 풀어 봅니다.</p>
-          <span class="due">기간 미정</span>
+          <span class="due">주소 · 기간 <span class="tbd">확인 필요</span></span>
         </span>
       </a>
 
@@ -158,24 +222,20 @@
             종료된 이슈의 결과는 해당 활동 페이지의 '결과' 칸에도 사건으로 정리해 두세요. -->
     <div class="grid" id="list-off" role="tabpanel" aria-labelledby="tab-off" hidden>
 
-      <a class="card done" href="/27/?idx=170844085&amp;bmode=view">
-        <span class="card-media">
-          <!-- 사진 자리 → <img src="이미지주소" alt="2026 지방선거 서울시민행동"> -->
-          <span class="card-note">이미지 자리<small>가로 4:3</small></span>
-        </span>
-        <span class="card-body">
+      <a class="card done" href="/27/?idx=170844085&amp;bmode=view" style="--tile:#3d5765">
+        <span class="card-bg"><span class="mark" aria-hidden="true">선거</span></span>
+        <span class="dday">종료</span>
+        <span class="card-in">
           <h3>2026 지방선거 서울시민행동 <span class="tbd">확인 필요</span></h3>
           <p>시민사회가 함께 정책을 제안하고 후보자의 답을 기록했습니다.</p>
           <span class="due">2026년 6월 종료</span>
         </span>
       </a>
 
-      <a class="card done" href="/27/?idx=172916152&amp;bmode=view">
-        <span class="card-media">
-          <!-- 사진 자리 → <img src="이미지주소" alt="한강버스 주민감사청구"> -->
-          <span class="card-note">이미지 자리<small>가로 4:3</small></span>
-        </span>
-        <span class="card-body">
+      <a class="card done" href="/27/?idx=172916152&amp;bmode=view" style="--tile:#3d5765">
+        <span class="card-bg"><img src="https://cdn.imweb.me/thumbnail/20260810/50abe1798d723.png" alt="한강버스 감사 결과"></span>
+        <span class="dday">종료</span>
+        <span class="card-in">
           <h3>한강버스 주민감사청구 <span class="tbd">확인 필요</span></h3>
           <p>경제성 근거 없이 추진된 사업에 주민감사를 청구했고, 감사 결과가 나왔습니다.</p>
           <span class="due">2026년 8월 종료</span>
@@ -185,12 +245,22 @@
     </div>
   </div>
 
+  <!-- 이슈와 활동이 어떻게 이어지는지 한 번 더 알려 주는 칸.
+       이 홈의 분류 기준(끝나는 날짜)이 처음 오는 사람에게는 안 보이기 때문입니다. -->
+  <div class="foot"><div class="wrap">
+    <h2>이슈가 끝나면 어디로 가나요</h2>
+    <p>마감이 지난 이슈는 여기서 내려가고, 그 결과가 해당 활동 페이지의 ‘무엇이 달라졌나’ 칸에
+       사건으로 정리됩니다. 무엇을 했고 그래서 무엇이 바뀌었는지 두 줄로 남습니다.</p>
+    <a class="go" href="/52">활동 다섯 보러 가기 →</a>
+  </div></div>
+
 </div>
 
 <script>
 /* 진행 중 / 종료 탭. 목록 두 개를 번갈아 보여 주기만 합니다.
    ⚠️ 캠페이너스 코드 위젯이 <script> 를 실행해 주는지는 /69 에서 확인해야 합니다.
-      막히면 탭이 안 넘어가니, 그때는 두 목록을 위아래로 나란히 두는 쪽으로 바꿉니다. */
+      막히면 탭이 안 넘어갑니다. 그때는 두 목록을 위아래로 나란히 두는 쪽으로 바꿉니다
+      (hidden 을 떼면 바로 그 모양이 됩니다). */
 (function () {
   var tabs = [
     { btn: document.getElementById('tab-on'),  panel: document.getElementById('list-on') },
@@ -206,6 +276,31 @@
         o.panel.hidden = !on;
       });
     });
+  });
+})();
+
+/* 남은 날짜 세기 — 홈과 같은 방식입니다.
+   카드의 data-due="2026-08-31" 을 읽어 data-dday 자리 글자를 'D-5' 로 바꿉니다.
+   HTML 에는 '8/31' 이 그대로 적혀 있어, 이 스크립트가 막혀도 틀린 값이 뜨지 않습니다.
+   날짜를 손으로 D-day 로 적지 마세요 — 내일이면 틀립니다. */
+(function () {
+  var cards = document.querySelectorAll('#iss [data-due]');
+  if (!cards.length) return;
+
+  var now = new Date();
+  var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  Array.prototype.forEach.call(cards, function (card) {
+    var slot = card.querySelector('[data-dday]');
+    if (!slot) return;
+
+    var p = card.getAttribute('data-due').split('-');
+    var due = new Date(+p[0], +p[1] - 1, +p[2]);
+    if (isNaN(due)) return;
+
+    var days = Math.round((due - today) / 86400000);
+    if (days < 0) return;                       // 이미 지난 것은 건드리지 않습니다
+    slot.textContent = days === 0 ? '오늘 마감' : 'D-' + days;
   });
 })();
 </script>
