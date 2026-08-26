@@ -1,29 +1,28 @@
 <style>
 /* ═══════════════════════════════════════════════════════════════
-   활동 > 권력감시
+   참여예산 상담소  (#pb)
 
-   ⚠️ 이 파일은 tools/build-activity.py 가 만듭니다. 직접 고치지 마세요.
-      화면을 고치려면 그 파일의 TEMPLATE 을, 내용을 고치려면 PAGES 를 고치고
-      다시 돌리세요.  →  python tools/build-activity.py
+   무엇을 하는 곳인가 (2026-08-27 사용자):
+     "시민, 기관, 참여위원 등이 궁금한 걸 질문하고 답을 할 수 있는 것.
+      질문과 답만 있으면 재미가 없으니 다른 요소를 더할 것."
 
-   구성 : 히어로 → 숫자 셋 → 지금 → 결과 → 글 → 자료 → 연락
-   말투 : 참여연대 방식. 섹션 제목이 분류명이 아니라 말을 겁니다
-          ("무엇을 보고 있나", "무엇이 달라졌나"). 그 밑에 한 줄만 답니다.
-   색·글꼴·모양 : DESIGN.md 의 한 벌. 다른 네 화면과 같은 값입니다.
+   그래서 질문·답 말고 넷을 더 넣었습니다. 각 칸 앞 주석에 이유를 적었습니다.
+     1. 세 갈래 입구       — 묻는 사람이 셋인데 궁금한 게 전혀 다릅니다
+     2. 나도 궁금해요      — 읽기만 하던 사람이 한 번은 누르게 됩니다
+     3. 참여예산 말 뜻     — 못 묻는 이유 1위가 "용어를 몰라서"입니다
+     4. 답을 기다리는 질문 — 살아 있는 창구라는 증거입니다
 
-   '결과'를 글이 아니라 **사건** 단위로 두는 이유:
-   감시 활동은 글 하나로 안 끝납니다. 문제제기·감사청구·감사결과·후속이 각각
-   다른 글이라, 글을 늘어놓으면 시민행동이 뭘 해서 나온 결과인지 안 보입니다.
-   그래서 사건 하나에 [무엇을 했나 → 무엇이 바뀌었나] 두 줄로 적고 근거 글을 답니다.
-   자동으로 못 채웁니다. 사람이 분기에 한 번 정리하면 됩니다(몇 건 안 됩니다).
+   ⚠️ 이 화면은 캠페이너스 코드 위젯입니다. 모든 규칙을 #pb 안에 가둡니다.
+      전역 선택자(*, html, body)를 쓰면 붙이는 순간 홈페이지가 깨집니다.
+
+   색·글꼴·모양은 DESIGN.md 값 그대로입니다. 여기서 바꾸지 마세요.
    ═══════════════════════════════════════════════════════════════ */
-
 @font-face{font-family:'GmarketSans';src:url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');font-weight:700;font-display:swap}
 
-#act{
-  /* ── DESIGN.md 의 한 벌. 다섯 화면이 같은 값을 씁니다 ── */
-  --brand:#00afec; --deep:#0079a6; --tint:#e2f5fd; --band:#eef7fb; --navy:#062330;
-  --ink:#0b1e28; --soft:#4a6473; --faint:#7d95a3; --line:#d5e4eb; --paper:#f1f6f8;
+#pb{
+  --brand:#00afec; --deep:#0079a6; --tint:#e2f5fd; --band:#eef7fb;
+  --navy:#062330; --ink:#0b1e28; --soft:#4a6473; --faint:#7d95a3;
+  --line:#d5e4eb; --paper:#f1f6f8;
   --flag:#9a5c06; --flag-bg:#fff4e1; --flag-line:#ecd3a2;
 
   margin-left:calc(50% - 50vw + var(--ah-sb, 0px) / 2);margin-right:calc(50% - 50vw + var(--ah-sb, 0px) / 2);
@@ -31,252 +30,240 @@
   font-family:'Pretendard Variable',Pretendard,'Noto Sans KR',-apple-system,sans-serif;
   font-size:16px; line-height:1.7; word-break:keep-all; -webkit-font-smoothing:antialiased;
 }
-#act *{box-sizing:border-box}
-#act h1,#act h2,#act h3{font-family:GmarketSans,'Pretendard Variable',sans-serif; letter-spacing:-.022em; margin:0}
-#act p{margin:0}
-#act ul{list-style:none; margin:0; padding:0}
-#act a{color:inherit; text-decoration:none}
-#act :focus-visible{outline:2.5px solid var(--brand); outline-offset:3px}
+#pb *{box-sizing:border-box}
+#pb h1,#pb h2,#pb h3{font-family:GmarketSans,'Pretendard Variable',sans-serif; letter-spacing:-.022em; margin:0}
+#pb p{margin:0}
+#pb ul{list-style:none; margin:0; padding:0}
+#pb a{color:inherit; text-decoration:none}
+#pb button{font-family:inherit}
+#pb :focus-visible{outline:2.5px solid var(--brand); outline-offset:3px}
 
-#act .wrap{width:min(880px,calc(100% - 44px)); margin:0 auto}
-#act .sec{padding:clamp(38px,4.6vw,64px) 0; border-top:1px solid var(--line)}
-#act .sec:first-of-type{border-top:none}
+#pb .wrap{width:min(880px,calc(100% - 44px)); margin:0 auto}
+#pb .sec{padding:clamp(38px,4.6vw,64px) 0; border-top:1px solid var(--line)}
 
-/* 섹션 머리 — 말 거는 제목 + 한 줄. 참여연대 방식입니다. */
-#act .sh{margin-bottom:clamp(20px,2.4vw,30px)}
-#act .sh .eyebrow{
-  display:block; font-size:11.5px; font-weight:700; letter-spacing:.14em;
-  color:var(--deep); margin-bottom:9px
-}
-#act .sh h2{font-size:clamp(20px,2.3vw,27px); font-weight:700; line-height:1.4}
-#act .sh p{margin-top:8px; font-size:14.5px; color:var(--soft); line-height:1.65; max-width:60ch}
+#pb .sh{margin-bottom:clamp(20px,2.4vw,30px)}
+#pb .sh .eyebrow{display:block; font-size:11.5px; font-weight:700; letter-spacing:.14em; color:var(--deep); margin-bottom:9px}
+#pb .sh h2{font-size:clamp(20px,2.3vw,27px); font-weight:700; line-height:1.4}
+#pb .sh p{margin-top:8px; font-size:14.5px; color:var(--soft); line-height:1.65; max-width:60ch}
 
-/* 확인 안 된 값 표시. 공개 전에 이 딱지가 화면에 하나도 없어야 합니다. */
-#act .tbd{background:var(--flag-bg); color:var(--flag); border:1px dashed var(--flag-line);
+/* 확인 안 된 값. 공개 전에 화면에 하나도 없어야 합니다. */
+#pb .tbd{background:var(--flag-bg); color:var(--flag); border:1px dashed var(--flag-line);
   border-radius:999px; padding:1px 8px; font-size:.8em; font-weight:700; white-space:nowrap}
 
-/* ───── 빵부스러기 ───── */
-#act .crumb{padding:16px 0 0; font-size:12.5px; font-weight:600; color:var(--deep)}
-#act .crumb span{opacity:.45; margin:0 6px}
-#act .crumb a:hover{text-decoration:underline; text-underline-offset:3px}
+/* ───── 히어로 — 들어오자마자 질문을 받습니다 ─────
+   초안 반려 사유 중 "페이지가 남겨주세요만 한다"를 뒤집은 것입니다.
+   먼저 묻게 하고, 그 아래에서 이미 오간 답들을 보여 줍니다. */
+#pb .hero{background:var(--navy); color:#fff; padding:clamp(40px,5vw,68px) 0}
+#pb .crumb{font-size:12.5px; font-weight:600; color:#7fb7ce; padding-bottom:clamp(20px,2.4vw,30px)}
+#pb .crumb a{color:#7fb7ce}
+#pb .crumb a:hover{text-decoration:underline; text-underline-offset:3px}
+#pb .crumb span{opacity:.45; margin:0 6px}
+#pb .hero h1{font-size:clamp(27px,4.4vw,44px); font-weight:700; line-height:1.28}
+#pb .hero .by{margin-top:14px; font-size:clamp(14.5px,1.2vw,16.5px); color:#a8cddc; max-width:52ch}
 
-/* ───── 히어로 ───── */
-#act .hero{background:var(--navy); color:#fff; padding:clamp(44px,5.4vw,76px) 0}
-#act .hero .crumb{padding:0 0 clamp(22px,2.6vw,34px); color:#7fb7ce}
-#act .hero .crumb a{color:#7fb7ce}
-#act .hero .who{
-  display:inline-block; border:1.5px solid rgba(255,255,255,.42); border-radius:999px;
-  padding:5px 14px; font-size:12.5px; font-weight:700; color:#cfe8f4; margin-bottom:16px
+#pb .ask{margin-top:clamp(24px,3vw,34px); background:#fff; border-radius:16px; padding:clamp(18px,2.2vw,24px)}
+#pb .ask .who{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:13px}
+#pb .ask .who button{
+  border:1.5px solid var(--line); background:#fff; color:var(--soft);
+  border-radius:999px; padding:8px 16px; font-size:13.5px; font-weight:700; cursor:pointer; transition:.14s
 }
-#act .hero h1{font-size:clamp(27px,4.4vw,44px); font-weight:700; line-height:1.28; text-wrap:balance}
-#act .hero .by{margin-top:15px; font-size:clamp(14.5px,1.2vw,16.5px); color:#a8cddc; max-width:52ch; line-height:1.7}
-
-/* ───── 숫자 셋 ─────
-   "이 활동이 얼마나 오래, 얼마나 많이" 를 한 줄로 보여 줍니다.
-   ⚠️ 확인 안 된 숫자는 올리지 말고 딱지를 붙이세요. */
-#act .nums{display:grid; grid-template-columns:repeat(3,1fr); background:var(--band)}
-#act .num{padding:clamp(20px,2.4vw,30px) 18px; text-align:center; border-left:1px solid var(--line)}
-#act .num:first-child{border-left:none}
-#act .num b{
-  display:block; font-family:GmarketSans,sans-serif; font-weight:700; line-height:1.1;
-  font-size:clamp(24px,3vw,38px); color:var(--deep); letter-spacing:-.03em
+#pb .ask .who button:hover{border-color:var(--brand); color:var(--deep)}
+#pb .ask .who button[aria-pressed="true"]{background:var(--brand); border-color:var(--brand); color:#fff}
+#pb .ask textarea,#pb .ask input{
+  width:100%; border:1.5px solid var(--line); border-radius:10px;
+  padding:13px 15px; font-family:inherit; font-size:15px; color:var(--ink); background:#fff
 }
-#act .num b i{font-style:normal; font-size:.52em; margin-left:2px}
-/* 숫자 자리에 딱지가 오면 숫자 크기(최대 38px)를 물려받아 칸을 꽉 채웁니다.
-   딱지는 값이 아니라 표시이므로 본문 크기로 되돌립니다. */
-#act .num b .tbd{display:inline-block; font-size:13.5px; letter-spacing:0; padding:4px 12px}
-#act .num span{display:block; margin-top:6px; font-size:12.5px; font-weight:600; color:var(--soft)}
-
-/* ═════ 이 활동만의 칸 (2026-08-27) ═════
-   활동 셋이 한 틀에서 나오다 보니 글자만 다르고 그림이 똑같다는 문제가 있었습니다.
-   무늬를 아무거나 깔아 구별하는 대신, **활동마다 답하는 질문이 다르다**는 데서
-   모양을 끌어냈습니다.
-
-     지자체 감시 → "어디가 어떤가"      → 지역 이름을 늘어놓는다  (.sig-where)
-     권력감시   → "누가 답을 안 하나"   → 물음과 답을 나란히 둔다 (.sig-ask)
-     예산감시   → "언제 무엇이 정해지나" → 한 해 위에 오늘을 찍는다 (.sig-cal)
-
-   셋 다 안 쓰는 활동에는 sig=None 을 주면 칸이 아예 안 만들어집니다. */
-
-/* ───── 지자체 감시 — 올해 들여다본 곳 ───── */
-#act .sig-where .tagbox{display:flex; flex-wrap:wrap; gap:8px}
-#act .sig-where .tag{
-  border:1.5px solid var(--line); border-radius:999px; padding:7px 15px;
-  font-size:14px; font-weight:700; color:var(--ink); background:#fff
+#pb .ask textarea{min-height:96px; resize:vertical; line-height:1.65}
+#pb .ask input{margin-top:9px}
+#pb .ask textarea:focus,#pb .ask input:focus{outline:none; border-color:var(--brand)}
+#pb .ask .go{
+  width:100%; margin-top:11px; border:none; border-radius:10px;
+  background:var(--brand); color:#fff; padding:14px; font-size:15.5px; font-weight:700; cursor:pointer; transition:.14s
 }
-/* 여러 번 들여다본 곳은 진하게 — 어디에 힘이 실렸는지가 한눈에 보입니다. */
-#act .sig-where .tag.is-hot{border-color:var(--brand); background:var(--tint); color:var(--deep)}
-#act .sig-where .tag i{font-style:normal; margin-left:6px; font-size:12px; opacity:.7}
-#act .sig-where .tagbox .tag.is-more{border-style:dashed; color:var(--soft); font-weight:600}
+#pb .ask .go:hover{background:var(--deep)}
+#pb .ask .fine{margin-top:10px; font-size:12.5px; color:var(--faint); line-height:1.6}
+#pb .ask .msg{margin-top:10px; font-size:14px; font-weight:700; color:var(--deep); display:none}
+#pb .ask .msg.on{display:block}
 
-/* ───── 권력감시 — 물었는데, 아직 ─────
-   "답 없음"이 화면에 계속 남아 있는 것 자체가 권력감시의 압박 방식입니다.
-   그래서 답변 여부를 지우지 않고 오른쪽에 붙박이로 답니다. */
-#act .sig-ask .asks{border-top:2px solid var(--ink)}
-#act .sig-ask .ask{
-  display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
-  padding:15px 2px; border-bottom:1px solid var(--line)
+/* ═════ 더한 것 1 — 세 갈래 입구 ═════
+   묻는 사람이 시민 · 참여예산위원 · 기관 담당자 셋인데 궁금한 게 전혀 다릅니다.
+   한 줄로 늘어놓으면 시민은 위원용 질문을 넘겨야 하고 위원은 그 반대입니다.
+   그래서 자기 갈래를 고르면 아래 질문 목록이 그것만 남습니다. */
+#pb .gates{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+#pb .gate{
+  text-align:left; background:#fff; border:1.5px solid var(--line); border-radius:14px;
+  padding:18px 18px 16px; cursor:pointer; transition:.15s
 }
-#act .sig-ask .ask .q{font-size:15px; font-weight:700; line-height:1.55}
-#act .sig-ask .ask .to{margin-top:4px; font-size:12.5px; color:var(--faint)}
-#act .sig-ask .st{
-  flex:none; border-radius:999px; padding:4px 12px;
-  font-size:12.5px; font-weight:700; white-space:nowrap
-}
-/* 네 가지 상태. 색이 곧 뜻이라 순서가 중요합니다 — 답 없음이 제일 눈에 띄어야 합니다. */
-#act .sig-ask .st-none{background:#fdecec; color:#a32020; border:1px solid #f3c9c9}  /* 답변 없음 */
-#act .sig-ask .st-deny{background:var(--flag-bg); color:var(--flag); border:1px solid var(--flag-line)}  /* 거부 */
-#act .sig-ask .st-open{background:var(--tint); color:var(--deep); border:1px solid #b8e2f5}  /* 공개됨 */
-#act .sig-ask .st-win{background:var(--brand); color:#fff; border:1px solid var(--brand)}   /* 소송 승소 */
+#pb .gate:hover{border-color:var(--brand); transform:translateY(-2px)}
+#pb .gate[aria-pressed="true"]{border-color:var(--brand); background:var(--tint)}
+#pb .gate .ic{font-size:22px; line-height:1}
+#pb .gate b{display:block; margin-top:9px; font-family:GmarketSans,sans-serif; font-size:16px; font-weight:700}
+/* 바로 밑 자식만 — 안쪽 숫자 span 까지 잡으면 '문답 2개'가 세 줄로 쪼개집니다. */
+#pb .gate>span{display:block; margin-top:5px; font-size:13px; color:var(--soft); line-height:1.6}
+#pb .gate>span.ic{margin-top:0}
+#pb .gate i{display:block; margin-top:9px; font-style:normal; font-size:12px; font-weight:700; color:var(--deep)}
 
-/* ───── 예산감시 — 예산 한 해 ─────
-   예산은 매년 같은 순서로 굴러가고 날짜가 법에 박혀 있습니다.
-   그래서 이 칸만은 지어낸 값이 하나도 없습니다.
-     국회 제출 = 회계연도 개시 120일 전 (국가재정법 제33조)  → 9월 2일
-     국회 의결 = 회계연도 개시  30일 전 (헌법 제54조 2항)   → 12월 2일
-   '오늘' 표시는 빌드할 때 한 번 찍고, 화면이 뜰 때 스크립트가 다시 맞춥니다. */
-#act .sig-cal .cal{position:relative; padding:34px 0 0}
-#act .sig-cal .bar{position:relative; height:8px; background:var(--band); border-radius:999px}
-/* 지나온 구간을 브랜드색으로 채웁니다. */
-#act .sig-cal .bar .done{position:absolute; left:0; top:0; bottom:0; background:var(--brand); border-radius:999px}
-#act .sig-cal .marks{position:relative; height:0}
-#act .sig-cal .mk{position:absolute; top:-4px; width:2px; height:16px; background:var(--line); transform:translateX(-1px)}
-#act .sig-cal .mk.is-law{background:var(--deep); width:3px}
-/* 오늘 — 위쪽에 뾰족한 표시와 날짜 */
-#act .sig-cal .today{position:absolute; top:-34px; transform:translateX(-50%); text-align:center; white-space:nowrap}
-#act .sig-cal .today b{
-  display:inline-block; background:var(--ink); color:#fff; border-radius:999px;
-  padding:3px 11px; font-size:12px; font-weight:700; font-family:inherit
+/* ───── 오간 질문 ───── */
+#pb .qtools{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:14px}
+#pb .qtools .count{font-size:13px; color:var(--faint); margin-right:auto}
+#pb .qtools button{
+  border:1px solid var(--line); background:#fff; color:var(--soft);
+  border-radius:999px; padding:6px 13px; font-size:12.5px; font-weight:700; cursor:pointer; transition:.14s
 }
-#act .sig-cal .today::after{
-  content:""; display:block; margin:2px auto 0; width:0; height:0;
-  border-left:5px solid transparent; border-right:5px solid transparent; border-top:6px solid var(--ink)
+#pb .qtools button:hover{border-color:var(--brand); color:var(--deep)}
+#pb .qtools button[aria-pressed="true"]{background:var(--ink); border-color:var(--ink); color:#fff}
+
+#pb .qa{border-top:2px solid var(--ink)}
+#pb .qa .item{border-bottom:1px solid var(--line)}
+#pb .qa .item[hidden]{display:none}
+#pb .qa summary{
+  display:flex; align-items:flex-start; gap:11px; padding:17px 2px;
+  cursor:pointer; list-style:none; font-size:16px; font-weight:700; line-height:1.55
 }
-/* 아래 단계 이름들 */
-/* 칸 너비를 날짜 비율대로 줍니다(빌드할 때 flex 값을 찍습니다).
-   균등하게 나누면 '국회 제출' 이름과 눈금이 서로 다른 자리에 서서, 보는 사람이
-   9월 2일을 한 해의 3분의 1 지점으로 잘못 읽습니다. */
-#act .sig-cal .steps{display:flex; margin-top:14px}
-#act .sig-cal .step{min-width:0; border-left:1px solid var(--line); padding:0 8px 0 10px}
-#act .sig-cal .step:first-child{border-left:none; padding-left:0}
-#act .sig-cal .step b{display:block; font-size:13.5px; font-weight:700; line-height:1.4}
-#act .sig-cal .step span{display:block; margin-top:3px; font-size:11.5px; color:var(--faint); line-height:1.45}
-/* 지금 어느 단계인지 */
-#act .sig-cal .step.is-now b{color:var(--deep)}
-#act .sig-cal .step.is-now{border-left-color:var(--brand)}
-#act .sig-cal .step.is-now b::before{content:"● "; color:var(--brand); font-size:9px; vertical-align:2px}
-#act .sig-cal .law{margin-top:16px; font-size:12.5px; color:var(--faint); line-height:1.6}
-#act .sig-cal .law b{color:var(--soft)}
+#pb .qa summary::-webkit-details-marker{display:none}
+#pb .qa summary:hover{color:var(--deep)}
+#pb .mark{
+  flex:none; width:24px; height:24px; border-radius:50%; display:grid; place-items:center;
+  font-size:12px; font-weight:800; margin-top:2px
+}
+#pb .mark.q{background:var(--ink); color:#fff}
+#pb .mark.a{background:var(--brand); color:#fff}
+#pb .qa summary .tail{margin-left:auto; display:flex; align-items:center; gap:7px; flex:none}
+/* 갈래 표시 — 이 질문이 누구 것인지 */
+#pb .whotag{
+  border-radius:999px; padding:2px 9px; font-size:11.5px; font-weight:700;
+  background:var(--band); color:var(--soft); white-space:nowrap
+}
+#pb .qa .ans{display:flex; gap:11px; padding:0 2px 20px}
+#pb .qa .ans .body{font-size:15px; line-height:1.8; color:var(--ink)}
+#pb .qa .sign{margin-top:11px; font-size:13px; font-weight:700; color:var(--deep)}
 
-/* ───── 지금 (진행 중) ───── */
-#act .now{border-top:2px solid var(--ink)}
-#act .now li{border-bottom:1px solid var(--line)}
-#act .now a{display:block; padding:17px 2px}
-#act .now a:hover .t{color:var(--deep); text-decoration:underline; text-underline-offset:3px}
-#act .now .t{font-family:GmarketSans,sans-serif; font-weight:700; font-size:16px; line-height:1.5}
-#act .now .m{display:flex; align-items:center; gap:8px; margin-top:6px; font-size:12.5px; color:var(--faint)}
-/* 마감이 있는 것에만 붙는 표시. 이슈로 옮길지 판단하는 기준이기도 합니다. */
-#act .due{background:var(--tint); color:var(--deep); border-radius:999px; padding:2px 10px; font-weight:700}
+/* ═════ 더한 것 2 — 나도 궁금해요 ═════
+   읽기만 하고 나가던 사람이 한 번은 누르게 만드는 칸입니다.
+   많이 눌린 질문이 곧 "다음에 답해야 할 것"이라, 상담소 운영에도 쓸모가 있습니다.
+   ⚠️ 지금은 누른 표시가 그 사람 브라우저에만 남습니다(localStorage).
+      여러 사람의 수를 합치려면 서버가 필요합니다 — 개편 홈 DB가 정해지면 연결하세요. */
+#pb .me{
+  display:inline-flex; align-items:center; gap:6px; flex:none;
+  border:1px solid var(--line); background:#fff; color:var(--soft);
+  border-radius:999px; padding:5px 11px; font-size:12px; font-weight:700; cursor:pointer; transition:.14s
+}
+#pb .me:hover{border-color:var(--brand); color:var(--deep)}
+#pb .me[aria-pressed="true"]{background:var(--tint); border-color:var(--brand); color:var(--deep)}
+#pb .me .n{font-variant-numeric:tabular-nums}
 
-/* ───── 결과 (사건 단위) ───── */
-#act .res{display:grid; gap:14px}
-#act .case{background:#fff; border:1px solid var(--line); border-left:3px solid var(--brand); padding:22px 24px}
-#act .case h3{font-size:17px; font-weight:700; line-height:1.45}
-#act .case .did{margin-top:10px; font-size:14.5px; color:var(--soft); line-height:1.7}
-/* 화살표 줄이 '무엇이 바뀌었나' — 이 페이지에서 제일 중요한 한 줄입니다. */
-#act .case .got{margin-top:8px; padding-left:18px; position:relative; font-size:15px; font-weight:700; line-height:1.65}
-#act .case .got::before{content:"→"; position:absolute; left:0; color:var(--brand)}
-#act .case .src{display:flex; flex-wrap:wrap; gap:6px; margin-top:15px}
-#act .case .src a{border:1px solid var(--line); border-radius:999px; padding:5px 12px; font-size:12.5px; color:var(--soft)}
-#act .case .src a:hover{border-color:var(--brand); color:var(--deep)}
-#act .case .when{margin-top:12px; font-size:12.5px; color:var(--faint)}
+/* ═════ 더한 것 4 — 답을 기다리는 질문 ═════
+   답이 달린 것만 보여 주면 박제된 FAQ 처럼 보입니다.
+   아직 답이 없는 질문을 같이 두면 "지금도 굴러가는 창구"라는 게 보이고,
+   방문자는 자기 질문도 여기 붙겠구나 하고 짐작할 수 있습니다. */
+#pb .waiting{background:var(--band); border-radius:14px; padding:20px 22px; margin-top:22px}
+#pb .waiting h3{font-size:15px; font-weight:700; margin-bottom:4px}
+#pb .waiting>p{font-size:13.5px; color:var(--soft)}
+#pb .waiting ul{margin-top:13px}
+#pb .waiting li{
+  display:flex; align-items:flex-start; gap:9px; padding:9px 0;
+  border-top:1px solid var(--line); font-size:14.5px; line-height:1.6
+}
+#pb .waiting li .dot{
+  flex:none; margin-top:7px; width:7px; height:7px; border-radius:50%;
+  background:var(--flag); animation:pb-blink 2.2s ease-in-out infinite
+}
+@keyframes pb-blink{0%,100%{opacity:1}50%{opacity:.25}}
+#pb .waiting li .when{margin-left:auto; flex:none; font-size:12px; color:var(--faint); white-space:nowrap}
+
+/* ═════ 더한 것 3 — 참여예산 말 뜻 ═════
+   시민이 못 묻는 가장 큰 이유가 "용어를 몰라서"입니다.
+   '제안사업'·'숙의'·'운영조례'가 뭔지 모르면 질문 자체를 못 만듭니다.
+   카드를 누르면 뒤집힙니다 — 훑고 지나가도 남는 게 있게. */
+#pb .words{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+/* 카드 하나. 앞면(낱말)만 보이다가, 누르면 뒷면(뜻)으로 바뀝니다.
+   3D 뒤집기를 쓰지 않는 이유: <button> 은 display:block 이어도 폭이 내용에 맞게
+   줄어들고(fit-content), 거기에 3D 변환까지 겹치면 브라우저마다 다르게 무너집니다.
+   여기 코드는 캠페이너스에 붙여 놓고 고치기 어려우므로 튼튼한 쪽을 골랐습니다. */
+#pb .word{
+  display:flex; flex-direction:column; justify-content:center; gap:6px;
+  width:100%; min-height:112px; padding:14px 13px; text-align:center;
+  background:var(--paper); border:1.5px solid var(--line); border-radius:12px;
+  cursor:pointer; transition:background .18s, border-color .18s, color .18s;
+  color:var(--ink)
+}
+#pb .word:hover{border-color:var(--brand); color:var(--deep)}
+#pb .word b{font-family:GmarketSans,sans-serif; font-size:14.5px; font-weight:700; line-height:1.4}
+#pb .word span{font-size:12.5px; line-height:1.6; word-break:keep-all}
+/* 뒤집기 전 — 뜻은 숨어 있습니다 */
+#pb .word span{display:none}
+#pb .word b::after{content:"?"; margin-left:4px; color:var(--brand); font-weight:800}
+/* 뒤집은 뒤 */
+#pb .word[aria-pressed="true"]{background:var(--navy); border-color:var(--navy); color:#dbeef8}
+#pb .word[aria-pressed="true"] b{font-size:12px; color:#7fb7ce; font-weight:700}
+#pb .word[aria-pressed="true"] b::after{content:""}
+#pb .word[aria-pressed="true"] span{display:block}
+#pb .words-fine{margin-top:13px; font-size:12.5px; color:var(--faint); line-height:1.6}
+
+/* ───── 답하는 사람 ───── */
+#pb .people{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+#pb .person{display:flex; align-items:center; gap:12px; border:1px solid var(--line); border-radius:13px; padding:15px 16px}
+#pb .face{
+  flex:none; width:44px; height:44px; border-radius:50%; background:var(--tint);
+  display:grid; place-items:center; font-family:GmarketSans,sans-serif;
+  font-size:17px; font-weight:700; color:var(--deep)
+}
+#pb .person b{display:block; font-size:15px; font-weight:700}
+#pb .person span{display:block; margin-top:2px; font-size:12.5px; color:var(--soft)}
 
 /* ───── 글 목록 ───── */
-#act .rows{border-top:2px solid var(--ink)}
-#act .row{display:flex; justify-content:space-between; gap:16px; align-items:baseline;
+#pb .rows{border-top:2px solid var(--ink)}
+#pb .row{display:flex; justify-content:space-between; gap:16px; align-items:baseline;
   padding:15px 2px; border-bottom:1px solid var(--line)}
-#act .row:hover .t{color:var(--deep); text-decoration:underline; text-underline-offset:3px}
-#act .row .t{font-family:GmarketSans,sans-serif; font-weight:700; font-size:15.5px; line-height:1.5}
-#act .row .meta{font-size:12.5px; color:var(--faint); white-space:nowrap}
-#act .more{display:inline-block; margin-top:18px; font-size:14px; font-weight:700; color:var(--deep)}
-#act .more:hover{text-decoration:underline; text-underline-offset:3px}
+#pb .row:hover .t{color:var(--deep); text-decoration:underline; text-underline-offset:3px}
+#pb .row .t{font-family:GmarketSans,sans-serif; font-weight:700; font-size:15.5px; line-height:1.5}
+#pb .row .meta{font-size:12.5px; color:var(--faint); white-space:nowrap}
 
-/* ───── 자료 ─────
-   활동하면서 나온 보고서로 바로 가는 칸입니다.
-   ⚠️ 지금은 셋 다 발행물(/23)로 갑니다. 활동별로 따로 모여 있다면 그 주소로 바꾸세요. */
-#act .docs{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:10px}
-#act .doc{
-  display:flex; align-items:center; justify-content:space-between; gap:12px;
-  border:1px solid var(--line); background:#fff; padding:16px 18px;
-  font-size:14.5px; font-weight:700; line-height:1.4; transition:.16s
+/* ───── 기관 의뢰 폼 ─────
+   시민 질문(2칸)과 기관 의뢰(5칸)를 나눈 이유: 쓰는 사람이 다릅니다.
+   시민에게 기관·담당자·인원을 물으면 거기서 그만둡니다. */
+#pb .form{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:22px}
+#pb .two{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+#pb .f{display:flex; flex-direction:column; gap:6px; margin-bottom:12px}
+#pb .f label{font-size:12.5px; font-weight:700}
+#pb .f input,#pb .f textarea{
+  border:1.5px solid var(--line); border-radius:9px; padding:11px 13px;
+  font-family:inherit; font-size:14.5px; background:#fff; color:var(--ink)
 }
-#act .doc:hover{border-color:var(--brand); color:var(--deep); transform:translateY(-2px)}
-#act .doc small{display:block; margin-top:3px; font-size:12px; font-weight:600; color:var(--faint)}
-#act .doc .go{flex:none; color:var(--brand)}
-
-/* ───── 현장 사진 ─────
-   ⚠️ 사진이 한 장도 없으면 이 칸은 **아예 안 만들어집니다**(빌드에서 통째로 빠짐).
-      점선 빈 자리를 두면 그 화면만 미완성으로 보이기 때문입니다.
-      사진이 생기면 build-activity.py 의 PAGES[...]['photos'] 에 줄만 늘리세요.
-
-   가로로 미는 줄인 이유: 활동 사진은 몇 장 될지 모릅니다. 격자로 두면
-   3장일 때 한 칸이 비고 7장일 때 두 줄째가 어정쩡해집니다. 줄이면 몇 장이든 됩니다. */
-#act .shots{margin:0 calc(50% - 50vw); padding:0}
-#act .shots-rail{
-  display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x proximity;
-  padding:0 max(22px,calc((100vw - 880px) / 2)) 4px; scrollbar-width:none
+#pb .f textarea{min-height:88px; resize:vertical}
+#pb .f input:focus,#pb .f textarea:focus{outline:none; border-color:var(--brand)}
+#pb .form .go{
+  width:100%; border:none; border-radius:9px; background:var(--ink); color:#fff;
+  padding:13px; font-size:15px; font-weight:700; cursor:pointer
 }
-#act .shots-rail::-webkit-scrollbar{display:none}
-#act .shot{flex:0 0 clamp(230px,30vw,320px); scroll-snap-align:start}
-#act .shot figure{margin:0}
-#act .shot .ph{
-  position:relative; aspect-ratio:4/3; overflow:hidden; background:var(--paper);
-  border:1px solid var(--line)
-}
-#act .shot .ph img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
-  transition:transform .5s}
-#act .shot:hover .ph img{transform:scale(1.04)}
-#act .shot figcaption{margin-top:9px; font-size:13px; color:var(--soft); line-height:1.55}
-#act .shot figcaption b{display:block; font-family:GmarketSans,sans-serif; font-size:13.5px; color:var(--ink)}
-/* 줄 끝에 빈 칸 — 마지막 사진이 화면 끝에 딱 붙지 않게 */
-#act .shots-rail::after{content:""; flex:0 0 max(6px,calc((100vw - 880px) / 2))}
-
-/* ───── 다른 활동으로 ─────
-   다섯 활동이 서로 이어져 있다는 것을 보여 주는 칸입니다.
-   상단 메뉴로 다시 올라가지 않고 옆으로 건너갈 수 있게 합니다. */
-#act .sibs{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:8px}
-#act .sib{border:1px solid var(--line); padding:14px 16px; font-size:14.5px; font-weight:700; transition:.16s}
-#act .sib small{display:block; margin-top:3px; font-size:11.5px; font-weight:600; color:var(--faint)}
-#act .sib:hover{border-color:var(--brand); background:var(--tint); color:var(--deep)}
+#pb .form .go:hover{background:#000}
 
 /* ───── 연락 ───── */
-#act .contact{display:flex; gap:26px; flex-wrap:wrap; font-size:14.5px; color:var(--soft)}
-#act .contact b{font-family:GmarketSans,sans-serif; color:var(--ink); display:block; font-size:13px}
-#act .contact a{color:var(--deep)}
-#act .contact a:hover{text-decoration:underline; text-underline-offset:3px}
+#pb .contact{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; font-size:14.5px}
+#pb .contact b{display:block; font-size:11.5px; font-weight:700; letter-spacing:.1em; color:var(--faint); margin-bottom:5px}
+#pb .contact a{color:var(--deep); font-weight:700}
+#pb .contact a:hover{text-decoration:underline; text-underline-offset:3px}
 
-/* 스크롤로 들어올 때 살짝 올라오기.
-   숨기는 상태는 스크립트가 붙입니다 — 막히면 그냥 다 보입니다. */
-#act .rv.is-armed{opacity:0; transform:translateY(12px)}
-#act .rv.is-in{opacity:1; transform:none; transition:opacity .5s ease,transform .5s cubic-bezier(.22,.61,.36,1)}
+/* ───── 미리보기 알림 띠 ─────
+   실제로 접수되지 않는다는 것을 방문자가 알아야 합니다.
+   폼이 서버에 연결되면 이 띠를 지우세요. -->  */
+#pb .draft{
+  background:var(--flag-bg); border-bottom:1px solid var(--flag-line); color:var(--flag);
+  text-align:center; padding:8px 16px; font-size:12.5px; font-weight:700
+}
 
-@media(max-width:640px){
-  #act{font-size:15.5px}
-  #act .hero{padding:34px 0}
-  #act .sec{padding:34px 0}
-  #act .nums{grid-template-columns:1fr}
-  #act .num{border-left:none; border-top:1px solid var(--line); text-align:left; display:flex;
-    align-items:baseline; gap:10px; padding:15px 20px}
-  #act .num:first-child{border-top:none}
-  #act .num span{margin-top:0}
-  #act .case{padding:18px 18px}
-  /* 제목과 날짜가 서로 밀지 않게 아래위로 */
-  #act .row{flex-direction:column; gap:5px}
-  #act .contact{gap:16px}
+@media(max-width:820px){
+  #pb .wrap{width:min(100% - 36px,880px)}
+  #pb .gates{grid-template-columns:1fr}
+  #pb .people{grid-template-columns:1fr}
+  #pb .words{grid-template-columns:repeat(2,1fr)}
+  #pb .contact{grid-template-columns:1fr 1fr}
+  #pb .two{grid-template-columns:1fr}
+  #pb .qa summary{flex-wrap:wrap}
+  #pb .qa summary .tail{margin-left:35px; width:100%}
 }
 @media(prefers-reduced-motion:reduce){
-  #act *{transition:none!important; animation:none!important}
-  #act .rv.is-armed{opacity:1; transform:none}
+  #pb *{transition:none!important; animation:none!important}
 }
 </style>
 
@@ -593,7 +580,7 @@
   }
 </style>
 
-<header id="ah-nav" data-here="act-power">
+<header id="ah-nav" data-here="pb">
   <div class="wrap hd-in">
     <a class="logo" href="/69?preview_mode=1">
       <span class="logo-mark" aria-hidden="true">행</span>
@@ -909,158 +896,245 @@
 </script>
 <!-- /PART:header -->
 
-<div id="act" aria-label="권력감시">
+<div id="pb" aria-label="참여예산 상담소">
 
-  <!-- ───────── 히어로 ─────────
-       ⚠️ 제목과 한 줄은 초안입니다. 실제 표현으로 바꿔 주세요. -->
+  <!-- ⚠️ 폼이 서버에 연결되면 이 띠를 지우세요. -->
+  <div class="draft">초안입니다 — 보낸 질문이 실제로 접수되지 않습니다</div>
+
+  <!-- ───────── 히어로 — 바로 묻게 합니다 ───────── -->
   <section class="hero"><div class="wrap">
-    <nav class="crumb"><a href="/69?preview_mode=1">홈</a><span>&rsaquo;</span><a href="/52">활동</a><span>&rsaquo;</span>권력감시</nav>
-    <span class="who">중앙정부 · 국회</span>
-    <h1>정부와 국회에,<br>시민의 이름으로 묻습니다</h1>
-    <p class="by">중앙정부와 국회가 시민에게 설명하지 않고 넘어가려는 결정을 붙잡아 묻습니다.</p>
-  </div></section>
+    <nav class="crumb"><a href="/69?preview_mode=1">홈</a><span>&rsaquo;</span><a href="/issue/">이슈</a><span>&rsaquo;</span>참여예산 상담소</nav>
+    <h1>참여예산, 물어보세요.</h1>
+    <p class="by">시민도, 참여예산위원도, 기관 담당자도 묻습니다.
+      전문위원이 답하고, 오간 문답은 여기에 쌓입니다.</p>
 
-  <!-- ───────── 숫자 셋 ─────────
-       ⚠️ 확인된 값만 올립니다. 모르면 딱지를 붙이고 비워 두세요. -->
-  <section class="nums">
-    <div class="num"><b>1999<i>년</i></b><span>창립</span></div>
-    <div class="num"><b><span class="tbd">확인 필요</span></b><span>올해 낸 논평 · 성명</span></div>
-    <div class="num"><b><span class="tbd">확인 필요</span></b><span>정보공개 청구 건수</span></div>
-  </section>
+    <form class="ask" id="pb-ask">
+      <div class="who" role="group" aria-label="누구로 묻나요">
+        <button type="button" data-who="citizen" aria-pressed="true">시민</button>
+        <button type="button" data-who="member" aria-pressed="false">참여예산위원</button>
+        <button type="button" data-who="org" aria-pressed="false">기관 담당자</button>
+      </div>
+      <label class="sr-only" for="pb-q" hidden>궁금한 것</label>
+      <textarea id="pb-q" placeholder="궁금한 것을 편하게 적어 주세요. 짧아도 괜찮습니다."></textarea>
+      <label class="sr-only" for="pb-mail" hidden>답장 받을 이메일</label>
+      <input type="email" id="pb-mail" placeholder="답장 받을 이메일" autocomplete="email">
+      <button type="submit" class="go">질문 보내기</button>
+      <p class="fine">이름과 소속은 받지 않습니다. 답장에만 이메일을 씁니다.
+        <span class="tbd">답변 소요 기간 확인 필요</span></p>
+      <p class="msg" id="pb-msg" role="status"></p>
+    </form>
+  </div></section>
 
   <div class="wrap">
 
-    <!-- ───────── 이 활동만의 칸 ───────── -->
-    <section class="sec sig sig-ask"><div class="sh">
-      <span class="eyebrow">ASKED</span>
-      <h2>물었는데, 아직 <span class="tbd">채울 값 있음</span></h2>
-      <p>시민을 대신해 물은 것과, 돌아온 답을 그대로 적습니다. 답이 없으면 없는 채로 남겨 둡니다.</p>
-    </div>
-      <ul class="asks">
-        <li class="ask rv">
-          <span>
-            <span class="q">부처별 예산요구서를 공개하라</span>
-            <span class="to">기획재정부 · 거부 → 소송 → 대법원 승소. 예산요구서가 처음으로 공개됐습니다.</span>
-          </span>
-          <span class="st st-win">소송 승소</span>
-        </li>
-        <li class="ask rv">
-          <span>
-            <span class="q">미래대응기금 신설의 산출 근거를 밝혀라</span>
-            <span class="to">기획재정부 · 국회 · 논평으로 쟁점을 냈지만 근거는 아직 제시되지 않았습니다.</span>
-          </span>
-          <span class="st st-none">답변 없음</span>
-        </li>
-      </ul>
-    </section>
-
-    <!-- ───────── 지금 ───────── -->
+    <!-- ───────── 더한 것 1 — 세 갈래 입구 ───────── -->
     <section class="sec"><div class="sh">
-      <span class="eyebrow">NOW</span>
-      <h2>지금 무엇을 보고 있나</h2>
-      <p>끝나는 날짜가 붙은 일이 늘어나면 그건 '활동'이 아니라 '이슈'로 올립니다.</p>
+      <span class="eyebrow">WHO</span>
+      <h2>누구로 오셨나요</h2>
+      <p>셋은 궁금한 것이 전혀 다릅니다. 고르면 아래 문답이 그것만 남습니다.</p>
     </div>
-      <ul class="now">
-        <li><a href="/27/?idx=173013295&amp;bmode=view">
-          <span class="t">추가세수 100조 쓰임에 대한 시민 의견 수렴</span>
-          <span class="m"><span class="due">8월 31일</span></span>
-        </a></li>
-        <li><a href="#">
-          <span class="t">국민과 함께하는 지출구조조정 논의 대응</span>
-          <span class="m"><span class="tbd">확인 필요</span></span>
-        </a></li>
-      </ul>
-    </section>
-
-    <!-- ───────── 결과 ─────────
-         사건 하나에 [무엇을 했나] + [무엇이 바뀌었나] 두 줄. 근거 글을 아래에 답니다.
-         ⚠️ 확인된 사실만 적었습니다. 후속 조치나 성과 수치는 확인 전까지 쓰지 마세요. -->
-    <section class="sec"><div class="sh">
-      <span class="eyebrow">RESULT</span>
-      <h2>무엇이 달라졌나</h2>
-      <p>글이 아니라 사건으로 적습니다. 무엇을 했고, 그래서 무엇이 바뀌었는지 두 줄입니다.</p>
-    </div>
-      <div class="res">
-        <article class="case rv">
-          <h3>정부 예산요구서 공개 소송 <span class="tbd">확인 필요</span></h3>
-          <p class="did">각 부처가 기획재정부에 낸 예산요구서를 공개하라고 요구하고, 거부되자 소송으로 다퉜습니다.</p>
-          <p class="got">대법원에서 승소해 예산요구서가 처음으로 공개됐습니다.</p>
-          <p class="when">연도 확인 필요</p>
-        </article>
-        <article class="case rv">
-          <h3>미래대응기금 신설 논의 <span class="tbd">확인 필요</span></h3>
-          <p class="did">충분한 사전 논의 없이 추진되던 기금 신설에 논평을 내고 쟁점을 정리했습니다.</p>
-          <p class="got">무엇이 달라졌는지는 아직 정리되지 않았습니다.</p>
-          <div class="src"><a href="/27/?idx=172690687&amp;bmode=view">논평 전문 →</a></div>
-          <p class="when">2026.07</p>
-        </article>
+      <div class="gates" role="group" aria-label="갈래 고르기">
+        <button type="button" class="gate" data-gate="citizen" aria-pressed="false">
+          <span class="ic" aria-hidden="true">🙋</span>
+          <b>시민</b>
+          <span>우리 동네도 하는지, 어떻게 끼어들 수 있는지</span>
+          <i>문답 <span data-gate-count="citizen">0</span>개</i>
+        </button>
+        <button type="button" class="gate" data-gate="member" aria-pressed="false">
+          <span class="ic" aria-hidden="true">🗳️</span>
+          <b>참여예산위원</b>
+          <span>회의에서 무엇을 봐야 하는지, 무엇을 요구할 수 있는지</span>
+          <i>문답 <span data-gate-count="member">0</span>개</i>
+        </button>
+        <button type="button" class="gate" data-gate="org" aria-pressed="false">
+          <span class="ic" aria-hidden="true">🏛️</span>
+          <b>기관 담당자</b>
+          <span>운영·교육·평가를 어떻게 굴릴지</span>
+          <i>문답 <span data-gate-count="org">0</span>개</i>
+        </button>
       </div>
     </section>
 
-    <!-- ───────── 글 ─────────
-         ⚠️ 코드에 박아 둔 목록이라 새 글이 자동으로 올라오지 않습니다.
-            캠페이너스 기본 게시판 위젯으로 바꿀 자리입니다. -->
+    <!-- ───────── 오간 질문 ─────────
+         ⚠️ 아래 셋은 참여예산 초안(participatory-budget/index.html)에 있던 실제 문답입니다.
+            답한 사람 이름이 'ㅇㅇㅇ'인 것은 아직 확인이 안 됐기 때문입니다. -->
+    <section class="sec"><div class="sh">
+      <span class="eyebrow">Q&amp;A</span>
+      <h2>오간 질문</h2>
+      <p>같은 걸 궁금해한 사람이 이미 있었습니다.</p>
+    </div>
+
+      <div class="qtools">
+        <span class="count" id="pb-count"></span>
+        <button type="button" id="pb-all" aria-pressed="true">전체</button>
+        <button type="button" id="pb-sort" aria-pressed="false">궁금해요 많은 순</button>
+      </div>
+
+      <div class="qa" id="pb-qa">
+
+        <details class="item" data-who="citizen" data-q="town" data-me="12">
+          <summary>
+            <span class="mark q" aria-hidden="true">Q</span>
+            <span>우리 동네도 참여예산을 하나요?</span>
+            <span class="tail">
+              <span class="whotag">시민</span>
+              <span class="me" role="button" tabindex="0" aria-pressed="false" aria-label="나도 궁금해요">
+                <span aria-hidden="true">🙋</span><span class="n">12</span>
+              </span>
+            </span>
+          </summary>
+          <div class="ans">
+            <span class="mark a" aria-hidden="true">A</span>
+            <div class="body">
+              거의 모든 지자체가 합니다. 홈페이지에서 '주민참여예산'을 검색하거나
+              예산 담당 부서에 전화해 올해 접수 시기를 물어보세요.
+              <div class="sign">ㅇㅇㅇ 전문위원 <span class="tbd">이름 확인 필요</span></div>
+            </div>
+          </div>
+        </details>
+
+        <details class="item" data-who="member" data-q="first" data-me="8">
+          <summary>
+            <span class="mark q" aria-hidden="true">Q</span>
+            <span>위원이 됐는데 첫 회의에서 뭘 봐야 하나요?</span>
+            <span class="tail">
+              <span class="whotag">참여예산위원</span>
+              <span class="me" role="button" tabindex="0" aria-pressed="false" aria-label="나도 궁금해요">
+                <span aria-hidden="true">🙋</span><span class="n">8</span>
+              </span>
+            </span>
+          </summary>
+          <div class="ans">
+            <span class="mark a" aria-hidden="true">A</span>
+            <div class="body">
+              운영 조례, 올해 참여예산 총액과 그 근거, 작년 제안과 채택 결과.
+              이 셋을 먼저 요청하세요.
+              <div class="sign">ㅇㅇㅇ 전문위원 <span class="tbd">이름 확인 필요</span></div>
+            </div>
+          </div>
+        </details>
+
+        <details class="item" data-who="citizen" data-q="reject" data-me="21">
+          <summary>
+            <span class="mark q" aria-hidden="true">Q</span>
+            <span>제안이 '부적합'으로 반려됐는데 끝인가요?</span>
+            <span class="tail">
+              <span class="whotag">시민</span>
+              <span class="me" role="button" tabindex="0" aria-pressed="false" aria-label="나도 궁금해요">
+                <span aria-hidden="true">🙋</span><span class="n">21</span>
+              </span>
+            </span>
+          </summary>
+          <div class="ans">
+            <span class="mark a" aria-hidden="true">A</span>
+            <div class="body">
+              아닙니다. 사유를 문서로 달라고 요청할 수 있고,
+              지역에 따라 위원회 재검토를 요청하는 길도 있습니다.
+              <div class="sign">ㅇㅇㅇ 전문위원 <span class="tbd">이름 확인 필요</span></div>
+            </div>
+          </div>
+        </details>
+
+      </div>
+
+      <!-- ───── 더한 것 4 — 답을 기다리는 질문 ─────
+           ⚠️ 아래 둘은 화면이 어떻게 보이는지 알려 주는 **자리 표시**입니다.
+              실제 접수된 질문이 아닙니다. 폼이 연결되면 실제 대기 질문으로 바꾸세요. -->
+      <div class="waiting">
+        <h3>답을 기다리는 질문 <span class="tbd">예시 — 실제 접수 아님</span></h3>
+        <p>들어온 질문은 답이 달리기 전에도 여기에 올라옵니다. 내 질문도 사라지지 않습니다.</p>
+        <ul>
+          <li><span class="dot" aria-hidden="true"></span>
+            <span>참여예산 총액은 누가 어떻게 정하나요?</span>
+            <span class="when">2일째</span></li>
+          <li><span class="dot" aria-hidden="true"></span>
+            <span>주민제안 사업이 다음 해로 넘어가면 예산은 어떻게 되나요?</span>
+            <span class="when">4일째</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ───────── 더한 것 3 — 참여예산 말 뜻 ───────── -->
+    <section class="sec"><div class="sh">
+      <span class="eyebrow">WORDS</span>
+      <h2>참여예산 말 뜻</h2>
+      <p>못 묻는 가장 큰 이유는 몰라서가 아니라 <b>용어를 몰라서</b>입니다. 눌러서 뒤집어 보세요.</p>
+    </div>
+      <div class="words">
+        <button type="button" class="word" aria-pressed="false"><b>주민참여예산</b><span>지자체가 예산을 짤 때 주민이 직접 끼어드는 제도. 지방재정법 제39조에 근거가 있습니다.</span></button>
+        <button type="button" class="word" aria-pressed="false"><b>제안사업</b><span>주민이 "이걸 해 달라"고 낸 사업. 심사를 거쳐 예산에 오릅니다.</span></button>
+        <button type="button" class="word" aria-pressed="false"><b>참여예산위원</b><span>주민 가운데 뽑혀 제안을 심사하고 우선순위를 정하는 사람.</span></button>
+        <button type="button" class="word" aria-pressed="false"><b>운영조례</b><span>그 지자체가 참여예산을 어떻게 굴릴지 정해 둔 규칙. 총액·위원 수·절차가 여기 있습니다.</span></button>
+        <button type="button" class="word" aria-pressed="false"><b>지역회의</b><span>동이나 권역 단위로 모여 그 동네 제안을 먼저 추려 내는 자리.</span></button>
+        <button type="button" class="word" aria-pressed="false"><b>총회 · 한마당</b><span>제안들의 최종 우선순위를 정하는 자리. 지역마다 이름이 다릅니다.</span></button>
+        <button type="button" class="word" aria-pressed="false"><b>숙의</b><span>표만 던지지 않고, 왜 그게 필요한지 따져 본 뒤에 정하는 것.</span></button>
+        <button type="button" class="word" aria-pressed="false"><b>반영률</b><span>낸 제안 가운데 실제로 예산에 오른 비율. 그 지역 참여예산이 형식적인지 아닌지를 가늠하는 값입니다.</span></button>
+      </div>
+      <p class="words-fine">낱말을 더하려면 위 카드 하나를 복사해 앞면·뒷면 글자만 바꾸면 됩니다.</p>
+    </section>
+
+    <!-- ───────── 답하는 사람 ─────────
+         초안 반려 사유 중 "답할 사람이 안 보였다"를 푸는 칸입니다.
+         ⚠️ 이름·담당이 전부 확인 안 됐습니다. -->
+    <section class="sec"><div class="sh">
+      <span class="eyebrow">WHO ANSWERS</span>
+      <h2>답하는 사람 <span class="tbd">이름 확인 필요</span></h2>
+      <p>참여예산을 오래 들여다본 전문위원이 직접 답합니다.</p>
+    </div>
+      <div class="people">
+        <div class="person"><div class="face" aria-hidden="true">이</div><div><b>ㅇㅇㅇ</b><span>운영 평가 모니터링</span></div></div>
+        <div class="person"><div class="face" aria-hidden="true">박</div><div><b>ㅇㅇㅇ</b><span>위원 교육</span></div></div>
+        <div class="person"><div class="face" aria-hidden="true">정</div><div><b>ㅇㅇㅇ</b><span>예산 분석</span></div></div>
+      </div>
+    </section>
+
+    <!-- ───────── 전문위원의 글 ─────────
+         ⚠️ 제목·필자·날짜가 전부 예시입니다. 실제 글로 바꾸세요. -->
     <section class="sec"><div class="sh">
       <span class="eyebrow">POSTS</span>
-      <h2>최근에 쓴 글</h2>
-      <p>⚠️ 이 활동은 2026-08-26 에 새로 만든 칸이라 전용 게시판이 아직 없습니다. 아래는 일반 활동(/27)·예산 모니터링(/57)에 올라간 실제 글 중 중앙정부·국회에 해당하는 것입니다.</p>
+      <h2>전문위원의 글 <span class="tbd">전부 예시</span></h2>
+      <p>문답으로 다 못 담는 것은 글로 풉니다.</p>
     </div>
       <div class="rows">
-        <a class="row" href="/27/?idx=172690687&amp;bmode=view">
-          <span class="t">[논평] 미래대응기금, 빠른 추진보다 충분한 사전논의가 먼저다.</span>
-          <span class="meta">2026.07.27</span>
-        </a>
-        <a class="row" href="/57/?idx=171879037&amp;bmode=view">
-          <span class="t">국민과 함께하는 지출구조조정 토론회 쟁점, 질문 정리</span>
-          <span class="meta">2026.06.18</span>
-        </a>
-        <a class="row" href="/57/?idx=172188605&amp;bmode=view">
-          <span class="t">그놈의 업무추진비, 축구협회와 양궁협회의 사정</span>
-          <span class="meta">2026.07.03</span>
-        </a>
-      </div>
-      <a class="more" href="/27">글 전체보기 →</a>
-    </section>
-
-    <!-- ───────── 자료 ─────────
-         활동하면서 나온 보고서로 바로 가는 칸입니다.
-         ⚠️ 셋 다 발행물(/23)로 걸어 뒀습니다. 활동별 자료 주소가 따로 있으면 바꾸세요. -->
-    <section class="sec"><div class="sh">
-      <span class="eyebrow">LIBRARY</span>
-      <h2>더 깊이 보려면</h2>
-      <p>이 활동에서 나온 보고서와 자료를 모아 둔 곳입니다. <span class="tbd">주소 확인 필요</span></p>
-    </div>
-      <div class="docs">
-        <a class="doc" href="/23">발행물<small>보고서 · 이슈페이퍼</small><span class="go" aria-hidden="true">→</span></a>
-        <a class="doc" href="/24">뉴스룸<small>보도자료 · 언론보도</small><span class="go" aria-hidden="true">→</span></a>
-        <a class="doc" href="/27">게시판<small>권력감시 글 전체</small><span class="go" aria-hidden="true">→</span></a>
+        <a class="row" href="#"><span class="t">참여예산 총액은 누가 정하나</span><span class="meta">ㅇㅇㅇ · 00.00</span></a>
+        <a class="row" href="#"><span class="t">첫 회의 전에 챙길 자료 다섯</span><span class="meta">ㅇㅇㅇ · 00.00</span></a>
+        <a class="row" href="#"><span class="t">제안이 살아남은 동네, 사라진 동네</span><span class="meta">ㅇㅇㅇ · 00.00</span></a>
+        <a class="row" href="#"><span class="t">운영 평가가 바뀌면 무엇이 달라지나</span><span class="meta">ㅇㅇㅇ · 00.00</span></a>
       </div>
     </section>
 
-
-    <!-- ───────── 다른 활동 ───────── -->
+    <!-- ───────── 교육 · 컨설팅 의뢰 ───────── -->
     <section class="sec"><div class="sh">
-      <span class="eyebrow">OTHERS</span>
-      <h2>시민행동이 하는 다른 일</h2>
+      <span class="eyebrow">REQUEST</span>
+      <h2>교육 · 컨설팅 의뢰</h2>
+      <p>지자체·중간지원조직 담당자를 위한 칸입니다.
+        <span class="tbd">비용 기준·진행 주체 확인 필요</span></p>
     </div>
-      <div class="sibs">
-        <a class="sib" href="/49">지자체 감시<small>지방정부 · 지방의회</small></a>
-        <a class="sib" href="/act-budget">예산감시<small>나라살림 · 지방재정</small></a>
-        <a class="sib" href="/51">시민참여<small>참여예산 제도 개선 · 시민 교육</small></a>
-        <a class="sib" href="/dok-history">밑빠진 독상<small>역대 기록 · 지도</small></a>
-      </div>
+      <form class="form" id="pb-order">
+        <div class="two">
+          <div class="f"><label for="pb-o1">기관</label><input type="text" id="pb-o1"></div>
+          <div class="f"><label for="pb-o2">담당자</label><input type="text" id="pb-o2"></div>
+        </div>
+        <div class="two">
+          <div class="f"><label for="pb-o3">이메일</label><input type="email" id="pb-o3"></div>
+          <div class="f"><label for="pb-o4">시기 · 인원</label><input type="text" id="pb-o4"></div>
+        </div>
+        <div class="f"><label for="pb-o5">필요한 것</label><textarea id="pb-o5"></textarea></div>
+        <button type="submit" class="go">의뢰 보내기</button>
+        <p class="msg" id="pb-omsg" role="status"></p>
+      </form>
     </section>
 
     <!-- ───────── 연락 ───────── -->
     <section class="sec"><div class="sh">
       <span class="eyebrow">CONTACT</span>
-      <h2>알려 주실 것이 있나요</h2>
+      <h2>다른 길로 닿기</h2>
     </div>
       <div class="contact">
-        <p><b>제보 · 문의</b><a href="mailto:action@action.or.kr">action@action.or.kr</a></p>
-        <p><b>전화</b><a href="tel:02-921-4709">02-921-4709</a></p>
-        <p><b>소식</b><a href="/25">뉴스레터 받아보기</a></p>
-        <p><b>함께하기</b><a href="https://donate.action.or.kr/">후원</a></p>
+        <div><b>이메일</b><a href="mailto:action@action.or.kr">action@action.or.kr</a></div>
+        <div><b>전화</b><a href="tel:02-921-4709">02-921-4709</a></div>
+        <div><b>소식</b><a href="/25">뉴스레터 받기</a></div>
+        <div><b>함께하기</b><a href="https://donate.action.or.kr/">후원</a></div>
       </div>
     </section>
 
@@ -1068,27 +1142,160 @@
 </div>
 
 <script>
-/* 스크롤로 들어올 때 살짝 올라오기.
-   숨기는 상태(.is-armed)를 스크립트가 직접 붙입니다. 그래서 스크립트가 막히면
-   아무것도 안 숨겨지고 내용이 그냥 다 보입니다.
-   ⚠️ 캠페이너스 코드 위젯이 <script> 를 실행하는지는 /69 에서 확인해야 합니다. */
+/* 참여예산 상담소 — 하는 일 다섯.
+     1. 히어로에서 고른 갈래를 기억
+     2. 세 갈래 입구로 문답 거르기
+     3. '나도 궁금해요' 누르기 (그 브라우저에만 남습니다)
+     4. 궁금해요 많은 순으로 정렬
+     5. 말 뜻 카드 뒤집기
+
+   설계 원칙(DESIGN.md): **켜는 것만 스크립트가 합니다.**
+   이 코드가 통째로 막혀도 문답은 전부 펼쳐 볼 수 있고 폼도 그대로 보입니다.
+   안 되는 것은 거르기·정렬·카드 뒤집기뿐입니다. */
 (function () {
-  var items = document.querySelectorAll('#act .rv');
-  if (!items.length || !('IntersectionObserver' in window)) return;
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  'use strict';
+  var root = document.getElementById('pb');
+  if (!root) return;
 
-  var io = new IntersectionObserver(function (es) {
-    es.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      e.target.classList.add('is-in');
-      io.unobserve(e.target);
+  var WHO = { citizen: '시민', member: '참여예산위원', org: '기관 담당자' };
+
+  /* ── 그 사람 브라우저에만 남기는 기록 ──
+     사생활 보호 모드나 쿠키 차단이면 통째로 실패합니다. 그래도 화면은 멀쩡해야 하므로
+     읽기·쓰기를 전부 try 로 감쌉니다. */
+  var KEY = 'pb-me-v1';
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function save(v) {
+    try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {}
+  }
+  var mine = load();
+
+  var items = Array.prototype.slice.call(root.querySelectorAll('#pb-qa .item'));
+
+  /* ── 1·2. 갈래 거르기 ── */
+  var gate = null;   // null 이면 전체
+  function applyGate() {
+    var shown = 0;
+    items.forEach(function (it) {
+      var ok = !gate || it.dataset.who === gate;
+      it.hidden = !ok;
+      if (ok) shown++;
     });
-  }, { rootMargin: '0px 0px -10% 0px' });
+    root.querySelectorAll('.gate').forEach(function (b) {
+      b.setAttribute('aria-pressed', b.dataset.gate === gate ? 'true' : 'false');
+    });
+    var all = document.getElementById('pb-all');
+    if (all) all.setAttribute('aria-pressed', gate ? 'false' : 'true');
+    var count = document.getElementById('pb-count');
+    if (count) {
+      count.textContent = gate
+        ? WHO[gate] + ' 문답 ' + shown + '개'
+        : '문답 ' + shown + '개';
+    }
+  }
 
-  Array.prototype.forEach.call(items, function (el, i) {
-    el.classList.add('is-armed');
-    el.style.transitionDelay = Math.min(i, 4) * 60 + 'ms';
-    io.observe(el);
+  root.querySelectorAll('.gate').forEach(function (b) {
+    b.addEventListener('click', function () {
+      gate = (gate === b.dataset.gate) ? null : b.dataset.gate;   // 다시 누르면 전체로
+      applyGate();
+      document.getElementById('pb-qa').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   });
+  var allBtn = document.getElementById('pb-all');
+  if (allBtn) allBtn.addEventListener('click', function () { gate = null; applyGate(); });
+
+  // 갈래마다 문답이 몇 개인지 — 입구 카드에 적습니다.
+  Object.keys(WHO).forEach(function (k) {
+    var n = items.filter(function (it) { return it.dataset.who === k; }).length;
+    root.querySelectorAll('[data-gate-count="' + k + '"]').forEach(function (el) {
+      el.textContent = n;
+    });
+  });
+
+  /* ── 3. 나도 궁금해요 ──
+     details 안의 summary 위에 있어서, 그냥 두면 누를 때 문답이 같이 열립니다.
+     그래서 기본 동작을 막습니다. */
+  function wireMe(el) {
+    var item = el.closest('.item');
+    var nEl = el.querySelector('.n');
+    var base = parseInt(item.dataset.me, 10) || 0;
+    var id = item.dataset.q;
+
+    function paint() {
+      var on = !!mine[id];
+      el.setAttribute('aria-pressed', on ? 'true' : 'false');
+      nEl.textContent = base + (on ? 1 : 0);
+      item.dataset.score = base + (on ? 1 : 0);
+    }
+    function toggle(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (mine[id]) delete mine[id]; else mine[id] = 1;
+      save(mine);
+      paint();
+    }
+    el.addEventListener('click', toggle);
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') toggle(e);
+    });
+    paint();
+  }
+  root.querySelectorAll('#pb-qa .me').forEach(wireMe);
+
+  /* ── 4. 궁금해요 많은 순 ── */
+  var sortOn = false;
+  var sortBtn = document.getElementById('pb-sort');
+  var qa = document.getElementById('pb-qa');
+  var origOrder = items.slice();
+  if (sortBtn && qa) {
+    sortBtn.addEventListener('click', function () {
+      sortOn = !sortOn;
+      sortBtn.setAttribute('aria-pressed', sortOn ? 'true' : 'false');
+      var order = sortOn
+        ? items.slice().sort(function (a, b) {
+            return (parseInt(b.dataset.score, 10) || 0) - (parseInt(a.dataset.score, 10) || 0);
+          })
+        : origOrder;
+      order.forEach(function (it) { qa.appendChild(it); });
+    });
+  }
+
+  /* ── 5. 말 뜻 카드 뒤집기 ── */
+  root.querySelectorAll('.word').forEach(function (b) {
+    b.addEventListener('click', function () {
+      b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+    });
+  });
+
+  /* ── 히어로에서 고른 갈래 ── */
+  var askWho = 'citizen';
+  root.querySelectorAll('#pb-ask .who button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      askWho = b.dataset.who;
+      root.querySelectorAll('#pb-ask .who button').forEach(function (x) {
+        x.setAttribute('aria-pressed', x === b ? 'true' : 'false');
+      });
+    });
+  });
+
+  /* ── 폼 ──
+     ⚠️ 아직 아무 데도 보내지 않습니다. 받는 곳이 정해지면 여기에 연결하세요.
+        보낼 것: 갈래(askWho) · 질문 · 이메일. 이름과 소속은 받지 않습니다. */
+  function fakeSubmit(formId, msgId, text) {
+    var form = document.getElementById(formId);
+    var msg = document.getElementById(msgId);
+    if (!form || !msg) return;
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      msg.textContent = text;
+      msg.classList.add('on');
+    });
+  }
+  fakeSubmit('pb-ask', 'pb-msg', '초안이라 아직 접수되지 않습니다. 받는 곳이 정해지면 연결됩니다.');
+  fakeSubmit('pb-order', 'pb-omsg', '초안이라 아직 접수되지 않습니다.');
+
+  applyGate();
 })();
 </script>

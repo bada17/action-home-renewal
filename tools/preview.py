@@ -21,9 +21,10 @@
     /51             활동 > 참여예산       (아직 없음 — 안내가 뜹니다)
     /dok-history    활동 > 밑빠진 독상    dok-history.html
     /dok/           밑빠진 독상 원본      옆 저장소를 그 자리에서 읽습니다
-    /pb/            참여예산 상담소       옆 저장소를 그 자리에서 읽습니다
+    /pb/            참여예산 상담소       pb.html
+    /pb-old/        상담소 옛 초안        옆 저장소를 그 자리에서 읽습니다
 
-    /dok/ 과 /pb/ 는 **복사하지 않습니다.** 원본 저장소를 그대로 물려 주므로
+    /dok/ 과 /pb-old/ 는 **복사하지 않습니다.** 원본 저장소를 그대로 물려 주므로
     거기서 고치면 여기서도 바로 보입니다.
 """
 
@@ -43,7 +44,9 @@ SIBLINGS = {
         os.path.join(os.path.dirname(ROOT), 'dokseong', 'public'),
         r'C:\Users\dbqke\dokseong\public',
     ],
-    '/pb/': [
+    # 2026-08-27: /pb/ 는 이 저장소의 새 상담소(pb.html)가 씁니다.
+    # 옛 초안은 견줘 보려고 /pb-old/ 로 옮겨 두었습니다.
+    '/pb-old/': [
         r'C:\Users\dbqke\participatory-budget',
         os.path.join(os.path.dirname(ROOT), 'participatory-budget'),
     ],
@@ -58,6 +61,8 @@ ROUTES = {
     '/act-power': 'activity-power.html',
     '/act-budget': 'activity-budget.html',
     '/dok-history': 'dok-history.html',
+    '/pb/': 'pb.html',
+    '/pb': 'pb.html',
 }
 
 # 아직 화면이 없는 주소. 404 대신 "무엇이 없는지"를 알려 줍니다.
@@ -106,8 +111,10 @@ SHELL = u'''<!doctype html>
   <a href="/act-budget"%(a_budget)s>예산감시</a>
   <a href="/51"%(a_pb51)s>참여예산</a>
   <a href="/dok-history"%(a_dok)s>밑빠진 독상</a>
+  <b>이슈</b>
+  <a href="/pb/"%(a_pb)s>참여예산 상담소</a>
   <b>원본</b>
-  <a href="/pb/"%(a_pb)s>상담소</a>
+  <a href="/pb-old/">상담소 옛 초안</a>
   <a href="/dok/"%(a_dokorg)s>독상 사이트</a>
 </nav>
 %(body)s
@@ -128,6 +135,7 @@ TITLES = {
     '/': '홈', '/69': '홈', '/issue/': '이슈', '/issue': '이슈',
     '/49': '활동 > 지자체 감시', '/act-power': '활동 > 권력감시',
     '/act-budget': '활동 > 예산감시', '/dok-history': '활동 > 밑빠진 독상',
+    '/pb/': '이슈 > 참여예산 상담소', '/pb': '이슈 > 참여예산 상담소',
 }
 
 MIME = {
@@ -154,7 +162,8 @@ def wrap(path, body, title):
     }
     key = {'/': 'a_home', '/69': 'a_home', '/issue/': 'a_issue', '/issue': 'a_issue',
            '/49': 'a_local', '/act-power': 'a_power', '/act-budget': 'a_budget',
-           '/51': 'a_pb51', '/dok-history': 'a_dok'}.get(path)
+           '/51': 'a_pb51', '/dok-history': 'a_dok',
+           '/pb/': 'a_pb', '/pb': 'a_pb'}.get(path)
     if key:
         marks[key] = ' class="on"'
     d = dict(marks)

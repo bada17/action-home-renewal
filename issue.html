@@ -30,7 +30,7 @@
   --ink:#0b1e28; --soft:#4a6473; --faint:#7d95a3; --line:#d5e4eb; --paper:#f1f6f8;
   --flag:#9a5c06; --flag-bg:#fff4e1; --flag-line:#ecd3a2;
 
-  position:relative; left:50%; width:100vw; margin-left:-50vw;
+  margin-left:calc(50% - 50vw + var(--ah-sb, 0px) / 2);margin-right:calc(50% - 50vw + var(--ah-sb, 0px) / 2);
   background:#fff; color:var(--ink); line-height:1.65;
   font-family:'Pretendard Variable',Pretendard,'Noto Sans KR',-apple-system,sans-serif;
   word-break:keep-all; -webkit-font-smoothing:antialiased;
@@ -141,6 +141,635 @@
 }
 @media(prefers-reduced-motion:reduce){ #iss *{transition:none!important; animation:none!important} }
 </style>
+
+<!-- PART:header -->
+<!-- ═══════════════════════════════════════════════════════════════════
+     공통 헤더 — 여섯 화면이 같이 쓰는 하나의 부품
+
+     ⚠️ 이 파일만 고치세요. 각 .html 안에 있는 헤더는 tools/build-parts.py 가
+        여기 내용을 그대로 복사해 넣은 것이라, .html 쪽을 고치면 다음 빌드에서
+        지워집니다.  고친 뒤에는  python tools/build-parts.py  를 돌리세요.
+
+     왜 페이지 뿌리(#action-home-v2 · #act · #dok · #iss · #pb) **밖에** 두는가:
+       그 뿌리들은 전체 폭을 쓰려고 overflow:hidden 을 걸고 있습니다.
+       position:sticky 는 overflow:hidden 인 조상 안에서는 붙어 있지 못합니다.
+       그래서 헤더는 뿌리의 형제로 앞에 놓고, 스스로 범위(#ah-nav)를 가집니다.
+
+     범위가 #ah-nav 로 따로인 이유:
+       화면마다 뿌리 이름이 달라(#act, #dok …) 뿌리에 기대면 CSS 가 안 먹습니다.
+       그래서 색·글꼴을 자기 안에 다시 정의합니다. 값은 DESIGN.md 와 같습니다.
+     ═══════════════════════════════════════════════════════════════════ -->
+<style>
+  #ah-nav,#ah-nav *,.ah-float,.ah-float *{box-sizing:border-box}
+  #ah-nav{
+    --brand:#00afec;          /* 시민행동 하늘색 */
+    --brand-deep:#0087b8;     /* 흰 바탕 위 글자에 쓰는 진한 쪽 */
+    --brand-tint:#e5f7fe;
+    --ink:#0d1c26;--ink-soft:#47606f;--line:#dde7ec;--paper:#f7fafb;
+    /* 위에 붙어 따라오기 + 전체 폭으로 펼치기.
+       ⚠️ 전체 폭을 `left:50%; margin-left:-50vw` 로 만들면 안 됩니다.
+          position:sticky 에서 left 는 '위치를 옮기는 값'이 아니라 '가로로 붙는 조건'이라,
+          세로로만 붙어야 할 헤더가 가로 방향 계산까지 끌어들여 브라우저마다 다르게 굽니다.
+          그래서 **여백만으로** 폭을 넓힙니다. 여백은 배치라서 sticky 와 안 부딪힙니다. */
+    position:sticky;top:0;z-index:80;
+    /* --ah-sb 는 세로 스크롤바 폭입니다. 100vw 에는 스크롤바가 들어 있어서
+       그냥 쓰면 화면이 스크롤바 폭만큼 옆으로 삐져나오고 가로 스크롤바가 생깁니다.
+       아래 스크립트가 재서 넣어 줍니다. 스크립트가 막히면 0 이라 지금까지와 같습니다. */
+    margin-left:calc(50% - 50vw + var(--ah-sb, 0px) / 2);margin-right:calc(50% - 50vw + var(--ah-sb, 0px) / 2);
+    border-bottom:1px solid var(--line);background:#fff;
+    color:var(--ink);line-height:1.6;
+    font-family:'Pretendard Variable',Pretendard,'Noto Sans KR',-apple-system,sans-serif;
+    word-break:keep-all;-webkit-font-smoothing:antialiased
+  }
+  /* 스크롤을 내리면 그림자가 생겨, 아래 내용과 겹쳐도 띠가 떠 보입니다. */
+  #ah-nav.is-stuck{box-shadow:0 6px 20px rgba(13,28,38,.09)}
+  #ah-nav a{color:inherit;text-decoration:none}
+  #ah-nav img{display:block;width:100%}
+  #ah-nav ul{list-style:none;margin:0;padding:0}
+  #ah-nav p{margin:0}
+  #ah-nav .wrap{width:min(1280px,calc(100% - 48px));margin:0 auto}
+
+  #ah-nav .hd-in{display:flex;align-items:center;gap:20px;min-height:72px}
+  #ah-nav .logo{display:flex;align-items:center;gap:11px;flex:none}
+  #ah-nav .logo-mark{width:36px;height:36px;border-radius:50%;background:var(--brand);display:grid;place-items:center;color:#fff;font-size:16px;font-weight:900;flex:none}
+  #ah-nav .logo b{display:block;font-size:16.5px;font-weight:800;letter-spacing:-.03em;line-height:1.2}
+  #ah-nav .logo small{display:block;font-size:10.5px;letter-spacing:.08em;color:var(--ink-soft)}
+
+  /* ───────── 알약 메뉴 ───────── */
+  #ah-nav .gnb{display:flex;align-items:stretch;gap:8px;margin-left:auto}
+  /* 알약 칸이 헤더 높이만큼 차 있어야, 알약에서 아래 판으로 커서를 내리는 동안
+     판이 닫히지 않습니다. */
+  #ah-nav .gnb-item{position:relative;display:flex;align-items:center}
+  #ah-nav .gnb-item>a{
+    display:inline-flex;align-items:center;height:42px;padding:0 20px;border-radius:999px;
+    border:1.5px solid var(--line);font-size:15px;font-weight:700;transition:.15s;white-space:nowrap
+  }
+  #ah-nav .gnb-item>a:hover{border-color:var(--brand);color:var(--brand-deep)}
+  #ah-nav .is-todo{border-style:dashed!important;color:var(--ink-soft)}
+
+  /* ───────── 지금 보고 있는 곳 표시 (2026-08-27) ─────────
+     '목차를 눌러 들어가면 어디에 있는지 모르겠다'는 문제를 푸는 곳입니다.
+     스크립트가 헤더의 data-here 값을 읽어 .is-here 를 붙입니다.
+     스크립트가 막혀도 메뉴는 그대로 다 보입니다 — 표시만 안 붙습니다. */
+  #ah-nav .gnb-item>a.is-here{
+    border-color:var(--brand);background:var(--brand-tint);color:var(--brand-deep)
+  }
+  /* 알약 밑에 짧은 밑줄 — 색만으로는 색각 이상이 있는 분에게 안 보입니다.
+     그래서 색과 밑줄 두 가지로 같이 표시합니다. */
+  #ah-nav .gnb-item>a.is-here::after{
+    content:"";position:absolute;left:50%;bottom:-1px;transform:translateX(-50%);
+    width:26px;height:3px;background:var(--brand);border-radius:3px 3px 0 0
+  }
+  /* 펼침 판 안에서 지금 보고 있는 줄 */
+  #ah-nav .drop a.is-here,#ah-nav .drow .dmain.is-here{
+    background:var(--brand-tint);color:var(--brand-deep)
+  }
+  #ah-nav .drow .dmain.is-here em{color:var(--brand-deep)}
+  #ah-nav .msub a.is-here{background:var(--brand);color:#fff}
+  /* 화면 낭독기에만 읽히는 '(현재 위치)' 표시 */
+  #ah-nav .ah-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+  /* ───────── 하위 목차 ───────── */
+  #ah-nav .drop{
+    position:absolute;top:100%;left:0;min-width:210px;padding-top:10px;
+    opacity:0;visibility:hidden;transform:translateY(-6px);
+    transition:opacity .15s,transform .15s,visibility .15s
+  }
+  #ah-nav .gnb-item:hover .drop,
+  #ah-nav .gnb-item:focus-within .drop{opacity:1;visibility:visible;transform:none}
+  #ah-nav .drop ul{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;box-shadow:0 14px 34px rgba(13,28,38,.14)}
+  #ah-nav .drop ul a{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;font-size:14.5px;font-weight:600;white-space:nowrap}
+  #ah-nav .drop ul a:hover{background:var(--brand-tint);color:var(--brand-deep)}
+  #ah-nav .todo-mark{border:1px dashed var(--line);border-radius:999px;padding:1px 7px;font-size:11px;font-weight:700;color:var(--ink-soft)}
+
+  /* 활동 하위 목차 — 이름 + 감시 대상 + 자료실.
+     활동 다섯이 '감시'라는 같은 말을 써서 이름만으로는 안 갈립니다. */
+  #ah-nav .drop.is-act ul{min-width:298px;padding:6px}
+  #ah-nav .drow{display:flex;align-items:stretch;gap:4px}
+  #ah-nav .drow .dmain{
+    flex:1;display:block;padding:9px 12px;border-radius:8px;
+    font-size:14.5px;font-weight:700;line-height:1.35;white-space:nowrap
+  }
+  #ah-nav .drow .dmain em{
+    display:block;margin-top:2px;font-style:normal;
+    font-size:11.5px;font-weight:600;color:var(--ink-soft);letter-spacing:-.01em
+  }
+  #ah-nav .drow .dmain:hover{background:var(--brand-tint);color:var(--brand-deep)}
+  #ah-nav .drow .dmain:hover em{color:var(--brand-deep)}
+  #ah-nav .drow .ddoc{
+    flex:none;align-self:center;border:1px solid var(--line);border-radius:999px;
+    padding:5px 11px;font-size:11.5px;font-weight:700;color:var(--ink-soft);
+    opacity:.55;transition:.15s;white-space:nowrap
+  }
+  #ah-nav .drow:hover .ddoc{opacity:1}
+  #ah-nav .drow .ddoc:hover{border-color:var(--brand);background:var(--brand);color:#fff}
+  #ah-nav .msub a.is-doc{background:none;border:1px dashed var(--line);color:var(--brand-deep)}
+
+  /* ───────── 이슈 — 헤더 아래 전체 폭 띠 ───────── */
+  #ah-nav .gnb-item.is-mega{position:static}
+  #ah-nav .drop.mega{left:0;right:0;min-width:0;padding-top:0;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 16px 34px rgba(13,28,38,.1)}
+  #ah-nav .is-mega:hover>a,#ah-nav .is-mega:focus-within>a{border-color:var(--brand);color:var(--brand-deep)}
+  #ah-nav .mega-in{width:min(1280px,calc(100% - 48px));margin:0 auto;padding:26px 0 32px}
+  #ah-nav .mega-hd{font-size:15px;font-weight:700;color:var(--ink-soft);margin-bottom:18px}
+  #ah-nav .mega-hd b{color:var(--brand-deep)}
+  /* 이슈 카드 수가 바뀌면 아래 5 만 고치면 됩니다(마지막 minmax 는 오른쪽 버튼 묶음). */
+  #ah-nav .mega-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) minmax(190px,.7fr);gap:18px}
+  #ah-nav .icard{display:block;white-space:normal}
+  #ah-nav .icard-media{
+    display:grid;place-items:center;position:relative;aspect-ratio:4/3;overflow:hidden;
+    border-radius:8px;background:var(--paper)
+  }
+  #ah-nav .icard-media img{position:absolute;inset:0;height:100%;object-fit:cover}
+  #ah-nav .icard-note{
+    display:grid;place-items:center;gap:2px;width:100%;height:100%;
+    border:2px dashed var(--line);border-radius:8px;
+    font-size:12.5px;font-weight:700;color:var(--ink-soft);text-align:center
+  }
+  #ah-nav .icard-note small{font-weight:500;font-size:11px}
+  #ah-nav .icard strong{display:block;margin-top:12px;font-size:15.5px;font-weight:700;line-height:1.45}
+  #ah-nav .icard:hover strong{color:var(--brand-deep)}
+  #ah-nav .icard:hover .icard-media{outline:2px solid var(--brand);outline-offset:2px}
+  #ah-nav .icard-due{display:block;margin-top:5px;font-size:12.5px;font-weight:700;color:var(--brand-deep)}
+  #ah-nav .mega-side{display:grid;gap:10px;align-content:start}
+  #ah-nav .mega-side a{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    border:1.5px solid var(--line);border-radius:6px;padding:14px 18px;
+    font-size:14.5px;font-weight:700;line-height:1.35
+  }
+  #ah-nav .mega-side a:hover{border-color:var(--brand);color:var(--brand-deep)}
+  #ah-nav .mega-side .is-fill{background:var(--brand);border-color:var(--brand);color:#fff}
+  #ah-nav .mega-side .is-fill:hover{background:var(--brand-deep);color:#fff}
+
+  /* ───────── 오른쪽 도구 ───────── */
+  #ah-nav .hd-tools{display:flex;align-items:center;gap:6px;flex:none;margin-left:8px}
+  #ah-nav .ico{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:17px;color:var(--ink-soft);background:none;cursor:pointer}
+  #ah-nav .ico:hover{border-color:var(--brand);color:var(--brand-deep)}
+  #ah-nav .menu-btn{display:none}
+
+  /* ═══════════ 후원하기 — 반짝이는 버튼 (2026-08-27) ═══════════
+     사용자 요청: "누르고 싶게".  세 가지를 겹쳐 씁니다.
+       1. 빛줄기(sheen)가 4초마다 한 번 좌→우로 훑고 지나갑니다
+       2. 둘레에 옅은 브랜드색 숨쉬기(halo)
+       3. 커서를 올리면 살짝 떠오르고 하트가 커집니다
+     ⚠️ 계속 번쩍이면 눈이 아프고 광고처럼 보입니다. 그래서 '가끔 한 번'입니다.
+        움직임 줄이기 설정을 켠 분에게는 아래 media 쿼리에서 전부 끕니다. */
+  #ah-nav .gnb .is-cta{
+    position:relative;overflow:hidden;isolation:isolate;
+    background:var(--brand);border-color:var(--brand);color:#fff;
+    box-shadow:0 2px 10px rgba(0,175,236,.34)
+  }
+  #ah-nav .gnb .is-cta:hover{background:var(--brand-deep);border-color:var(--brand-deep);color:#fff}
+  /* 1. 빛줄기 — 버튼 위를 지나가는 흰 띠 */
+  #ah-nav .gnb .is-cta::before{
+    content:"";position:absolute;top:-60%;bottom:-60%;left:-40%;width:34%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.62),transparent);
+    transform:skewX(-18deg);pointer-events:none;
+    animation:ah-sheen 4s cubic-bezier(.4,0,.2,1) infinite
+  }
+  @keyframes ah-sheen{
+    0%   {left:-40%}
+    /* 훑고 지나간 뒤에는 오래 쉽니다 — 계속 번쩍이지 않게 */
+    32%  {left:120%}
+    100% {left:120%}
+  }
+  /* 2. 숨쉬기 — 버튼 뒤에서 옅게 커졌다 작아지는 테 */
+  #ah-nav .gnb .is-cta::after{
+    content:"";position:absolute;inset:0;border-radius:999px;z-index:-1;
+    box-shadow:0 0 0 0 rgba(0,175,236,.55);
+    animation:ah-halo 2.8s ease-out infinite
+  }
+  @keyframes ah-halo{
+    0%   {box-shadow:0 0 0 0 rgba(0,175,236,.5)}
+    70%  {box-shadow:0 0 0 12px rgba(0,175,236,0)}
+    100% {box-shadow:0 0 0 0 rgba(0,175,236,0)}
+  }
+  /* 3. 커서를 올렸을 때 */
+  #ah-nav .gnb .is-cta{transition:.18s transform,.18s background,.18s box-shadow}
+  #ah-nav .gnb .is-cta:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,135,184,.45)}
+  #ah-nav .gnb .is-cta .ah-heart{
+    display:inline-block;margin-right:7px;font-size:13px;
+    animation:ah-beat 2.8s ease-in-out infinite
+  }
+  @keyframes ah-beat{
+    0%,72%,100%{transform:scale(1)}
+    78%       {transform:scale(1.32)}
+    86%       {transform:scale(1)}
+    92%       {transform:scale(1.18)}
+  }
+  #ah-nav .gnb .is-cta:hover .ah-heart{animation-duration:1.1s}
+
+  /* ───────── 좁은 화면 메뉴판 ───────── */
+  #ah-nav .mnav{display:none;border-top:1px solid var(--line);background:#fff;max-height:70vh;overflow-y:auto}
+  #ah-nav .mnav.open{display:block}
+  #ah-nav .mnav>div>ul{padding:10px 0 18px}
+  #ah-nav .mnav>div>ul>li+li{border-top:1px solid var(--line)}
+  #ah-nav .mnav>div>ul>li>a{display:flex;align-items:center;justify-content:space-between;padding:15px 4px 8px;font-size:16px;font-weight:700}
+  #ah-nav .mnav a:hover{color:var(--brand-deep)}
+  #ah-nav .mnav a.is-cta{color:var(--brand-deep);padding-bottom:15px}
+  #ah-nav .msub{display:flex;flex-wrap:wrap;gap:6px;padding:0 4px 14px}
+  #ah-nav .msub a{background:var(--paper);border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:600;color:var(--ink-soft)}
+  #ah-nav .msub a:hover{background:var(--brand);color:#fff}
+
+  /* ───────── 떠 있는 후원 버튼 ─────────
+     레퍼런스: 서울환경연합 오른쪽 아래 알약 버튼.
+     한 화면쯤 내리면 올라옵니다.
+     ⚠️ position:fixed 라 캠페이너스 쪽에 transform 이 걸린 감싼 요소가 있으면
+        화면이 아니라 그 요소를 기준으로 붙습니다. /69 에서 확인이 필요합니다. */
+  .ah-float{
+    position:fixed;right:clamp(16px,2.4vw,34px);bottom:clamp(16px,2.4vw,34px);z-index:70;
+    display:flex;align-items:center;gap:18px;background:#fff;color:#0d1c26;
+    border-radius:999px;padding:16px 20px 16px 26px;text-decoration:none;
+    box-shadow:0 12px 34px rgba(13,28,38,.22);
+    font-family:'Pretendard Variable',Pretendard,'Noto Sans KR',-apple-system,sans-serif;
+    font-size:15px;font-weight:700;line-height:1.4;word-break:keep-all;
+    opacity:0;visibility:hidden;transform:translateY(18px);
+    transition:opacity .25s,transform .25s,visibility .25s
+  }
+  .ah-float.on{opacity:1;visibility:visible;transform:none}
+  .ah-float:hover{color:#0d1c26;box-shadow:0 16px 40px rgba(13,28,38,.3)}
+  .ah-float span{display:block}
+  .ah-float .arrow{
+    flex:none;width:36px;height:36px;border-radius:50%;background:#00afec;color:#fff;
+    display:grid;place-items:center;font-size:15px;transition:transform .15s;
+    box-shadow:0 0 0 0 rgba(0,175,236,.55);animation:ah-halo 2.8s ease-out infinite
+  }
+  .ah-float:hover .arrow{transform:translateX(3px)}
+
+  /* ───────── 좁은 화면 ─────────
+     알약이 일곱이라 폭이 줄면 헤더 밖으로 밀려 잘립니다.
+     사라지기 전에 먼저 작아지게 하고, 정말 좁아지면 그때 햄버거로 넘깁니다. */
+  @media(max-width:1400px){
+    #ah-nav .gnb{gap:6px}
+    #ah-nav .gnb-item>a{height:40px;padding:0 15px;font-size:14px}
+  }
+  @media(max-width:1220px){
+    #ah-nav .gnb-item>a{padding:0 12px;font-size:13.5px}
+    #ah-nav .hd-in{gap:14px}
+  }
+  /* 알약을 감추지 않고 둘째 줄로 내려 가로로 넘깁니다.
+     감춰 버리면 이 단체가 무엇을 하는 곳인지 첫 화면에서 안 보입니다. */
+  @media(max-width:1060px){
+    #ah-nav .hd-in{flex-wrap:wrap;min-height:0;padding:10px 0 8px;row-gap:9px}
+    #ah-nav .gnb{
+      order:3;flex-basis:100%;margin:0;align-items:center;justify-content:flex-start;
+      overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+      scrollbar-width:none;padding-bottom:2px
+    }
+    #ah-nav .gnb::-webkit-scrollbar{display:none}
+    #ah-nav .gnb-item{flex:none}
+    #ah-nav .gnb-item>a{height:37px;padding:0 15px;font-size:14px}
+    #ah-nav .gnb-item:last-child{padding-right:14px}
+    #ah-nav .drop{display:none}
+    #ah-nav .menu-btn{display:grid}
+    #ah-nav .hd-tools{margin-left:auto}
+    /* 알약이 가로로 넘어가면 밑줄이 잘려 보입니다. 왼쪽 굵은 선으로 바꿉니다. */
+    #ah-nav .gnb-item>a.is-here::after{display:none}
+    #ah-nav .gnb-item>a.is-here{box-shadow:inset 3px 0 0 var(--brand)}
+  }
+  @media(max-width:820px){
+    #ah-nav .wrap{width:min(100% - 36px,1280px)}
+    #ah-nav .hd-in{gap:10px}
+    #ah-nav .logo-mark{width:32px;height:32px;font-size:15px}
+    #ah-nav .logo b{font-size:15px}
+    #ah-nav .ico{width:38px;height:38px}
+    /* 떠 있는 버튼이 아래쪽 내용을 가리지 않게 가로로 눕힙니다.
+       env(safe-area-inset-bottom) 은 아이폰 아래 홈 표시줄을 피하는 값입니다. */
+    .ah-float{
+      left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));
+      justify-content:space-between;padding:12px 14px 12px 20px;font-size:14px
+    }
+    .ah-float .arrow{width:32px;height:32px;font-size:14px}
+  }
+  @media(max-width:430px){
+    #ah-nav .wrap{width:min(100% - 28px,1280px)}
+    #ah-nav .logo small{display:none}
+    .ah-float span:first-child br{display:none}
+    .ah-float{font-size:13.5px}
+  }
+
+  /* 움직임 줄이기 설정을 켠 분 — 반짝임을 전부 끕니다.
+     끄더라도 색·테두리로 후원 버튼이 눈에 띄는 것은 그대로입니다. */
+  @media(prefers-reduced-motion:reduce){
+    #ah-nav *,.ah-float,.ah-float *{transition:none!important;animation:none!important}
+    #ah-nav .gnb .is-cta::before{display:none}
+  }
+</style>
+
+<header id="ah-nav" data-here="issue">
+  <div class="wrap hd-in">
+    <a class="logo" href="/69?preview_mode=1">
+      <span class="logo-mark" aria-hidden="true">행</span>
+      <span><b>함께하는 시민행동</b><small>ACTION TOGETHER</small></span>
+    </a>
+
+    <!-- 하위 목차는 현재 action.or.kr 실제 메뉴 트리입니다. 이번 개편에서 손본 곳:
+           · 자료실 메뉴를 없애고 발행물·뉴스룸을 '소식' 밑으로 옮김
+           · '캠페인' 대신 '이슈'를 두고 그 안에 캠페인을 넣음
+           · 회원 공간은 메뉴에서 제외(페이지는 그대로 있음)
+           · 갈 곳이 안 정해진 메뉴는 '자리 미정' 알약에 모아 둠 -->
+    <nav class="gnb" aria-label="주요 메뉴">
+      <div class="gnb-item">
+        <a href="/aboutus" data-nav="about">소개</a>
+        <div class="drop"><ul>
+          <li><a href="/aboutus">우리 단체는</a></li>
+          <li><a href="/45">지나온 길</a></li>
+          <li><a href="/31">운영 자료</a></li>
+          <li><a href="/32">지속가능보고서</a></li>
+          <li><a href="/53">단체 로고</a></li>
+        </ul></div>
+      </div>
+
+      <!-- 활동 = 끝나는 날짜가 없는 일. 마감이 있으면 '이슈'로 갑니다.
+           ⚠️ /act-power · /act-budget · /dok-history 는 미리보기 전용 경로입니다.
+              캠페이너스 페이지를 만들면 그 번호로 바꾸세요. -->
+      <div class="gnb-item">
+        <a href="/52" data-nav="act">활동</a>
+        <div class="drop is-act"><ul>
+          <li class="drow">
+            <a class="dmain" href="/49" data-nav="act-local">지자체 감시<em>지방정부 · 지방의회</em></a>
+            <a class="ddoc" href="/23" aria-label="지자체 감시 자료실">자료실</a>
+          </li>
+          <li class="drow">
+            <a class="dmain" href="/act-power" data-nav="act-power">권력감시<em>중앙정부 · 국회</em></a>
+            <a class="ddoc" href="/23" aria-label="권력감시 자료실">자료실</a>
+          </li>
+          <li class="drow">
+            <a class="dmain" href="/act-budget" data-nav="act-budget">예산감시<em>나라살림 · 지방재정</em></a>
+            <a class="ddoc" href="/23" aria-label="예산감시 자료실">자료실</a>
+          </li>
+          <li class="drow">
+            <a class="dmain" href="/51" data-nav="act-civic">시민참여<em>참여예산 제도 개선 · 시민 교육</em></a>
+            <a class="ddoc" href="/23" aria-label="시민참여 자료실">자료실</a>
+          </li>
+          <li class="drow">
+            <a class="dmain" href="/dok-history" data-nav="act-dok">밑빠진 독상<em>역대 기록 · 지도</em></a>
+            <a class="ddoc" href="/23" aria-label="밑빠진 독상 자료실">자료실</a>
+          </li>
+        </ul></div>
+      </div>
+
+      <!-- 이슈 = 끝나는 날짜가 있는 것. 마감이 지나면 내리고, 그 결과는 해당
+           활동 페이지의 '결과' 칸으로 내려갑니다. -->
+      <div class="gnb-item is-mega">
+        <a href="/issue/" data-nav="issue">이슈</a>
+        <div class="drop mega"><div class="mega-in">
+          <p class="mega-hd">지금 시민의 선택이 필요한, <b>이슈</b></p>
+          <div class="mega-grid">
+
+            <a class="icard" href="/27/?idx=173013295&amp;bmode=view">
+              <span class="icard-media">
+                <img src="https://cdn.imweb.me/thumbnail/20260811/59d0381d6c5b7.png" alt="추가세수 시민의견 수렴 캠페인">
+              </span>
+              <strong>더 걷힐 세금, 어디에 쓸래?</strong>
+              <span class="icard-due">8월 31일 마감</span>
+            </a>
+
+            <!-- ⚠️ 사진은 '밑빠진 독상 vol.2' 글 썸네일입니다. 대표 이미지가 나오면 교체. -->
+            <a class="icard" href="https://dokseong-action.bada523082.chatgpt.site/">
+              <span class="icard-media">
+                <img src="https://cdn.imweb.me/thumbnail/20260825/c4b8e2d1b259d.png" alt="2026 하반기 밑빠진 독상">
+              </span>
+              <strong>2026 하반기 밑빠진독상</strong>
+              <span class="icard-due">9월 15일 제보 마감</span>
+            </a>
+
+            <a class="icard" href="https://vote.action.or.kr/">
+              <span class="icard-media">
+                <img src="https://vote.action.or.kr/og-budget-vote-v1.png?v=2" alt="10만원 예산 편성 투표">
+              </span>
+              <strong>10만원 예산편성</strong>
+              <span class="icard-due">기간 확인 필요</span>
+            </a>
+
+            <!-- ⚠️ /pb/ 는 미리보기 전용 경로입니다. 캠페이너스 페이지 번호로 바꾸세요. -->
+            <a class="icard" href="/pb/" data-nav="pb">
+              <span class="icard-media">
+                <span class="icard-note">이미지 자리<small>가로 4:3</small></span>
+              </span>
+              <strong>참여예산 상담소</strong>
+              <span class="icard-due">상시 운영</span>
+            </a>
+
+            <a class="icard" href="#">
+              <span class="icard-media">
+                <span class="icard-note">이미지 자리<small>가로 4:3</small></span>
+              </span>
+              <strong>1회 참여예산 고민대회</strong>
+              <span class="icard-due">기간 미정</span>
+            </a>
+
+            <div class="mega-side">
+              <a href="https://donate.action.or.kr/">정기후원 회원가입 <span aria-hidden="true">⟶</span></a>
+              <a href="/25">뉴스레터 받기 <span aria-hidden="true">⟶</span></a>
+              <a class="is-fill" href="/52">시민행동다운<br>예산감시 <span aria-hidden="true">⟶</span></a>
+            </div>
+
+          </div>
+        </div></div>
+      </div>
+
+      <div class="gnb-item">
+        <a href="/26" data-nav="news">소식</a>
+        <div class="drop"><ul>
+          <li><a href="/26">공지</a></li>
+          <li><a href="/23">발행물</a></li>
+          <li><a href="/24">뉴스룸</a></li>
+          <li><a href="#">투명성<span class="todo-mark">미정</span></a></li>
+        </ul></div>
+      </div>
+
+      <!-- ⚠️ 임시 알약 — 갈 곳이 정해지지 않은 메뉴를 잠시 모아 둔 곳입니다.
+           자리가 정해지면 각 항목을 해당 메뉴로 옮기고 이 알약은 통째로 지우세요.
+           점선 테두리는 "아직 미정" 표시라 공개 전에 반드시 없어져야 합니다. -->
+      <div class="gnb-item">
+        <a class="is-todo" href="#">자리 미정</a>
+        <div class="drop"><ul>
+          <li><a href="/50">지자체 ESG 평가<span class="todo-mark">내년</span></a></li>
+          <li><a href="/54">연대 활동</a></li>
+          <li><a href="/27">일반 활동</a></li>
+          <li><a href="/46">지역 예산 감시 사례</a></li>
+          <li><a href="/40">회원 공간</a></li>
+          <li><a href="/25">뉴스레터</a></li>
+        </ul></div>
+      </div>
+
+      <div class="gnb-item">
+        <a class="is-cta" href="https://donate.action.or.kr/"><span class="ah-heart" aria-hidden="true">♥</span>후원하기</a>
+        <!-- ⚠️ '25년의 시민행동'(/67)은 실제 사이트에서 후원 밑에 들어가 있습니다. -->
+        <div class="drop"><ul>
+          <li><a href="/join">후원 신청</a></li>
+          <li><a href="/36">후원 행사</a></li>
+          <li><a href="/67">25년의 시민행동</a></li>
+        </ul></div>
+      </div>
+    </nav>
+
+    <div class="hd-tools">
+      <a class="ico" href="/search" aria-label="검색">⌕</a>
+      <button class="ico menu-btn" type="button" id="ah-menu-btn" aria-label="전체 메뉴" aria-expanded="false" aria-controls="ah-mnav">☰</button>
+    </div>
+  </div>
+
+  <!-- 좁은 화면 전용 메뉴판. 위 알약 메뉴와 같은 항목이니 한쪽을 고치면 여기도 고칠 것. -->
+  <nav class="mnav" id="ah-mnav" aria-label="전체 메뉴"><div class="wrap"><ul>
+    <li>
+      <a href="/aboutus">소개</a>
+      <ul class="msub">
+        <li><a href="/aboutus">우리 단체는</a></li>
+        <li><a href="/45">지나온 길</a></li>
+        <li><a href="/31">운영 자료</a></li>
+        <li><a href="/32">지속가능보고서</a></li>
+        <li><a href="/53">단체 로고</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="/52">활동</a>
+      <ul class="msub">
+        <li><a href="/49" data-nav="act-local">지자체 감시</a></li>
+        <li><a href="/act-power" data-nav="act-power">권력감시</a></li>
+        <li><a href="/act-budget" data-nav="act-budget">예산감시</a></li>
+        <li><a href="/51" data-nav="act-civic">시민참여</a></li>
+        <li><a href="/dok-history" data-nav="act-dok">밑빠진 독상</a></li>
+        <li><a class="is-doc" href="/23">활동 자료실 →</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="/issue/">이슈</a>
+      <ul class="msub">
+        <li><a href="/27/?idx=173013295&amp;bmode=view">더 걷힐 세금, 어디에 쓸래?</a></li>
+        <li><a href="https://dokseong-action.bada523082.chatgpt.site/">2026 하반기 밑빠진독상</a></li>
+        <li><a href="https://vote.action.or.kr/">10만원 예산편성</a></li>
+        <li><a href="/pb/" data-nav="pb">참여예산 상담소</a></li>
+        <li><a href="#">1회 참여예산 고민대회</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="/26">소식</a>
+      <ul class="msub">
+        <li><a href="/26">공지</a></li>
+        <li><a href="/23">발행물</a></li>
+        <li><a href="/24">뉴스룸</a></li>
+        <li><a href="#">투명성(미정)</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#">자리 미정</a>
+      <ul class="msub">
+        <li><a href="/50">지자체 ESG 평가(내년)</a></li>
+        <li><a href="/54">연대 활동</a></li>
+        <li><a href="/27">일반 활동</a></li>
+        <li><a href="/46">지역 예산 감시 사례</a></li>
+        <li><a href="/40">회원 공간</a></li>
+        <li><a href="/25">뉴스레터</a></li>
+      </ul>
+    </li>
+    <li><a class="is-cta" href="https://donate.action.or.kr/">후원하기 →</a></li>
+  </ul></div></nav>
+</header>
+
+<a class="ah-float" id="ah-float" href="https://donate.action.or.kr/">
+  <span>예산은 저절로 지켜지지 않습니다<br><b>월 1만원으로 감시에 함께하기</b></span>
+  <span class="arrow" aria-hidden="true">→</span>
+</a>
+
+<script>
+/* 공통 헤더 — 하는 일 넷.
+     1. 지금 보고 있는 메뉴에 표시 붙이기 (data-here)
+     2. 좁은 화면 햄버거 열고 닫기
+     3. 스크롤을 내리면 헤더에 그림자 (붙어 있는 게 보이도록)
+     4. 한 화면쯤 내리면 오른쪽 아래 후원 버튼 띄우기
+
+   설계 원칙(DESIGN.md): **켜는 것만 스크립트가 합니다.**
+   그래서 이 스크립트가 통째로 막혀도 메뉴는 다 보이고 링크도 다 눌립니다.
+   안 되는 것은 '현재 위치 표시'와 '햄버거'뿐입니다. */
+(function () {
+  'use strict';
+  var hd = document.getElementById('ah-nav');
+  if (!hd) return;
+
+  /* ── 0. 세로 스크롤바 폭 재기 ──
+     전체 폭으로 펼칠 때 쓰는 100vw 에는 스크롤바가 들어 있습니다. 그대로 쓰면
+     모든 화면이 스크롤바 폭(보통 15px)만큼 옆으로 밀려 가로 스크롤바가 생깁니다.
+     재서 --ah-sb 로 넘겨 주면 헤더와 각 화면이 그만큼 되돌립니다.
+     창 크기가 바뀌면 다시 잽니다. */
+  function measureBar() {
+    var sb = window.innerWidth - document.documentElement.clientWidth;
+    document.documentElement.style.setProperty('--ah-sb', (sb > 0 ? sb : 0) + 'px');
+  }
+  measureBar();
+  window.addEventListener('resize', measureBar);
+
+  /* ── 1. 지금 보고 있는 곳 표시 ──
+     헤더의 data-here 값(예: "act-budget")과 같은 data-nav 를 가진 링크를 켭니다.
+     활동 하위(act-*)면 위쪽 '활동' 알약도 같이 켜서, 큰 갈래가 어디인지 보이게 합니다. */
+  var here = hd.getAttribute('data-here') || '';
+  if (here && here !== 'home') {
+    var marks = [here];
+    if (here.indexOf('act-') === 0) marks.push('act');   // 활동 밑이면 '활동'도
+    if (here === 'pb') marks.push('issue');              // 상담소는 이슈 밑
+    marks.forEach(function (key) {
+      hd.querySelectorAll('[data-nav="' + key + '"]').forEach(function (el) {
+        el.classList.add('is-here');
+        el.setAttribute('aria-current', 'page');
+      });
+    });
+    /* 화면 낭독기에도 알려 줍니다 — 색과 밑줄은 눈으로만 보입니다. */
+    var top = hd.querySelector('.gnb-item>a.is-here');
+    if (top && !top.querySelector('.ah-sr')) {
+      var sr = document.createElement('span');
+      sr.className = 'ah-sr';
+      sr.textContent = ' (현재 위치)';
+      top.appendChild(sr);
+    }
+  }
+
+  /* ── 2. 햄버거 ── */
+  var btn = document.getElementById('ah-menu-btn');
+  var mnav = document.getElementById('ah-mnav');
+  if (btn && mnav) {
+    btn.addEventListener('click', function () {
+      var open = mnav.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.textContent = open ? '✕' : '☰';
+    });
+    /* 메뉴판에서 어디를 누르면 판을 닫습니다 — 안 닫으면 다음 화면에서도 열려 있습니다. */
+    mnav.addEventListener('click', function (e) {
+      if (e.target.closest('a')) {
+        mnav.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.textContent = '☰';
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && mnav.classList.contains('open')) {
+        mnav.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.textContent = '☰';
+        btn.focus();
+      }
+    });
+  }
+
+  /* ── 3·4. 스크롤 ──
+     두 가지를 한 번에 봅니다: 헤더 그림자, 떠 있는 후원 버튼.
+     requestAnimationFrame 으로 묶어 스크롤마다 계산이 몰리지 않게 합니다. */
+  var floatCta = document.getElementById('ah-float');
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      var y = window.pageYOffset || document.documentElement.scrollTop;
+      hd.classList.toggle('is-stuck', y > 4);
+      if (floatCta) floatCta.classList.toggle('on', y > window.innerHeight * 0.75);
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+<!-- /PART:header -->
 
 <div id="iss" aria-label="이슈">
 
