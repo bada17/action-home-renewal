@@ -1634,7 +1634,7 @@ html { scroll-behavior: smooth; }
   // 로컬 미리보기에서는 같은 서버가 /dok/ 로 저장소를 그대로 물려 줍니다.
   // 같은 출처라 CORS 없이 확인할 수 있습니다.
   var isLocal = location.hostname === '127.0.0.1' || location.hostname === 'localhost';
-  var BASE = isLocal ? '/dok/' : LIVE;
+  var DATA = isLocal ? '/dok/data/' : LIVE + 'public-data/';
 
   var esc = function (v) {
     return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
@@ -2767,8 +2767,8 @@ html { scroll-behavior: smooth; }
   }
 
   Promise.all([
-    fetch(BASE + 'data/map-sido.json').then(function (r) { return r.json(); }),
-    fetch(BASE + 'data/awards.json').then(function (r) { return r.json(); })
+    fetch(DATA + 'map-sido.json').then(function (r) { return r.json(); }),
+    fetch(DATA + 'awards.json').then(function (r) { return r.json(); })
   ]).then(function (res) {
     awards = res[1].awards || [];
     fillStats();
