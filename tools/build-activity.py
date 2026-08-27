@@ -135,7 +135,7 @@ TEMPLATE = u'''<style>
    왼쪽 정렬입니다. 가운데로 놓으면 위의 제목과 축이 어긋나 또 따로 노는 칸이 됩니다.
    ⚠️ 확인 안 된 숫자는 올리지 말고 딱지를 붙이세요. */
 #act .nums{{
-  display:grid; grid-template-columns:repeat(3,1fr);
+  display:grid; grid-auto-flow:column; grid-auto-columns:1fr;
   margin-top:clamp(26px,3vw,40px); border-top:1px solid var(--line)
 }}
 #act .num{{padding:clamp(16px,1.8vw,22px) 0; border-left:1px solid var(--line); padding-left:clamp(14px,1.6vw,20px)}}
@@ -402,7 +402,7 @@ TEMPLATE = u'''<style>
   #act .sec{{padding:34px 0}}
   /* 좁은 화면에서는 숫자 셋을 세로로 눕힙니다. 셋을 가로로 두면 한 칸이 100px 밑으로
      떨어져 '감시한 지자체 수' 같은 이름이 석 줄로 접힙니다. */
-  #act .nums{{grid-template-columns:1fr}}
+  #act .nums{{grid-auto-flow:row; grid-auto-columns:auto; grid-template-columns:1fr}}
   #act .num{{border-left:none; border-top:1px solid var(--line); display:flex;
     align-items:baseline; gap:10px; padding:13px 0}}
   #act .num:first-child{{border-top:none}}
@@ -588,8 +588,7 @@ PAGES = {
         lede='우리 동네 예산과 조례가 어떻게 정해지는지, 의회가 제 역할을 하는지 기록합니다.',
         board='/49',
         posts_note='⚠️ 아래 글은 실제 글이지만 예산 모니터링(/57)·일반 활동(/27) 게시판에 올라가 있습니다. 게시판이 정해지면 옮겨 주세요.',
-        nums=[('27', '년', '1999년 창립 이후'),
-              (None, None, '감시한 지자체 수'),
+        nums=[(None, None, '감시한 지자체 수'),
               (None, None, '올해 낸 의견서')],
         # 사진이 오면 img='주소', alt='설명' 을 더하면 됩니다.
         # mark 는 사진이 없는 동안 타일에 깔리는 큰 글자입니다(제목의 줄임말).
@@ -644,8 +643,7 @@ PAGES = {
         lede='중앙정부와 국회가 시민에게 설명하지 않고 넘어가려는 결정을 붙잡아 묻습니다.',
         board='/27',
         posts_note='⚠️ 이 활동은 2026-08-26 에 새로 만든 칸이라 전용 게시판이 아직 없습니다. 아래는 일반 활동(/27)·예산 모니터링(/57)에 올라간 실제 글 중 중앙정부·국회에 해당하는 것입니다.',
-        nums=[('1999', '년', '창립'),
-              (None, None, '올해 낸 논평 · 성명'),
+        nums=[(None, None, '올해 낸 논평 · 성명'),
               (None, None, '정보공개 청구 건수')],
         now=[dict(t='추가세수 100조 쓰임에 대한 시민 의견 수렴', due='8월 31일',
                   href='/27/?idx=173013295&amp;bmode=view', mark='100조'),
@@ -749,8 +747,7 @@ PAGES = {
         lede='주민참여예산 제도가 이름만 남지 않도록 따지고, 시민이 실제로 결정할 수 있게 바꿉니다.',
         board='/51',
         posts_note='주민참여예산(/51) 게시판의 최근 글입니다.',
-        nums=[('27', '년', '1999년 창립 이후'),
-              (None, None, '올해 연 상담 · 교육'),
+        nums=[(None, None, '올해 연 상담 · 교육'),
               (None, None, '제도 개선 의견서')],
         now=[dict(t='주민참여예산 3조원 확대, 주민 권한 확보 요구', due='정부안 발표 뒤',
                   tbd=True, href='/51/?idx=172917373&amp;bmode=view', mark='3조'),

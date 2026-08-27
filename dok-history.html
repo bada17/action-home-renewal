@@ -913,14 +913,6 @@ html { scroll-behavior: smooth; }
   }
   #ah-nav .drow .dmain:hover{background:var(--brand-tint);color:var(--brand-deep)}
   #ah-nav .drow .dmain:hover em{color:var(--brand-deep)}
-  #ah-nav .drow .ddoc{
-    flex:none;align-self:center;border:1px solid var(--line);border-radius:999px;
-    padding:5px 11px;font-size:11.5px;font-weight:700;color:var(--ink-soft);
-    opacity:.55;transition:.15s;white-space:nowrap
-  }
-  #ah-nav .drow:hover .ddoc{opacity:1}
-  #ah-nav .drow .ddoc:hover{border-color:var(--brand);background:var(--brand);color:#fff}
-  #ah-nav .msub a.is-doc{background:none;border:1px dashed var(--line);color:var(--brand-deep)}
   #ah-nav .msub a.is-all{background:var(--brand-tint);color:var(--brand-deep);font-weight:700}
 
   /* ───────── 이슈 하위 목차 ─────────
@@ -938,7 +930,7 @@ html { scroll-behavior: smooth; }
     flex:none;font-size:11.5px;font-weight:700;color:var(--ink-soft);white-space:nowrap
   }
   #ah-nav .drop.is-iss a:hover .idue{color:var(--brand-deep)}
-  /* '몰아보기' — 이 갈래를 한자리에서 다 보는 곳으로 보내는 줄.
+  /* '함께보기' — 이 갈래를 한자리에서 다 보는 곳으로 보내는 줄.
      맨 위에 두고 아래에 선을 그어, 낱낱의 이슈와 성격이 다르다는 것을 보입니다. */
   #ah-nav .drop .iall{
     font-weight:700;color:var(--brand-deep);background:var(--brand-tint)
@@ -1101,7 +1093,6 @@ html { scroll-behavior: smooth; }
       padding:2px;margin-bottom:6px
     }
     #ah-nav .gnb-sheet .drow .dmain{white-space:normal}
-    #ah-nav .gnb-sheet .drow .ddoc{opacity:1}
     #ah-nav .hd-tools{margin-left:auto}
     /* 알약이 가로로 넘어가면 밑줄이 잘려 보입니다. 왼쪽 굵은 선으로 바꿉니다. */
     #ah-nav .gnb-item>a.is-here::after{display:none}
@@ -1168,23 +1159,18 @@ html { scroll-behavior: smooth; }
         <div class="drop is-act"><ul>
           <li class="drow">
             <a class="dmain" href="/49" data-nav="act-local">지자체 감시<em>지방정부 · 지방의회</em></a>
-            <a class="ddoc" href="/library" data-nav="library" aria-label="지자체 감시 자료실">자료실</a>
           </li>
           <li class="drow">
             <a class="dmain" href="/act-power" data-nav="act-power">권력감시<em>중앙정부 · 국회</em></a>
-            <a class="ddoc" href="/library" data-nav="library" aria-label="권력감시 자료실">자료실</a>
           </li>
           <li class="drow">
             <a class="dmain" href="/act-budget" data-nav="act-budget">예산감시<em>나라살림 · 지방재정</em></a>
-            <a class="ddoc" href="/library" data-nav="library" aria-label="예산감시 자료실">자료실</a>
           </li>
           <li class="drow">
             <a class="dmain" href="/51" data-nav="act-civic">시민참여<em>참여예산 제도 개선 · 시민 교육</em></a>
-            <a class="ddoc" href="/library" data-nav="library" aria-label="시민참여 자료실">자료실</a>
           </li>
           <li class="drow">
             <a class="dmain" href="/dok-history" data-nav="act-dok">밑빠진 독상<em>역대 기록 · 지도</em></a>
-            <a class="ddoc" href="/library" data-nav="library" aria-label="밑빠진 독상 자료실">자료실</a>
           </li>
         </ul></div>
       </div>
@@ -1194,16 +1180,16 @@ html { scroll-behavior: smooth; }
       <div class="gnb-item">
         <a href="/issue/" data-nav="issue">이슈</a>
         <div class="drop is-iss"><ul>
-          <!-- 맨 위 '몰아보기' — 진행 중과 종료된 캠페인을 탭으로 한자리에서 봅니다.
+          <!-- 맨 위 '함께보기' — 진행 중과 종료된 캠페인을 탭으로 한자리에서 봅니다.
                ⚠️ /issue/ 는 미리보기 전용 경로입니다. 캠페이너스 페이지 번호로 바꾸세요. -->
-          <li><a class="iall" href="/issue/" data-nav="issue">몰아보기<span class="idue">진행 중 · 종료</span></a></li>
+          <li><a class="iall" href="/issue/" data-nav="issue">함께보기<span class="idue">진행 중 · 종료</span></a></li>
           <li class="isep" aria-hidden="true"></li>
-          <li><a href="/27/?idx=173013295&amp;bmode=view">더 걷힐 세금, 어디에 쓸래?<span class="idue">8/31 마감</span></a></li>
-          <li><a href="https://dokseong-action.bada523082.chatgpt.site/">2026 하반기 밑빠진독상<span class="idue">9/15 마감</span></a></li>
-          <li><a href="https://vote.action.or.kr/">10만원 예산편성<span class="idue">기간 미정</span></a></li>
+          <li><a href="/27/?idx=173013295&amp;bmode=view">더 걷힐 세금, 어디에 쓸래?<!--<span class="idue">8/31 마감</span>--></a></li>
+          <li><a href="https://dokseong-action.bada523082.chatgpt.site/">2026 하반기 밑빠진독상<!--<span class="idue">9/15 마감</span>--></a></li>
+          <li><a href="https://vote.action.or.kr/">10만원 예산편성<!--<span class="idue">기간 미정</span>--></a></li>
           <!-- ⚠️ /pb/ 는 미리보기 전용 경로입니다. 캠페이너스 페이지 번호로 바꾸세요. -->
-          <li><a href="/pb/" data-nav="pb">참여예산 상담소<span class="idue">상시</span></a></li>
-          <li><a href="#">1회 참여예산 고민대회<span class="idue">기간 미정</span></a></li>
+          <li><a href="/pb/" data-nav="pb">참여예산 상담소<!--<span class="idue">상시</span>--></a></li>
+          <li><a href="#">1회 참여예산 고민대회<!--<span class="idue">기간 미정</span>--></a></li>
         </ul></div>
       </div>
 
@@ -1278,13 +1264,12 @@ html { scroll-behavior: smooth; }
         <li><a href="/act-budget" data-nav="act-budget">예산감시</a></li>
         <li><a href="/51" data-nav="act-civic">시민참여</a></li>
         <li><a href="/dok-history" data-nav="act-dok">밑빠진 독상</a></li>
-        <li><a class="is-doc" href="/library" data-nav="library">활동 자료실 →</a></li>
       </ul>
     </li>
     <li>
       <a href="/issue/">이슈</a>
       <ul class="msub">
-        <li><a class="is-all" href="/issue/">몰아보기 →</a></li>
+        <li><a class="is-all" href="/issue/">함께보기 →</a></li>
         <li><a href="/27/?idx=173013295&amp;bmode=view">더 걷힐 세금, 어디에 쓸래?</a></li>
         <li><a href="https://dokseong-action.bada523082.chatgpt.site/">2026 하반기 밑빠진독상</a></li>
         <li><a href="https://vote.action.or.kr/">10만원 예산편성</a></li>
