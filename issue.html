@@ -169,16 +169,21 @@
 #iss .foot .go{display:inline-block; margin-top:16px; font-size:14px; font-weight:700; color:var(--deep)}
 #iss .foot .go:hover{text-decoration:underline; text-underline-offset:3px}
 
-@media(max-width:900px){ #iss .grid{grid-template-columns:1fr 1fr} }
+@media(max-width:900px){ #iss .grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media(max-width:560px){
   #iss .wrap{width:min(100% - 32px,1120px)}
   #iss .top{padding-top:16px}
   #iss .crumb{margin-bottom:18px}
   #iss .tabs{padding:24px 0 16px}
   #iss .tab{flex:1; padding:11px 8px; font-size:14px}
-  #iss .grid{grid-template-columns:1fr; gap:14px}
-  /* 한 줄에 하나면 세로로 긴 카드가 화면을 다 먹습니다. 가로로 눕힙니다. */
-  #iss .card{aspect-ratio:16/10}
+  #iss .grid{grid-template-columns:minmax(0,1fr); gap:14px}
+  /* ⚠️ 예전에 여기 #iss .card{aspect-ratio:16/10} 이 있었습니다.
+     카드를 가로로 눕힌다는 뜻이었는데, 카드는 flex-direction:column 이라
+     눕혀지지 않고 가로로 부풀기만 했습니다. 높이가 내용으로 정해지는 칸에
+     aspect-ratio 를 주면 그 높이에 비례해 폭이 역산됩니다 — 390px 화면에서
+     칸이 581px 로 불어나 화면이 가로로 쪼개졌습니다. 다시 넣지 마세요.
+     사진 칸을 줄이지도 않습니다 — 이슈 사진은 대부분 포스터라 작은 썸네일로
+     줄이면 제목을 읽을 수 없습니다 (DESIGN.md 액자 규칙). */
 }
 @media(prefers-reduced-motion:reduce){ #iss *{transition:none!important; animation:none!important} }
 </style>
