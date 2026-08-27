@@ -96,23 +96,50 @@ TEMPLATE = u'''<style>
 #act .crumb span{{opacity:.45; margin:0 6px}}
 #act .crumb a:hover{{text-decoration:underline; text-underline-offset:3px}}
 
-/* ───── 히어로 ───── */
-#act .hero{{background:var(--navy); color:#fff; padding:clamp(44px,5.4vw,76px) 0}}
-#act .hero .crumb{{padding:0 0 clamp(22px,2.6vw,34px); color:#7fb7ce}}
-#act .hero .crumb a{{color:#7fb7ce}}
-#act .hero .who{{
-  display:inline-block; border:1.5px solid rgba(255,255,255,.42); border-radius:999px;
-  padding:5px 14px; font-size:12.5px; font-weight:700; color:#cfe8f4; margin-bottom:16px
+/* ───── 맨 위 ─────  (2026-08-27 다시 짬)
+   사용자 지적: 활동 페이지에 들어가면 **띠가 겹겹이** 쌓여 있어 마음에 안 든다.
+
+   예전에는 짙은 남색 띠(히어로) 밑에 하늘색 띠(숫자 셋)가 또 있었습니다.
+   색면 둘이 위아래로 붙어 제목이 그 안에 갇히고, 본문까지 내려가는 데
+   화면 하나를 다 썼습니다.
+
+   이제 색면을 아예 안 씁니다. 흰 바탕 위에
+     빵부스러기 → 감시 대상 → 큰 제목 → 한 줄 → 숫자 셋
+   이 한 흐름으로 이어지고, 굵은 선 하나로 본문과 갈립니다.
+   띠가 사라지니 제목이 갇히지 않고 본문도 훨씬 빨리 나옵니다.
+
+   ★ 활동 넷이 이 틀을 그대로 씁니다. 페이지마다 다르게 만들지 않습니다.
+     구별은 아래 '이 활동만의 칸'이 합니다(지역 태그 / 물음과 답 / 달력 / 문). */
+#act .top{{padding:clamp(20px,2.4vw,30px) 0 0; border-bottom:2px solid var(--ink)}}
+#act .top .crumb{{padding:0}}
+/* 감시 대상 — 활동 다섯이 '감시'라는 같은 말을 써서 이름만으로는 안 갈립니다.
+   그래서 제목 위에 무엇을 보는 활동인지 먼저 말합니다. */
+#act .top .who{{
+  display:inline-block; margin-top:clamp(18px,2vw,26px);
+  background:var(--tint); color:var(--deep); border-radius:999px;
+  padding:5px 14px; font-size:12.5px; font-weight:700
 }}
-#act .hero h1{{font-size:clamp(27px,4.4vw,44px); font-weight:700; line-height:1.28; text-wrap:balance}}
-#act .hero .by{{margin-top:15px; font-size:clamp(14.5px,1.2vw,16.5px); color:#a8cddc; max-width:52ch; line-height:1.7}}
+#act .top h1{{
+  margin-top:12px;
+  font-size:clamp(28px,4.4vw,46px); font-weight:700; line-height:1.24;
+  letter-spacing:-.03em; text-wrap:balance
+}}
+#act .top .by{{
+  margin-top:14px; font-size:clamp(14.5px,1.2vw,16.5px);
+  color:var(--soft); max-width:52ch; line-height:1.7
+}}
 
 /* ───── 숫자 셋 ─────
    "이 활동이 얼마나 오래, 얼마나 많이" 를 한 줄로 보여 줍니다.
+   맨 위 덩이의 마지막 줄입니다 — 예전처럼 따로 색 띠를 두르지 않습니다.
+   왼쪽 정렬입니다. 가운데로 놓으면 위의 제목과 축이 어긋나 또 따로 노는 칸이 됩니다.
    ⚠️ 확인 안 된 숫자는 올리지 말고 딱지를 붙이세요. */
-#act .nums{{display:grid; grid-template-columns:repeat(3,1fr); background:var(--band)}}
-#act .num{{padding:clamp(20px,2.4vw,30px) 18px; text-align:center; border-left:1px solid var(--line)}}
-#act .num:first-child{{border-left:none}}
+#act .nums{{
+  display:grid; grid-template-columns:repeat(3,1fr);
+  margin-top:clamp(26px,3vw,40px); border-top:1px solid var(--line)
+}}
+#act .num{{padding:clamp(16px,1.8vw,22px) 0; border-left:1px solid var(--line); padding-left:clamp(14px,1.6vw,20px)}}
+#act .num:first-child{{border-left:none; padding-left:0}}
 #act .num b{{
   display:block; font-family:GmarketSans,sans-serif; font-weight:700; line-height:1.1;
   font-size:clamp(24px,3vw,38px); color:var(--deep); letter-spacing:-.03em
@@ -371,11 +398,13 @@ TEMPLATE = u'''<style>
 
 @media(max-width:640px){{
   #act{{font-size:15.5px}}
-  #act .hero{{padding:34px 0}}
+  #act .top{{padding-top:16px}}
   #act .sec{{padding:34px 0}}
+  /* 좁은 화면에서는 숫자 셋을 세로로 눕힙니다. 셋을 가로로 두면 한 칸이 100px 밑으로
+     떨어져 '감시한 지자체 수' 같은 이름이 석 줄로 접힙니다. */
   #act .nums{{grid-template-columns:1fr}}
-  #act .num{{border-left:none; border-top:1px solid var(--line); text-align:left; display:flex;
-    align-items:baseline; gap:10px; padding:15px 20px}}
+  #act .num{{border-left:none; border-top:1px solid var(--line); display:flex;
+    align-items:baseline; gap:10px; padding:13px 0}}
   #act .num:first-child{{border-top:none}}
   #act .num span{{margin-top:0}}
   #act .case{{padding:18px 18px}}
@@ -394,20 +423,20 @@ TEMPLATE = u'''<style>
 
 <div id="act" aria-label="{title}">
 
-  <!-- ───────── 히어로 ─────────
-       ⚠️ 제목과 한 줄은 초안입니다. 실제 표현으로 바꿔 주세요. -->
-  <section class="hero"><div class="wrap">
-    <nav class="crumb"><a href="/69?preview_mode=1">홈</a><span>&rsaquo;</span><a href="/52">활동</a><span>&rsaquo;</span>{title}</nav>
+  <!-- ───────── 맨 위 ─────────
+       빵부스러기 → 감시 대상 → 제목 → 한 줄 → 숫자 셋이 한 덩이입니다.
+       ⚠️ 색 띠를 두르지 마세요. 띠를 겹치면 제목이 갇히고 본문이 밀립니다.
+       ⚠️ 제목과 한 줄은 초안입니다. 실제 표현으로 바꿔 주세요.
+       ⚠️ 숫자는 확인된 값만 올립니다. 모르면 딱지를 붙이고 비워 두세요. -->
+  <section class="top"><div class="wrap">
+    <nav class="crumb"><a href="/69?preview_mode=1">홈</a><span>&rsaquo;</span>활동<span>&rsaquo;</span>{title}</nav>
     <span class="who">{who}</span>
     <h1>{headline}</h1>
     <p class="by">{lede}</p>
-  </div></section>
-
-  <!-- ───────── 숫자 셋 ─────────
-       ⚠️ 확인된 값만 올립니다. 모르면 딱지를 붙이고 비워 두세요. -->
-  <section class="nums">
+    <div class="nums">
 {nums}
-  </section>
+    </div>
+  </div></section>
 
   <div class="wrap">
 {signature}
