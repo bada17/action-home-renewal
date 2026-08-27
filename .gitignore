@@ -26,3 +26,6 @@ Thumbs.db
 # 파이썬 도구 부산물
 __pycache__/
 *.pyc
+
+# 검토용 정적 사이트 — tools/build-static.py 가 만듭니다. 저장소에 넣지 않습니다.
+dist/
