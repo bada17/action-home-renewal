@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""활동 페이지 세 장을 한 틀에서 찍어낸다.
+"""활동 페이지 네 장을 한 틀에서 찍어낸다.
 
     python tools/build-activity.py
 
@@ -7,9 +7,10 @@
     activity-local.html    활동 > 지자체 감시 (지방정부 · 지방의회)
     activity-power.html    활동 > 권력감시   (중앙정부 · 국회)
     activity-budget.html   활동 > 예산감시   (나라살림 · 지방재정)
+    activity-civic.html    활동 > 시민참여   (참여예산 제도 개선 · 시민 교육)
 
 왜 손으로 안 쓰고 찍어내나
-    세 장이 "같은 단체가 만든 것"으로 보여야 합니다. 손으로 세 번 쓰면
+    네 장이 "같은 단체가 만든 것"으로 보여야 합니다. 손으로 네 번 쓰면
     여백이나 글씨 크기가 조금씩 어긋나고, 한 장만 고치는 일이 반드시 생깁니다.
     틀은 한 곳(TEMPLATE)에만 있고, 페이지마다 다른 것은 아래 PAGES 의 값뿐입니다.
 
@@ -202,6 +203,34 @@ TEMPLATE = u'''<style>
 #act .sig-cal .step.is-now b::before{{content:"● "; color:var(--brand); font-size:9px; vertical-align:2px}}
 #act .sig-cal .law{{margin-top:16px; font-size:12.5px; color:var(--faint); line-height:1.6}}
 #act .sig-cal .law b{{color:var(--soft)}}
+
+/* ───── 시민참여 — 시민이 들어오는 문 ─────
+   다른 넷은 "우리가 무엇을 보는가"를 말합니다. 이 활동만은 "시민이 무엇을 할 수
+   있는가"를 말해야 해서, 감시 대상 대신 들어오는 문을 늘어놓습니다.
+   그래서 이 칸의 줄은 읽는 것이 아니라 **누르는 것**입니다 — 카드가 아니라 문입니다. */
+#act .sig-way .ways{{display:grid; grid-template-columns:1fr 1fr; gap:10px}}
+#act .sig-way .way{{
+  display:flex; flex-direction:column; gap:5px;
+  border:1px solid var(--line); border-left:3px solid var(--brand);
+  padding:16px 18px; background:#fff; transition:.15s
+}}
+#act .sig-way .way:hover{{border-color:var(--brand); background:var(--tint)}}
+#act .sig-way .way:hover .wt{{color:var(--deep)}}
+#act .sig-way .wt{{font-family:GmarketSans,sans-serif; font-weight:700; font-size:16px; line-height:1.4}}
+#act .sig-way .wd{{font-size:13.5px; color:var(--soft); line-height:1.6}}
+#act .sig-way .wm{{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:5px}}
+#act .sig-way .when{{font-size:12.5px; color:var(--faint)}}
+/* 상태 알약 — 권력감시의 것과 같은 부품입니다. 색이 곧 뜻입니다. */
+#act .sig-way .st{{
+  border-radius:999px; padding:3px 11px;
+  font-size:12px; font-weight:700; white-space:nowrap
+}}
+#act .sig-way .st-open{{background:var(--brand); color:#fff}}
+#act .sig-way .st-soon{{background:var(--flag-bg); color:var(--flag); border:1px solid var(--flag-line)}}
+#act .sig-way .st-closed{{background:var(--band); color:var(--faint)}}
+@media(max-width:640px){{
+  #act .sig-way .ways{{grid-template-columns:1fr}}
+}}
 
 /* ───── 지금 (진행 중) ─────
    사진 한 장 + 그 밑에 제목. 목록이 아니라 카드입니다.
@@ -491,7 +520,7 @@ ALL = [
     ('local',  '지자체 감시',  '지방정부 · 지방의회', '/49'),
     ('power',  '권력감시',     '중앙정부 · 국회',     '/act-power'),
     ('budget', '예산감시',     '나라살림 · 지방재정', '/act-budget'),
-    ('pb',     '시민참여',     '참여예산 제도 개선 · 시민 교육', '/51'),
+    ('civic',  '시민참여',     '참여예산 제도 개선 · 시민 교육', '/51'),
     ('dok',    '밑빠진 독상',  '역대 기록 · 지도',    '/dok-history'),
 ]
 
@@ -652,6 +681,67 @@ PAGES = {
         posts=[('활동가 수첩_농어촌소득에 재정의 3대 기능이?', '2026.07.23', '/57/?idx=172603339&amp;bmode=view'),
                ('그놈의 업무추진비, 축구협회와 양궁협회의 사정', '2026.07.03', '/57/?idx=172188605&amp;bmode=view'),
                ('국민과 함께하는 지출구조조정 토론회 쟁점, 질문 정리', '2026.06.18', '/57/?idx=171879037&amp;bmode=view')],
+    ),
+
+    'civic': dict(
+        # 현장 사진 — (주소, 대체글, 제목, 한 줄).
+        # 비어 있으면 사진 칸이 화면에 아예 안 나옵니다.
+        photos=[],
+
+        # ── 이 활동만의 칸 ──
+        # 시민참여는 "시민이 어디로 들어오나"에 답하는 활동입니다.
+        # 다른 넷은 우리가 무엇을 보는지를 말하지만, 이 활동은 **시민이 할 수 있는 것**을
+        # 말해야 합니다. 그래서 감시 대상이 아니라 '들어오는 문'을 늘어놓습니다.
+        #
+        # ⚠️ 아래 넷은 이미 근거가 있는 것만 적었습니다(상담소·고민대회는 이슈 목록에,
+        #    10만원 편성은 vote.action.or.kr 에, 주민참여예산은 /51 게시판에 있습니다).
+        #    '지금 열려 있나'가 확인 안 된 것은 tbd=True 로 두었습니다.
+        sig=dict(
+            kind='way',
+            title='시민이 들어오는 문',
+            lead='예산은 전문가만 다루는 것이 아닙니다. 지금 열려 있는 문이 어디인지 알려 드립니다.',
+            tbd=True,
+            ways=[
+                ('참여예산 상담소',
+                 '참여예산위원으로 활동하다 막히는 것을 물어보는 곳입니다.',
+                 '/pb/', 'open', '상시'),
+                ('10만원 예산편성',
+                 '내 몫의 예산 10만원을 어디에 쓸지 직접 편성해 봅니다.',
+                 'https://vote.action.or.kr/', 'open', '기간 확인 필요'),
+                ('1회 참여예산 고민대회',
+                 '참여예산위원들이 현장에서 부딪히는 고민을 모아 함께 풉니다.',
+                 '#', 'soon', '주소 · 기간 확인 필요'),
+                ('주민참여예산 게시판',
+                 '제도가 어디까지 왔는지, 무엇을 요구하고 있는지 모아 둔 곳입니다.',
+                 '/51', 'open', '상시'),
+            ],
+        ),
+        headline='예산을 정하는 자리에<br>시민이 앉아야 합니다',
+        lede='주민참여예산 제도가 이름만 남지 않도록 따지고, 시민이 실제로 결정할 수 있게 바꿉니다.',
+        board='/51',
+        posts_note='주민참여예산(/51) 게시판의 최근 글입니다.',
+        nums=[('27', '년', '1999년 창립 이후'),
+              (None, None, '올해 연 상담 · 교육'),
+              (None, None, '제도 개선 의견서')],
+        now=[dict(t='주민참여예산 3조원 확대, 주민 권한 확보 요구', due='정부안 발표 뒤',
+                  tbd=True, href='/51/?idx=172917373&amp;bmode=view', mark='3조'),
+             dict(t='지방재정법 개정안 입법 대응',
+                  tbd=True, href='/51/?idx=170491595&amp;bmode=view', mark='입법')],
+        result=[
+            dict(t='주민참여예산 제도 개선 입법 요구', tbd=True,
+                 did='주민참여예산제도를 활성화하는 지방재정법 개정안을 정리해 알렸습니다.',
+                 got='무엇이 달라졌는지는 아직 정리되지 않았습니다.',
+                 src=[('지방재정법 개정안', '/51/?idx=170491595&amp;bmode=view')],
+                 when='2026.03'),
+            dict(t='주민결정권 강화 요구', tbd=True,
+                 did='주민참여예산의 주민결정권을 실질적으로 강화할 방안을 요구하는 논평을 냈습니다.',
+                 got='무엇이 달라졌는지는 아직 정리되지 않았습니다.',
+                 src=[('논평 전문', '/27/?idx=170224688&amp;bmode=view')],
+                 when='2026.03'),
+        ],
+        posts=[("주민참여예산 3조원 확대, 규모보다 ‘주민 권한’이 먼저다", '2026.08.06', '/51/?idx=172917373&amp;bmode=view'),
+               ('[입법활동] 주민참여예산제도 활성화를 위한 지방재정법 개정안', '2026.03.22', '/51/?idx=170491595&amp;bmode=view'),
+               ('[논평] 주민참여예산의 주민결정권을 강화하기 위한 실질적인 제도 추진 방안이 마련되어야 한다.', '2026.03.02', '/27/?idx=170224688&amp;bmode=view')],
     ),
 }
 
@@ -892,6 +982,28 @@ def build_sig(d):
             u'      </p>' + NL
         )
 
+    # ── 시민참여 — 시민이 들어오는 문 ──
+    #    다른 넷은 "우리가 무엇을 보는가"를 말합니다. 이 활동만은
+    #    "시민이 무엇을 할 수 있는가"를 말해야 해서, 감시 대상이 아니라 문을 늘어놓습니다.
+    elif kind == 'way':
+        names = {'open': u'지금 열림', 'soon': u'준비 중', 'closed': u'닫힘'}
+        rows = []
+        for name, note, href, st, when in sig['ways']:
+            flag = u' <span class="tbd">확인 필요</span>' if u'확인 필요' in when else u''
+            shown = when.replace(u' 확인 필요', u'') if flag else when
+            rows.append(
+                u'        <a class="way rv" href="%s">' % href + NL +
+                u'          <span class="wt">%s</span>' % name + NL +
+                u'          <span class="wd">%s</span>' % note + NL +
+                u'          <span class="wm">' + NL +
+                u'            <span class="st st-%s">%s</span>' % (st, names[st]) + NL +
+                u'            <span class="when">%s%s</span>' % (shown, flag) + NL +
+                u'          </span>' + NL +
+                u'        </a>'
+            )
+        body = (u'      <div class="ways">' + NL + NL.join(rows) + NL +
+                u'      </div>' + NL)
+
     else:
         raise ValueError(u'모르는 칸 종류: %s' % kind)
 
@@ -931,7 +1043,7 @@ def main():
         io.open(out, 'w', encoding='utf-8', newline='\n').write(html)
         print(u'  %-24s %6d 바이트' % (os.path.basename(out), len(html.encode('utf-8'))))
 
-    # 방금 찍어낸 세 장에는 헤더 자리가 비어 있습니다. 공통 헤더를 이어서 심습니다.
+    # 방금 찍어낸 네 장에는 헤더 자리가 비어 있습니다. 공통 헤더를 이어서 심습니다.
     # (따로 돌리는 걸 잊으면 활동 페이지에만 목차가 없어집니다.)
     print(u'\n  공통 헤더 심기 —')
     import subprocess

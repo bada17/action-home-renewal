@@ -18,7 +18,7 @@
     /49             활동 > 지자체 감시    activity-local.html
     /act-power      활동 > 권력감시       activity-power.html
     /act-budget     활동 > 예산감시       activity-budget.html
-    /51             활동 > 참여예산       (아직 없음 — 안내가 뜹니다)
+    /51             활동 > 시민참여       activity-civic.html
     /dok-history    활동 > 밑빠진 독상    dok-history.html
     /library        자료실                library.html
     /dok/           밑빠진 독상 원본      옆 저장소를 그 자리에서 읽습니다
@@ -61,6 +61,7 @@ ROUTES = {
     '/49': 'activity-local.html',
     '/act-power': 'activity-power.html',
     '/act-budget': 'activity-budget.html',
+    '/51': 'activity-civic.html',
     '/dok-history': 'dok-history.html',
     '/pb/': 'pb.html',
     '/pb': 'pb.html',
@@ -70,7 +71,6 @@ ROUTES = {
 
 # 아직 화면이 없는 주소. 404 대신 "무엇이 없는지"를 알려 줍니다.
 STUBS = {
-    '/51': ('활동 &gt; 참여예산', '이 활동의 화면은 아직 없습니다. 캠페이너스 /51 (주민참여예산 활성화) 게시판으로 이어질 자리입니다.'),
     '/52': ('활동 전체', '활동 다섯을 모아 보여 줄 목록 화면입니다. 아직 안 만들었습니다.'),
     '/23': ('발행물', '게시판입니다. 자료실은 이제 /library 에 따로 있습니다.'),
     '/24': ('뉴스룸', '보도자료 게시판입니다.'),
@@ -138,7 +138,8 @@ STUB_BODY = u'''<div style="max-width:640px;margin:14vh auto;padding:0 24px;
 TITLES = {
     '/': '홈', '/69': '홈', '/issue/': '이슈', '/issue': '이슈',
     '/49': '활동 > 지자체 감시', '/act-power': '활동 > 권력감시',
-    '/act-budget': '활동 > 예산감시', '/dok-history': '활동 > 밑빠진 독상',
+    '/act-budget': '활동 > 예산감시', '/51': '활동 > 시민참여',
+    '/dok-history': '활동 > 밑빠진 독상',
     '/pb/': '이슈 > 참여예산 상담소', '/pb': '이슈 > 참여예산 상담소',
     '/library': '자료실', '/library/': '자료실',
 }

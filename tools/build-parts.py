@@ -50,6 +50,7 @@ PAGES = [
     ('activity-local.html',  'act',            'act-local'),
     ('activity-power.html',  'act',            'act-power'),
     ('activity-budget.html', 'act',            'act-budget'),
+    ('activity-civic.html',  'act',            'act-civic'),
     ('dok-history.html',     'dok',            'act-dok'),
     ('issue.html',           'iss',            'issue'),
     ('pb.html',              'pb',             'pb'),
