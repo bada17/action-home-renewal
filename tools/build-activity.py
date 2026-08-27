@@ -83,10 +83,6 @@ TEMPLATE = u'''<style>
 
 /* 섹션 머리 — 말 거는 제목 + 한 줄. 참여연대 방식입니다. */
 #act .sh{{margin-bottom:clamp(20px,2.4vw,30px)}}
-#act .sh .eyebrow{{
-  display:block; font-size:11.5px; font-weight:700; letter-spacing:.14em;
-  color:var(--deep); margin-bottom:9px
-}}
 #act .sh h2{{font-size:clamp(20px,2.3vw,27px); font-weight:700; line-height:1.4}}
 #act .sh p{{margin-top:8px; font-size:14.5px; color:var(--soft); line-height:1.65; max-width:60ch}}
 
@@ -207,13 +203,58 @@ TEMPLATE = u'''<style>
 #act .sig-cal .law{{margin-top:16px; font-size:12.5px; color:var(--faint); line-height:1.6}}
 #act .sig-cal .law b{{color:var(--soft)}}
 
-/* ───── 지금 (진행 중) ───── */
-#act .now{{border-top:2px solid var(--ink)}}
-#act .now li{{border-bottom:1px solid var(--line)}}
-#act .now a{{display:block; padding:17px 2px}}
-#act .now a:hover .t{{color:var(--deep); text-decoration:underline; text-underline-offset:3px}}
-#act .now .t{{font-family:GmarketSans,sans-serif; font-weight:700; font-size:16px; line-height:1.5}}
-#act .now .m{{display:flex; align-items:center; gap:8px; margin-top:6px; font-size:12.5px; color:var(--faint)}}
+/* ───── 지금 (진행 중) ─────
+   사진 한 장 + 그 밑에 제목. 목록이 아니라 카드입니다.
+
+   사진이 아직 없는 칸은 점선 빈 상자로 두지 않습니다 — 그 카드만 미완성으로
+   보이기 때문입니다(DESIGN.md). 대신 브랜드 계열 색 타일에 제목에서 딴 큰 글자를
+   깔아, 사진이 있는 카드와 무게가 같아지게 합니다. */
+/* 카드 폭에 위아래를 둡니다(240~330px). 위가 없으면 칸이 둘일 때 사진만 커져
+   화면을 다 잡아먹고, 아래가 없으면 좁은 화면에서 글자가 접힙니다. */
+#act .now{{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,330px));
+  justify-content:start;
+  gap:clamp(14px,1.8vw,22px);
+}}
+@media(max-width:560px){{
+  #act .now{{grid-template-columns:1fr}}
+}}
+#act .now li{{min-width:0}}
+#act .now a{{display:flex; flex-direction:column; height:100%}}
+#act .now a:hover .t{{color:var(--deep)}}
+#act .now a:hover .shot{{transform:translateY(-2px)}}
+#act .now a:hover .shot img{{transform:scale(1.04)}}
+
+/* 액자 — 모든 카드가 똑같은 비율·똑같은 테두리를 씁니다. */
+#act .now .shot{{
+  position:relative; display:block; aspect-ratio:4/3; overflow:hidden;
+  border:1px solid var(--line); background:var(--band);
+  transition:transform .18s;
+}}
+#act .now .shot img{{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; transition:transform .35s;
+}}
+/* 사진이 없을 때 깔리는 큰 글자. 읽으라고 둔 글자가 아니라 무늬입니다. */
+#act .now .shot[data-mark]::before{{
+  content:attr(data-mark);
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  font-family:GmarketSans,sans-serif; font-weight:700;
+  font-size:clamp(38px,6vw,58px); letter-spacing:-.04em;
+  color:var(--brand); opacity:.16;
+}}
+/* data-mark 는 사진이 없는 칸에만 붙습니다(build_now). 그래서 :has() 없이도
+   사진이 있는 카드에는 글자 무늬가 깔리지 않습니다 — 옛 브라우저에서도 같습니다. */
+#act .now .shot[data-mark]{{background:var(--tint)}}
+
+#act .now .t{{
+  display:block; margin-top:12px;
+  font-family:GmarketSans,sans-serif; font-weight:700; font-size:15.5px;
+  line-height:1.5; word-break:keep-all; transition:color .14s;
+}}
+#act .now .m{{display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:8px; font-size:12.5px; color:var(--faint)}}
+#act .now .m:empty{{display:none}}
 /* 마감이 있는 것에만 붙는 표시. 이슈로 옮길지 판단하는 기준이기도 합니다. */
 #act .due{{background:var(--tint); color:var(--deep); border-radius:999px; padding:2px 10px; font-weight:700}}
 
@@ -343,7 +384,6 @@ TEMPLATE = u'''<style>
 {signature}
     <!-- ───────── 지금 ───────── -->
     <section class="sec"><div class="sh">
-      <span class="eyebrow">NOW</span>
       <h2>지금 무엇을 보고 있나</h2>
       <p>끝나는 날짜가 붙은 일이 늘어나면 그건 '활동'이 아니라 '이슈'로 올립니다.</p>
     </div>
@@ -356,7 +396,6 @@ TEMPLATE = u'''<style>
          사건 하나에 [무엇을 했나] + [무엇이 바뀌었나] 두 줄. 근거 글을 아래에 답니다.
          ⚠️ 확인된 사실만 적었습니다. 후속 조치나 성과 수치는 확인 전까지 쓰지 마세요. -->
     <section class="sec"><div class="sh">
-      <span class="eyebrow">RESULT</span>
       <h2>무엇이 달라졌나</h2>
       <p>글이 아니라 사건으로 적습니다. 무엇을 했고, 그래서 무엇이 바뀌었는지 두 줄입니다.</p>
     </div>
@@ -369,7 +408,6 @@ TEMPLATE = u'''<style>
          ⚠️ 코드에 박아 둔 목록이라 새 글이 자동으로 올라오지 않습니다.
             캠페이너스 기본 게시판 위젯으로 바꿀 자리입니다. -->
     <section class="sec"><div class="sh">
-      <span class="eyebrow">POSTS</span>
       <h2>최근에 쓴 글</h2>
       <p>{posts_note}</p>
     </div>
@@ -383,7 +421,6 @@ TEMPLATE = u'''<style>
          활동하면서 나온 보고서로 바로 가는 칸입니다.
          ⚠️ 셋 다 발행물(/23)로 걸어 뒀습니다. 활동별 자료 주소가 따로 있으면 바꾸세요. -->
     <section class="sec"><div class="sh">
-      <span class="eyebrow">LIBRARY</span>
       <h2>더 깊이 보려면</h2>
       <p>이 활동에서 나온 보고서와 자료를 모아 둔 곳입니다. <span class="tbd">주소 확인 필요</span></p>
     </div>
@@ -397,7 +434,6 @@ TEMPLATE = u'''<style>
 {photos}
     <!-- ───────── 다른 활동 ───────── -->
     <section class="sec"><div class="sh">
-      <span class="eyebrow">OTHERS</span>
       <h2>시민행동이 하는 다른 일</h2>
     </div>
       <div class="sibs">
@@ -407,7 +443,6 @@ TEMPLATE = u'''<style>
 
     <!-- ───────── 연락 ───────── -->
     <section class="sec"><div class="sh">
-      <span class="eyebrow">CONTACT</span>
       <h2>알려 주실 것이 있나요</h2>
     </div>
       <div class="contact">
@@ -484,7 +519,6 @@ PAGES = {
         #    지도가 둘이면 둘 다 흐려집니다.
         sig=dict(
             kind='where',
-            eyebrow='WHERE',
             title='올해 들여다본 곳',
             lead='한 곳을 오래 보는 것보다, 여러 곳을 같은 잣대로 보는 것이 지자체 감시입니다.',
             tbd=True,
@@ -499,8 +533,12 @@ PAGES = {
         nums=[('27', '년', '1999년 창립 이후'),
               (None, None, '감시한 지자체 수'),
               (None, None, '올해 낸 의견서')],
-        now=[('2026년 서울시 추가경정예산 심사 모니터링', '9월 심사', True, '#'),
-             ('기초의회 의정비 인상안 전수 조사', None, True, '#')],
+        # 사진이 오면 img='주소', alt='설명' 을 더하면 됩니다.
+        # mark 는 사진이 없는 동안 타일에 깔리는 큰 글자입니다(제목의 줄임말).
+        now=[dict(t='2026년 서울시 추가경정예산 심사 모니터링', due='9월 심사',
+                  tbd=True, href='#', mark='추경'),
+             dict(t='기초의회 의정비 인상안 전수 조사',
+                  tbd=True, href='#', mark='의정비')],
         result=[
             dict(t='한강버스 사업 경제성 검증', tbd=False,
                  did='경제성 근거가 공개되지 않은 채 추진되던 사업을 짚고, 감사 결과가 나온 뒤 쟁점을 정리해 알렸습니다.',
@@ -536,7 +574,6 @@ PAGES = {
         #    줄이 많을수록 세집니다.
         sig=dict(
             kind='ask',
-            eyebrow='ASKED',
             title='물었는데, 아직',
             lead='시민을 대신해 물은 것과, 돌아온 답을 그대로 적습니다. 답이 없으면 없는 채로 남겨 둡니다.',
             tbd=True,
@@ -552,9 +589,10 @@ PAGES = {
         nums=[('1999', '년', '창립'),
               (None, None, '올해 낸 논평 · 성명'),
               (None, None, '정보공개 청구 건수')],
-        now=[('추가세수 100조 쓰임에 대한 시민 의견 수렴', '8월 31일', False,
-              '/27/?idx=173013295&amp;bmode=view'),
-             ('국민과 함께하는 지출구조조정 논의 대응', None, True, '#')],
+        now=[dict(t='추가세수 100조 쓰임에 대한 시민 의견 수렴', due='8월 31일',
+                  href='/27/?idx=173013295&amp;bmode=view', mark='100조'),
+             dict(t='국민과 함께하는 지출구조조정 논의 대응',
+                  tbd=True, href='#', mark='지출')],
         result=[
             dict(t='정부 예산요구서 공개 소송', tbd=True,
                  did='각 부처가 기획재정부에 낸 예산요구서를 공개하라고 요구하고, 거부되자 소송으로 다퉜습니다.',
@@ -584,7 +622,6 @@ PAGES = {
         # 시민에게 "지금이 의견 낼 때"를 알려 주는 것이 이 칸의 쓸모입니다.
         sig=dict(
             kind='cal',
-            eyebrow='WHEN',
             title='지금 예산은 여기쯤',
             lead='나라 예산은 해마다 같은 순서로 정해집니다. 의견을 낼 수 있는 때도 정해져 있습니다.',
             tbd=False,
@@ -596,8 +633,10 @@ PAGES = {
         nums=[('27', '년', '이어온 예산감시'),
               ('0', '원', '정부 · 기업 지원금'),
               (None, None, '올해 살펴본 사업 수')],
-        now=[('2027년도 정부 예산안 분석', '9월 국회 제출', True, '#'),
-             ('지자체 재정 투명성 점검', None, True, '#')],
+        now=[dict(t='2027년도 정부 예산안 분석', due='9월 국회 제출',
+                  tbd=True, href='#', mark='예산안'),
+             dict(t='지자체 재정 투명성 점검',
+                  tbd=True, href='#', mark='재정')],
         result=[
             dict(t='한강 개발 사업 재검토', tbd=True,
                  did='경제성 근거가 부족한 채 추진되던 한강 관련 사업들을 모아 쟁점을 정리했습니다.',
@@ -632,17 +671,38 @@ def build_nums(rows):
 
 
 def build_now(rows):
+    """'지금 무엇을 보고 있나' — 사진 한 장 + 그 밑에 제목.
+
+    한 줄은 dict 입니다.
+        t     제목 (필수)
+        href  누르면 갈 곳 (필수)
+        due   마감 표시. 없으면 안 붙습니다
+        tbd   확인 안 된 값이면 True → '확인 필요' 딱지
+        img   사진 주소. 없으면 색 타일이 대신 들어갑니다
+        alt   사진 설명 (img 가 있을 때만 씁니다)
+        mark  사진이 없을 때 타일에 깔 큰 글자. 제목에서 딴 두세 글자.
+              지어낸 말이 아니라 제목의 줄임말이어야 합니다.
+    """
     out = []
-    for title, due, tbd, href in rows:
+    for r in rows:
         marks = []
-        if due:
-            marks.append(u'<span class="due">%s</span>' % due)
-        if tbd:
+        if r.get('due'):
+            marks.append(u'<span class="due">%s</span>' % r['due'])
+        if r.get('tbd'):
             marks.append(u'<span class="tbd">확인 필요</span>')
+
+        if r.get('img'):
+            # 사진이 있으면 data-mark 를 붙이지 않습니다 — 글자 무늬가 사진을 덮습니다.
+            shot = u'<span class="shot"><img src="%s" alt="%s" loading="lazy"></span>' % (
+                r['img'], r.get('alt', u''))
+        else:
+            shot = u'<span class="shot" data-mark="%s" aria-hidden="true"></span>' % r.get('mark', u'')
+
         out.append(u'''        <li><a href="%s">
+          %s
           <span class="t">%s</span>
           <span class="m">%s</span>
-        </a></li>''' % (href, title, u''.join(marks)))
+        </a></li>''' % (r['href'], shot, r['t'], u''.join(marks)))
     return u'\n'.join(out)
 
 
@@ -686,7 +746,6 @@ def build_photos(rows):
          사진이 없으면 이 칸은 아예 안 나옵니다(build-activity.py 의 build_photos).
          사진을 늘리려면 PAGES[...]['photos'] 에 (주소, 대체글, 제목, 설명) 을 더하세요. -->
     <section class="sec"><div class="sh">
-      <span class="eyebrow">FIELD</span>
       <h2>현장에서는 이런 일이 있었습니다</h2>
     </div></section>
     <div class="shots"><div class="shots-rail">
@@ -758,7 +817,6 @@ def build_sig(d):
     head = (
         u'    <!-- ───────── 이 활동만의 칸 ───────── -->' + NL +
         u'    <section class="sec sig sig-%s"><div class="sh">' % kind + NL +
-        u'      <span class="eyebrow">%s</span>' % sig['eyebrow'] + NL +
         u'      <h2>%s%s</h2>' % (sig['title'], flag) + NL +
         u'      <p>%s</p>' % sig['lead'] + NL +
         u'    </div>' + NL

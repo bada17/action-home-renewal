@@ -42,7 +42,6 @@
 #pb .sec{padding:clamp(38px,4.6vw,64px) 0; border-top:1px solid var(--line)}
 
 #pb .sh{margin-bottom:clamp(20px,2.4vw,30px)}
-#pb .sh .eyebrow{display:block; font-size:11.5px; font-weight:700; letter-spacing:.14em; color:var(--deep); margin-bottom:9px}
 #pb .sh h2{font-size:clamp(20px,2.3vw,27px); font-weight:700; line-height:1.4}
 #pb .sh p{margin-top:8px; font-size:14.5px; color:var(--soft); line-height:1.65; max-width:60ch}
 
@@ -361,7 +360,10 @@
     transition:opacity .15s,transform .15s,visibility .15s
   }
   #ah-nav .gnb-item:hover .drop,
-  #ah-nav .gnb-item:focus-within .drop{opacity:1;visibility:visible;transform:none}
+  #ah-nav .gnb-item:focus-within .drop,
+  #ah-nav .gnb-item.is-open .drop{opacity:1;visibility:visible;transform:none}
+  /* 눌러서 연 알약은 열려 있다는 것이 보여야 합니다 — 손을 떼도 판이 남기 때문입니다. */
+  #ah-nav .gnb-item.is-open>a{border-color:var(--brand);color:var(--brand-deep)}
   #ah-nav .drop ul{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;box-shadow:0 14px 34px rgba(13,28,38,.14)}
   #ah-nav .drop ul a{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;font-size:14.5px;font-weight:600;white-space:nowrap}
   #ah-nav .drop ul a:hover{background:var(--brand-tint);color:var(--brand-deep)}
@@ -546,6 +548,64 @@
     #ah-nav .gnb-item:last-child{padding-right:14px}
     #ah-nav .drop{display:none}
     #ah-nav .menu-btn{display:grid}
+
+    /* ── 알약 밑에 펼쳐지는 하위 목차 ──
+       예전에는 알약을 누르면 그냥 그 주소로 갔습니다. 활동(/52)처럼 아직 화면이
+       없는 곳은 "아직 안 만들었습니다"만 뜨고, 하위 목차는 볼 길이 없었습니다.
+       이제 누르면 여기에 펼쳐집니다. 주소로 가지 않습니다. */
+    #ah-nav .gnb-sheet{
+      display:none;
+      border-top:1px solid var(--line);
+      background:var(--paper);
+      max-height:min(64vh,520px);overflow-y:auto;
+      animation:ah-sheet-in .16s ease-out
+    }
+    #ah-nav .gnb-sheet.open{display:block}
+    @keyframes ah-sheet-in{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+
+    /* 안에 복사돼 들어온 목차를 좁은 화면 모양으로 다시 입힙니다.
+       원본(.drop)은 떠 있는 판이라 그림자·둥근 모서리·고정폭이 붙어 있습니다. */
+    #ah-nav .gnb-sheet>.drop{
+      position:static;opacity:1;visibility:visible;transform:none;
+      padding:0;min-width:0;display:block
+    }
+    #ah-nav .gnb-sheet ul{
+      background:none;border:none;border-radius:0;box-shadow:none;
+      padding:8px 0 14px;
+      width:min(100% - 36px,1280px);margin:0 auto
+    }
+    #ah-nav .gnb-sheet ul a{white-space:normal}
+    #ah-nav .gnb-sheet .drop.is-act ul{min-width:0}
+    #ah-nav .gnb-sheet .drow{
+      background:#fff;border:1px solid var(--line);border-radius:10px;
+      padding:2px;margin-bottom:6px
+    }
+    #ah-nav .gnb-sheet .drow .dmain{white-space:normal}
+    #ah-nav .gnb-sheet .drow .ddoc{opacity:1}
+    /* 이슈 큰 판 — 넓은 화면에서는 사진 카드 다섯이지만, 좁은 화면에서는 목차입니다.
+       사진까지 다 내리면 판이 화면 몇 개 길이가 되어 목차 구실을 못 합니다.
+       그래서 여기서는 사진을 접고 제목 + 마감일만 한 줄씩 세웁니다. */
+    #ah-nav .gnb-sheet .drop.mega{border-bottom:none;box-shadow:none;background:none}
+    #ah-nav .gnb-sheet .mega-in{width:min(100% - 36px,1280px);padding:10px 0 16px}
+    #ah-nav .gnb-sheet .mega-hd{font-size:13px;margin-bottom:10px}
+    #ah-nav .gnb-sheet .mega-grid{display:block}
+    #ah-nav .gnb-sheet .icard-media{display:none}
+    #ah-nav .gnb-sheet .icard{
+      display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+      background:#fff;border:1px solid var(--line);border-radius:10px;
+      padding:12px 14px;margin-bottom:6px
+    }
+    #ah-nav .gnb-sheet .icard strong{margin-top:0;font-size:14.5px}
+    #ah-nav .gnb-sheet .icard-due{margin-top:0;font-size:12.5px}
+    #ah-nav .gnb-sheet .mega-side{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+    #ah-nav .gnb-sheet .mega-side a{
+      border:1px solid var(--line);border-radius:999px;padding:8px 14px;
+      font-size:13px;font-weight:700;background:#fff
+    }
+    #ah-nav .gnb-sheet .mega-side a.is-fill{background:var(--brand);border-color:var(--brand);color:#fff}
+    /* 넓은 화면에서는 두 줄로 앉히는 줄바꿈입니다. 좁은 화면 알약에서는 접되
+       앞의 공백이 남아 "시민행동다운예산감시" 로 붙지 않습니다. */
+    #ah-nav .gnb-sheet .mega-side a br{display:none}
     #ah-nav .hd-tools{margin-left:auto}
     /* 알약이 가로로 넘어가면 밑줄이 잘려 보입니다. 왼쪽 굵은 선으로 바꿉니다. */
     #ah-nav .gnb-item>a.is-here::after{display:none}
@@ -612,23 +672,23 @@
         <div class="drop is-act"><ul>
           <li class="drow">
             <a class="dmain" href="/49" data-nav="act-local">지자체 감시<em>지방정부 · 지방의회</em></a>
-            <a class="ddoc" href="/23" aria-label="지자체 감시 자료실">자료실</a>
+            <a class="ddoc" href="/library" data-nav="library" aria-label="지자체 감시 자료실">자료실</a>
           </li>
           <li class="drow">
             <a class="dmain" href="/act-power" data-nav="act-power">권력감시<em>중앙정부 · 국회</em></a>
-            <a class="ddoc" href="/23" aria-label="권력감시 자료실">자료실</a>
+            <a class="ddoc" href="/library" data-nav="library" aria-label="권력감시 자료실">자료실</a>
           </li>
           <li class="drow">
             <a class="dmain" href="/act-budget" data-nav="act-budget">예산감시<em>나라살림 · 지방재정</em></a>
-            <a class="ddoc" href="/23" aria-label="예산감시 자료실">자료실</a>
+            <a class="ddoc" href="/library" data-nav="library" aria-label="예산감시 자료실">자료실</a>
           </li>
           <li class="drow">
             <a class="dmain" href="/51" data-nav="act-civic">시민참여<em>참여예산 제도 개선 · 시민 교육</em></a>
-            <a class="ddoc" href="/23" aria-label="시민참여 자료실">자료실</a>
+            <a class="ddoc" href="/library" data-nav="library" aria-label="시민참여 자료실">자료실</a>
           </li>
           <li class="drow">
             <a class="dmain" href="/dok-history" data-nav="act-dok">밑빠진 독상<em>역대 기록 · 지도</em></a>
-            <a class="ddoc" href="/23" aria-label="밑빠진 독상 자료실">자료실</a>
+            <a class="ddoc" href="/library" data-nav="library" aria-label="밑빠진 독상 자료실">자료실</a>
           </li>
         </ul></div>
       </div>
@@ -686,7 +746,7 @@
             <div class="mega-side">
               <a href="https://donate.action.or.kr/">정기후원 회원가입 <span aria-hidden="true">⟶</span></a>
               <a href="/25">뉴스레터 받기 <span aria-hidden="true">⟶</span></a>
-              <a class="is-fill" href="/52">시민행동다운<br>예산감시 <span aria-hidden="true">⟶</span></a>
+              <a class="is-fill" href="/52">시민행동다운 <br>예산감시 <span aria-hidden="true">⟶</span></a>
             </div>
 
           </div>
@@ -696,6 +756,9 @@
       <div class="gnb-item">
         <a href="/26" data-nav="news">소식</a>
         <div class="drop"><ul>
+          <!-- 자료실은 발행물·뉴스룸을 아우르는 상위 칸이라 맨 위에 둡니다.
+               ⚠️ /library 는 미리보기 전용 경로입니다. 캠페이너스 페이지 번호로 바꾸세요. -->
+          <li><a href="/library" data-nav="library">자료실</a></li>
           <li><a href="/26">공지</a></li>
           <li><a href="/23">발행물</a></li>
           <li><a href="/24">뉴스룸</a></li>
@@ -735,6 +798,12 @@
     </div>
   </div>
 
+  <!-- 좁은 화면에서 알약을 누르면 그 알약의 하위 목차가 여기에 펼쳐집니다.
+       ⚠️ 비어 있는 것이 맞습니다. 내용은 스크립트가 위 .drop 을 그대로 복사해 넣습니다.
+          알약 줄(.gnb)이 가로로 스크롤되는 상자라 그 안에서는 판이 잘려 버립니다.
+          그래서 상자 밖인 여기에 따로 둡니다. 목차 원본은 여전히 .drop 한 곳뿐입니다. -->
+  <div class="gnb-sheet" id="ah-sheet" hidden></div>
+
   <!-- 좁은 화면 전용 메뉴판. 위 알약 메뉴와 같은 항목이니 한쪽을 고치면 여기도 고칠 것. -->
   <nav class="mnav" id="ah-mnav" aria-label="전체 메뉴"><div class="wrap"><ul>
     <li>
@@ -755,7 +824,7 @@
         <li><a href="/act-budget" data-nav="act-budget">예산감시</a></li>
         <li><a href="/51" data-nav="act-civic">시민참여</a></li>
         <li><a href="/dok-history" data-nav="act-dok">밑빠진 독상</a></li>
-        <li><a class="is-doc" href="/23">활동 자료실 →</a></li>
+        <li><a class="is-doc" href="/library" data-nav="library">활동 자료실 →</a></li>
       </ul>
     </li>
     <li>
@@ -771,6 +840,7 @@
     <li>
       <a href="/26">소식</a>
       <ul class="msub">
+        <li><a href="/library" data-nav="library">자료실</a></li>
         <li><a href="/26">공지</a></li>
         <li><a href="/23">발행물</a></li>
         <li><a href="/24">뉴스룸</a></li>
@@ -848,7 +918,90 @@
     }
   }
 
-  /* ── 2. 햄버거 ── */
+  /* ── 2. 알약을 누르면 하위 목차가 펼쳐진다 ──
+     예전에는 알약이 그냥 링크였습니다. 활동을 누르면 /52 로 가서
+     "아직 안 만들었습니다"만 뜨고, 정작 활동 다섯은 볼 수가 없었습니다.
+     이제 누르면 주소로 가지 않고 하위 목차를 폅니다.
+
+     넓은 화면 — 원래 있던 떠 있는 판을 그대로 켭니다(.is-open).
+     좁은 화면 — 알약 줄이 가로로 스크롤되는 상자라 그 안에서는 판이 잘립니다.
+                그래서 상자 밖 #ah-sheet 에 목차를 복사해 넣고 헤더 밑에 폅니다.
+
+     후원하기는 이 규칙에서 뺐습니다 — 눌러서 바로 가야 하는 버튼입니다. */
+  var narrow = window.matchMedia('(max-width:1060px)');
+  var sheet = document.getElementById('ah-sheet');
+  var openItem = null;
+
+  function closeDrops() {
+    if (openItem) {
+      openItem.classList.remove('is-open');
+      var a = openItem.querySelector('a');
+      if (a) a.setAttribute('aria-expanded', 'false');
+      openItem = null;
+    }
+    if (sheet) {
+      sheet.classList.remove('open');
+      sheet.hidden = true;
+      sheet.innerHTML = '';
+    }
+  }
+
+  function openDrop(item) {
+    var was = openItem;
+    closeDrops();
+    if (was === item) return;          // 같은 알약을 다시 누르면 닫기
+
+    item.classList.add('is-open');
+    var a = item.querySelector('a');
+    if (a) a.setAttribute('aria-expanded', 'true');
+    openItem = item;
+
+    if (narrow.matches && sheet) {
+      var drop = item.querySelector('.drop');
+      if (!drop) return;
+      // 원본을 옮기지 않고 복사합니다. 목차를 고칠 곳은 여전히 .drop 한 곳뿐입니다.
+      sheet.appendChild(drop.cloneNode(true));
+      sheet.hidden = false;
+      sheet.classList.add('open');
+      sheet.scrollTop = 0;
+    }
+  }
+
+  hd.querySelectorAll('.gnb-item').forEach(function (item) {
+    var a = item.querySelector('a');
+    var drop = item.querySelector('.drop');
+    if (!a || !drop || a.classList.contains('is-cta')) return;
+
+    a.setAttribute('aria-haspopup', 'true');
+    a.setAttribute('aria-expanded', 'false');
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      openDrop(item);
+    });
+    // 넓은 화면에서 다른 알약에 마우스를 올리면 눌러 둔 판은 닫습니다.
+    // 안 그러면 판이 둘 겹쳐 보입니다.
+    item.addEventListener('mouseenter', function () {
+      if (!narrow.matches && openItem && openItem !== item) closeDrops();
+    });
+  });
+
+  // 판 밖을 누르면 닫습니다. 판 안의 링크를 누르면 어차피 화면이 바뀌므로 같이 닫습니다.
+  document.addEventListener('click', function (e) {
+    if (!openItem) return;
+    var t = e.target;
+    if (sheet && sheet.contains(t)) {
+      if (t.closest('a')) closeDrops();
+      return;
+    }
+    if (!t.closest || !t.closest('.gnb-item')) closeDrops();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeDrops();
+  });
+  // 넓은 화면과 좁은 화면은 펴는 자리가 달라, 경계를 넘으면 닫고 다시 열게 합니다.
+  if (narrow.addEventListener) narrow.addEventListener('change', closeDrops);
+
+  /* ── 3. 햄버거 ── */
   var btn = document.getElementById('ah-menu-btn');
   var mnav = document.getElementById('ah-mnav');
   if (btn && mnav) {
@@ -875,7 +1028,7 @@
     });
   }
 
-  /* ── 3·4. 스크롤 ──
+  /* ── 4. 스크롤 ──
      두 가지를 한 번에 봅니다: 헤더 그림자, 떠 있는 후원 버튼.
      requestAnimationFrame 으로 묶어 스크롤마다 계산이 몰리지 않게 합니다. */
   var floatCta = document.getElementById('ah-float');
@@ -929,7 +1082,6 @@
 
     <!-- ───────── 더한 것 1 — 세 갈래 입구 ───────── -->
     <section class="sec"><div class="sh">
-      <span class="eyebrow">WHO</span>
       <h2>누구로 오셨나요</h2>
       <p>셋은 궁금한 것이 전혀 다릅니다. 고르면 아래 문답이 그것만 남습니다.</p>
     </div>
@@ -959,7 +1111,6 @@
          ⚠️ 아래 셋은 참여예산 초안(participatory-budget/index.html)에 있던 실제 문답입니다.
             답한 사람 이름이 'ㅇㅇㅇ'인 것은 아직 확인이 안 됐기 때문입니다. -->
     <section class="sec"><div class="sh">
-      <span class="eyebrow">Q&amp;A</span>
       <h2>오간 질문</h2>
       <p>같은 걸 궁금해한 사람이 이미 있었습니다.</p>
     </div>
@@ -1056,7 +1207,6 @@
 
     <!-- ───────── 더한 것 3 — 참여예산 말 뜻 ───────── -->
     <section class="sec"><div class="sh">
-      <span class="eyebrow">WORDS</span>
       <h2>참여예산 말 뜻</h2>
       <p>못 묻는 가장 큰 이유는 몰라서가 아니라 <b>용어를 몰라서</b>입니다. 눌러서 뒤집어 보세요.</p>
     </div>
@@ -1077,7 +1227,6 @@
          초안 반려 사유 중 "답할 사람이 안 보였다"를 푸는 칸입니다.
          ⚠️ 이름·담당이 전부 확인 안 됐습니다. -->
     <section class="sec"><div class="sh">
-      <span class="eyebrow">WHO ANSWERS</span>
       <h2>답하는 사람 <span class="tbd">이름 확인 필요</span></h2>
       <p>참여예산을 오래 들여다본 전문위원이 직접 답합니다.</p>
     </div>
@@ -1091,7 +1240,6 @@
     <!-- ───────── 전문위원의 글 ─────────
          ⚠️ 제목·필자·날짜가 전부 예시입니다. 실제 글로 바꾸세요. -->
     <section class="sec"><div class="sh">
-      <span class="eyebrow">POSTS</span>
       <h2>전문위원의 글 <span class="tbd">전부 예시</span></h2>
       <p>문답으로 다 못 담는 것은 글로 풉니다.</p>
     </div>
@@ -1105,7 +1253,6 @@
 
     <!-- ───────── 교육 · 컨설팅 의뢰 ───────── -->
     <section class="sec"><div class="sh">
-      <span class="eyebrow">REQUEST</span>
       <h2>교육 · 컨설팅 의뢰</h2>
       <p>지자체·중간지원조직 담당자를 위한 칸입니다.
         <span class="tbd">비용 기준·진행 주체 확인 필요</span></p>
@@ -1127,7 +1274,6 @@
 
     <!-- ───────── 연락 ───────── -->
     <section class="sec"><div class="sh">
-      <span class="eyebrow">CONTACT</span>
       <h2>다른 길로 닿기</h2>
     </div>
       <div class="contact">

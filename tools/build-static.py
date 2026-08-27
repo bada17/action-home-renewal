@@ -64,6 +64,7 @@ PAGES = [
     ('activity-budget.html', 'act-budget/index.html',   '활동 › 예산감시',       'budget'),
     ('dok-history.html',     'dok-history/index.html',  '활동 › 밑빠진 독상',    'dok'),
     ('pb.html',              'pb/index.html',           '이슈 › 참여예산 상담소', 'pb'),
+    ('library.html',         'library/index.html',      '자료실',                'lib'),
 ]
 
 NAV = [
@@ -74,6 +75,7 @@ NAV = [
     ('budget', '/act-budget',   '예산감시'),
     ('dok',    '/dok-history',  '밑빠진 독상'),
     ('pb',     '/pb/',          '참여예산 상담소'),
+    ('lib',    '/library',      '자료실'),
 ]
 
 SHELL = u'''<!doctype html>

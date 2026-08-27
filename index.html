@@ -106,66 +106,90 @@
     gap:clamp(16px,1.8vw,26px);align-items:stretch
   }
 
-  /* ── 왼쪽 큰 칸 ── */
-  #action-home-v2 .stage{position:relative;min-height:clamp(360px,42vw,536px);background:var(--ink);overflow:hidden}
+  /* ── 왼쪽 큰 칸 ──  (2026-08-27 다시 짬)
+     사용자 지시: "글자부분과 사진부분을 철저하게 분리해. 사진에서 통일감을 줄 수 없어.
+     그러니 액자 같은 틀에서 통일감을 줘야해."
+
+     전에는 사진을 42% 로 깔고 어둠을 덮은 뒤 그 위에 흰 글씨를 얹었습니다.
+     사진마다 밝기·구도가 달라, 같은 어둠을 덮어도 장마다 다르게 보였습니다.
+
+     이제 위아래로 확실히 나눕니다.
+       위 = 액자. 사진은 액자 밖으로 안 나오고, 어둠도 안 덮습니다(사진이 사진대로 보입니다).
+       아래 = 흰 바탕 글자 칸. 어느 장이 와도 글씨 자리와 색이 똑같습니다.
+     다섯 장이 겹쳐 있어도 액자 높이가 고정이라 넘어갈 때 글자가 튀지 않습니다. */
+  #action-home-v2 .stage{
+    position:relative;min-height:clamp(400px,44vw,560px);
+    background:#fff;border:1px solid var(--line);overflow:hidden
+  }
   #action-home-v2 .slide{position:absolute;inset:0;opacity:0;visibility:hidden;z-index:0}
   /* 스크립트가 없어도 첫 장은 보입니다 */
   #action-home-v2 .slide:first-child,
   #action-home-v2 .slide.is-on{opacity:1;visibility:visible;z-index:1}
   #action-home-v2 .slide.is-on{transition:opacity .55s ease}
-  #action-home-v2 .slide-link{display:block;position:absolute;inset:0}
+  #action-home-v2 .slide-link{display:flex;flex-direction:column;position:absolute;inset:0}
 
-  /* 배경 — 사진이 있으면 사진, 없으면 --tile 색. 어느 쪽이든 위에 같은 어둠을
-     덮어 흰 글씨가 항상 읽히게 합니다. 이게 "사진 때문에 제각각"을 없애는 부분입니다. */
-  #action-home-v2 .slide-bg{position:absolute;inset:0;background:var(--tile,var(--ink));overflow:hidden}
-  #action-home-v2 .slide-bg img{
-    position:absolute;inset:0;height:100%;object-fit:cover;object-position:center;
-    opacity:.42;transform:scale(1.06);transition:transform 7s linear,opacity .55s
+  /* 액자 — 사진이 있으면 사진, 없으면 --tile 색.
+     높이를 비율(58%)로 못박아 장이 바뀌어도 액자 크기가 그대로입니다. */
+  #action-home-v2 .slide-shot{
+    position:relative;flex:0 0 63%;
+    /* 매트(사진 둘레 여백) 색은 장마다 다르지 않습니다. 액자가 똑같아야 통일감이 납니다. */
+    background:var(--band);overflow:hidden;
+    border-bottom:1px solid var(--line)
   }
-  #action-home-v2 .slide.is-on .slide-bg img{transform:scale(1)}
-  #action-home-v2 .slide-bg::after{
-    content:"";position:absolute;inset:0;
-    background:linear-gradient(180deg,rgba(6,35,48,.12) 0%,rgba(6,35,48,.52) 46%,rgba(6,35,48,.88) 100%)
+  /* contain 입니다. cover 로 하면 액자에 맞추려고 사진을 잘라 냅니다 —
+     우리 이슈 사진은 대부분 포스터·카드뉴스라 잘리면 제목부터 날아갑니다.
+     액자는 고정하고 그림은 온전히 담습니다. */
+  #action-home-v2 .slide-shot img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;
+    transform:scale(1.04);transition:transform 7s linear
   }
-  /* 사진이 없는 칸에는 큰 글자 무늬를 옅게 깔아 빈 색면으로 안 보이게 합니다. */
-  #action-home-v2 .slide-bg .mark{
-    position:absolute;right:-.06em;bottom:-.28em;margin:0;
-    font-family:GmarketSans,sans-serif;font-size:clamp(120px,17vw,240px);font-weight:700;
-    line-height:.8;color:rgba(255,255,255,.07);letter-spacing:-.05em;pointer-events:none
+  #action-home-v2 .slide.is-on .slide-shot img{transform:scale(1)}
+  /* 액자의 마감선. 사진과 틀을 갈라 줍니다. */
+  #action-home-v2 .slide-shot::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    box-shadow:inset 0 0 0 1px rgba(6,35,48,.14)
+  }
+  /* 사진이 없는 장. 점선 빈 칸을 두면 그 장만 미완성으로 보이므로 색 타일에 큰 글자를 깝니다. */
+  #action-home-v2 .slide-shot .mark{
+    position:absolute;inset:0;display:grid;place-items:center;margin:0;
+    background:var(--tile,var(--ink));
+    font-family:GmarketSans,sans-serif;font-size:clamp(64px,8vw,110px);font-weight:700;
+    line-height:1;color:rgba(255,255,255,.2);letter-spacing:-.05em;pointer-events:none
   }
 
   #action-home-v2 .slide-in{
-    position:absolute;left:0;right:0;bottom:0;z-index:2;
-    display:flex;flex-direction:column;align-items:flex-start;gap:clamp(9px,1vw,14px);
-    padding:clamp(24px,3vw,44px);color:#fff
+    flex:1 1 auto;z-index:2;
+    display:flex;flex-direction:column;align-items:flex-start;gap:clamp(7px,.8vw,11px);
+    padding:clamp(18px,2.2vw,28px);background:#fff;color:var(--ink)
   }
   #action-home-v2 .slide-t{
     font-family:GmarketSans,sans-serif;font-weight:700;letter-spacing:-.03em;line-height:1.26;
-    font-size:clamp(23px,2.9vw,42px);text-wrap:balance
+    font-size:clamp(21px,2.3vw,32px);text-wrap:balance
   }
   #action-home-v2 .slide-d{
-    font-size:clamp(14px,1.05vw,16px);line-height:1.65;color:rgba(255,255,255,.85);max-width:44ch
+    font-size:clamp(13.5px,1vw,15px);line-height:1.6;color:var(--soft);max-width:52ch
   }
-  #action-home-v2 .slide-f{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:4px}
+  #action-home-v2 .slide-f{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
   #action-home-v2 .slide-go{
-    background:#fff;color:var(--ink);border-radius:999px;padding:11px 22px;
-    font-size:14.5px;font-weight:700;transition:transform .15s
+    background:var(--ink);color:#fff;border-radius:999px;padding:10px 20px;
+    font-size:14px;font-weight:700;transition:transform .15s,background .15s
   }
-  #action-home-v2 .slide:hover .slide-go{transform:translateX(3px)}
-  /* 뱃지 — 흰 글씨 위에서도 읽히게 테두리만 있는 알약 */
+  #action-home-v2 .slide:hover .slide-go{transform:translateX(3px);background:var(--deep)}
+  /* 뱃지 — 액자가 아니라 글자 칸에 있습니다. 액자 위에 뱃지를 얹으면 포스터 제목을 가립니다
+     (실제로 한강버스 포스터의 첫 글자를 가렸습니다). 액자에는 아무것도 얹지 않습니다. */
   #action-home-v2 .pill{
-    border:1.5px solid rgba(255,255,255,.7);border-radius:999px;padding:5px 13px;
+    background:var(--brand);color:#fff;border-radius:999px;padding:5px 13px;
     font-size:12px;font-weight:800;letter-spacing:-.01em
   }
-  #action-home-v2 .pill.is-todo{border-style:dashed;color:rgba(255,255,255,.82)}
+  #action-home-v2 .pill.is-todo{background:rgba(6,35,48,.6)}
 
   /* 남은 날짜 — 왼쪽 큰 칸과 오른쪽 목록이 같은 부품을 씁니다 */
   #action-home-v2 .dday{
     font-family:GmarketSans,sans-serif;font-weight:700;line-height:1;letter-spacing:-.02em;
     font-size:clamp(20px,1.8vw,26px)
   }
-  #action-home-v2 .slide-f .dday{color:#fff}
-  #action-home-v2 .due-line{font-size:13px;color:rgba(255,255,255,.78)}
+  #action-home-v2 .slide-f .dday{color:var(--deep)}
+  #action-home-v2 .due-line{font-size:13px;color:var(--faint)}
 
   /* ── 오른쪽 목록 ── */
   #action-home-v2 .lead-list{display:flex;flex-direction:column;border-top:2px solid var(--ink)}
@@ -537,7 +561,10 @@
     transition:opacity .15s,transform .15s,visibility .15s
   }
   #ah-nav .gnb-item:hover .drop,
-  #ah-nav .gnb-item:focus-within .drop{opacity:1;visibility:visible;transform:none}
+  #ah-nav .gnb-item:focus-within .drop,
+  #ah-nav .gnb-item.is-open .drop{opacity:1;visibility:visible;transform:none}
+  /* 눌러서 연 알약은 열려 있다는 것이 보여야 합니다 — 손을 떼도 판이 남기 때문입니다. */
+  #ah-nav .gnb-item.is-open>a{border-color:var(--brand);color:var(--brand-deep)}
   #ah-nav .drop ul{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;box-shadow:0 14px 34px rgba(13,28,38,.14)}
   #ah-nav .drop ul a{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;font-size:14.5px;font-weight:600;white-space:nowrap}
   #ah-nav .drop ul a:hover{background:var(--brand-tint);color:var(--brand-deep)}
@@ -722,6 +749,64 @@
     #ah-nav .gnb-item:last-child{padding-right:14px}
     #ah-nav .drop{display:none}
     #ah-nav .menu-btn{display:grid}
+
+    /* ── 알약 밑에 펼쳐지는 하위 목차 ──
+       예전에는 알약을 누르면 그냥 그 주소로 갔습니다. 활동(/52)처럼 아직 화면이
+       없는 곳은 "아직 안 만들었습니다"만 뜨고, 하위 목차는 볼 길이 없었습니다.
+       이제 누르면 여기에 펼쳐집니다. 주소로 가지 않습니다. */
+    #ah-nav .gnb-sheet{
+      display:none;
+      border-top:1px solid var(--line);
+      background:var(--paper);
+      max-height:min(64vh,520px);overflow-y:auto;
+      animation:ah-sheet-in .16s ease-out
+    }
+    #ah-nav .gnb-sheet.open{display:block}
+    @keyframes ah-sheet-in{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+
+    /* 안에 복사돼 들어온 목차를 좁은 화면 모양으로 다시 입힙니다.
+       원본(.drop)은 떠 있는 판이라 그림자·둥근 모서리·고정폭이 붙어 있습니다. */
+    #ah-nav .gnb-sheet>.drop{
+      position:static;opacity:1;visibility:visible;transform:none;
+      padding:0;min-width:0;display:block
+    }
+    #ah-nav .gnb-sheet ul{
+      background:none;border:none;border-radius:0;box-shadow:none;
+      padding:8px 0 14px;
+      width:min(100% - 36px,1280px);margin:0 auto
+    }
+    #ah-nav .gnb-sheet ul a{white-space:normal}
+    #ah-nav .gnb-sheet .drop.is-act ul{min-width:0}
+    #ah-nav .gnb-sheet .drow{
+      background:#fff;border:1px solid var(--line);border-radius:10px;
+      padding:2px;margin-bottom:6px
+    }
+    #ah-nav .gnb-sheet .drow .dmain{white-space:normal}
+    #ah-nav .gnb-sheet .drow .ddoc{opacity:1}
+    /* 이슈 큰 판 — 넓은 화면에서는 사진 카드 다섯이지만, 좁은 화면에서는 목차입니다.
+       사진까지 다 내리면 판이 화면 몇 개 길이가 되어 목차 구실을 못 합니다.
+       그래서 여기서는 사진을 접고 제목 + 마감일만 한 줄씩 세웁니다. */
+    #ah-nav .gnb-sheet .drop.mega{border-bottom:none;box-shadow:none;background:none}
+    #ah-nav .gnb-sheet .mega-in{width:min(100% - 36px,1280px);padding:10px 0 16px}
+    #ah-nav .gnb-sheet .mega-hd{font-size:13px;margin-bottom:10px}
+    #ah-nav .gnb-sheet .mega-grid{display:block}
+    #ah-nav .gnb-sheet .icard-media{display:none}
+    #ah-nav .gnb-sheet .icard{
+      display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+      background:#fff;border:1px solid var(--line);border-radius:10px;
+      padding:12px 14px;margin-bottom:6px
+    }
+    #ah-nav .gnb-sheet .icard strong{margin-top:0;font-size:14.5px}
+    #ah-nav .gnb-sheet .icard-due{margin-top:0;font-size:12.5px}
+    #ah-nav .gnb-sheet .mega-side{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+    #ah-nav .gnb-sheet .mega-side a{
+      border:1px solid var(--line);border-radius:999px;padding:8px 14px;
+      font-size:13px;font-weight:700;background:#fff
+    }
+    #ah-nav .gnb-sheet .mega-side a.is-fill{background:var(--brand);border-color:var(--brand);color:#fff}
+    /* 넓은 화면에서는 두 줄로 앉히는 줄바꿈입니다. 좁은 화면 알약에서는 접되
+       앞의 공백이 남아 "시민행동다운예산감시" 로 붙지 않습니다. */
+    #ah-nav .gnb-sheet .mega-side a br{display:none}
     #ah-nav .hd-tools{margin-left:auto}
     /* 알약이 가로로 넘어가면 밑줄이 잘려 보입니다. 왼쪽 굵은 선으로 바꿉니다. */
     #ah-nav .gnb-item>a.is-here::after{display:none}
@@ -788,23 +873,23 @@
         <div class="drop is-act"><ul>
           <li class="drow">
             <a class="dmain" href="/49" data-nav="act-local">지자체 감시<em>지방정부 · 지방의회</em></a>
-            <a class="ddoc" href="/23" aria-label="지자체 감시 자료실">자료실</a>
+            <a class="ddoc" href="/library" data-nav="library" aria-label="지자체 감시 자료실">자료실</a>
           </li>
           <li class="drow">
             <a class="dmain" href="/act-power" data-nav="act-power">권력감시<em>중앙정부 · 국회</em></a>
-            <a class="ddoc" href="/23" aria-label="권력감시 자료실">자료실</a>
+            <a class="ddoc" href="/library" data-nav="library" aria-label="권력감시 자료실">자료실</a>
           </li>
           <li class="drow">
             <a class="dmain" href="/act-budget" data-nav="act-budget">예산감시<em>나라살림 · 지방재정</em></a>
-            <a class="ddoc" href="/23" aria-label="예산감시 자료실">자료실</a>
+            <a class="ddoc" href="/library" data-nav="library" aria-label="예산감시 자료실">자료실</a>
           </li>
           <li class="drow">
             <a class="dmain" href="/51" data-nav="act-civic">시민참여<em>참여예산 제도 개선 · 시민 교육</em></a>
-            <a class="ddoc" href="/23" aria-label="시민참여 자료실">자료실</a>
+            <a class="ddoc" href="/library" data-nav="library" aria-label="시민참여 자료실">자료실</a>
           </li>
           <li class="drow">
             <a class="dmain" href="/dok-history" data-nav="act-dok">밑빠진 독상<em>역대 기록 · 지도</em></a>
-            <a class="ddoc" href="/23" aria-label="밑빠진 독상 자료실">자료실</a>
+            <a class="ddoc" href="/library" data-nav="library" aria-label="밑빠진 독상 자료실">자료실</a>
           </li>
         </ul></div>
       </div>
@@ -862,7 +947,7 @@
             <div class="mega-side">
               <a href="https://donate.action.or.kr/">정기후원 회원가입 <span aria-hidden="true">⟶</span></a>
               <a href="/25">뉴스레터 받기 <span aria-hidden="true">⟶</span></a>
-              <a class="is-fill" href="/52">시민행동다운<br>예산감시 <span aria-hidden="true">⟶</span></a>
+              <a class="is-fill" href="/52">시민행동다운 <br>예산감시 <span aria-hidden="true">⟶</span></a>
             </div>
 
           </div>
@@ -872,6 +957,9 @@
       <div class="gnb-item">
         <a href="/26" data-nav="news">소식</a>
         <div class="drop"><ul>
+          <!-- 자료실은 발행물·뉴스룸을 아우르는 상위 칸이라 맨 위에 둡니다.
+               ⚠️ /library 는 미리보기 전용 경로입니다. 캠페이너스 페이지 번호로 바꾸세요. -->
+          <li><a href="/library" data-nav="library">자료실</a></li>
           <li><a href="/26">공지</a></li>
           <li><a href="/23">발행물</a></li>
           <li><a href="/24">뉴스룸</a></li>
@@ -911,6 +999,12 @@
     </div>
   </div>
 
+  <!-- 좁은 화면에서 알약을 누르면 그 알약의 하위 목차가 여기에 펼쳐집니다.
+       ⚠️ 비어 있는 것이 맞습니다. 내용은 스크립트가 위 .drop 을 그대로 복사해 넣습니다.
+          알약 줄(.gnb)이 가로로 스크롤되는 상자라 그 안에서는 판이 잘려 버립니다.
+          그래서 상자 밖인 여기에 따로 둡니다. 목차 원본은 여전히 .drop 한 곳뿐입니다. -->
+  <div class="gnb-sheet" id="ah-sheet" hidden></div>
+
   <!-- 좁은 화면 전용 메뉴판. 위 알약 메뉴와 같은 항목이니 한쪽을 고치면 여기도 고칠 것. -->
   <nav class="mnav" id="ah-mnav" aria-label="전체 메뉴"><div class="wrap"><ul>
     <li>
@@ -931,7 +1025,7 @@
         <li><a href="/act-budget" data-nav="act-budget">예산감시</a></li>
         <li><a href="/51" data-nav="act-civic">시민참여</a></li>
         <li><a href="/dok-history" data-nav="act-dok">밑빠진 독상</a></li>
-        <li><a class="is-doc" href="/23">활동 자료실 →</a></li>
+        <li><a class="is-doc" href="/library" data-nav="library">활동 자료실 →</a></li>
       </ul>
     </li>
     <li>
@@ -947,6 +1041,7 @@
     <li>
       <a href="/26">소식</a>
       <ul class="msub">
+        <li><a href="/library" data-nav="library">자료실</a></li>
         <li><a href="/26">공지</a></li>
         <li><a href="/23">발행물</a></li>
         <li><a href="/24">뉴스룸</a></li>
@@ -1024,7 +1119,90 @@
     }
   }
 
-  /* ── 2. 햄버거 ── */
+  /* ── 2. 알약을 누르면 하위 목차가 펼쳐진다 ──
+     예전에는 알약이 그냥 링크였습니다. 활동을 누르면 /52 로 가서
+     "아직 안 만들었습니다"만 뜨고, 정작 활동 다섯은 볼 수가 없었습니다.
+     이제 누르면 주소로 가지 않고 하위 목차를 폅니다.
+
+     넓은 화면 — 원래 있던 떠 있는 판을 그대로 켭니다(.is-open).
+     좁은 화면 — 알약 줄이 가로로 스크롤되는 상자라 그 안에서는 판이 잘립니다.
+                그래서 상자 밖 #ah-sheet 에 목차를 복사해 넣고 헤더 밑에 폅니다.
+
+     후원하기는 이 규칙에서 뺐습니다 — 눌러서 바로 가야 하는 버튼입니다. */
+  var narrow = window.matchMedia('(max-width:1060px)');
+  var sheet = document.getElementById('ah-sheet');
+  var openItem = null;
+
+  function closeDrops() {
+    if (openItem) {
+      openItem.classList.remove('is-open');
+      var a = openItem.querySelector('a');
+      if (a) a.setAttribute('aria-expanded', 'false');
+      openItem = null;
+    }
+    if (sheet) {
+      sheet.classList.remove('open');
+      sheet.hidden = true;
+      sheet.innerHTML = '';
+    }
+  }
+
+  function openDrop(item) {
+    var was = openItem;
+    closeDrops();
+    if (was === item) return;          // 같은 알약을 다시 누르면 닫기
+
+    item.classList.add('is-open');
+    var a = item.querySelector('a');
+    if (a) a.setAttribute('aria-expanded', 'true');
+    openItem = item;
+
+    if (narrow.matches && sheet) {
+      var drop = item.querySelector('.drop');
+      if (!drop) return;
+      // 원본을 옮기지 않고 복사합니다. 목차를 고칠 곳은 여전히 .drop 한 곳뿐입니다.
+      sheet.appendChild(drop.cloneNode(true));
+      sheet.hidden = false;
+      sheet.classList.add('open');
+      sheet.scrollTop = 0;
+    }
+  }
+
+  hd.querySelectorAll('.gnb-item').forEach(function (item) {
+    var a = item.querySelector('a');
+    var drop = item.querySelector('.drop');
+    if (!a || !drop || a.classList.contains('is-cta')) return;
+
+    a.setAttribute('aria-haspopup', 'true');
+    a.setAttribute('aria-expanded', 'false');
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      openDrop(item);
+    });
+    // 넓은 화면에서 다른 알약에 마우스를 올리면 눌러 둔 판은 닫습니다.
+    // 안 그러면 판이 둘 겹쳐 보입니다.
+    item.addEventListener('mouseenter', function () {
+      if (!narrow.matches && openItem && openItem !== item) closeDrops();
+    });
+  });
+
+  // 판 밖을 누르면 닫습니다. 판 안의 링크를 누르면 어차피 화면이 바뀌므로 같이 닫습니다.
+  document.addEventListener('click', function (e) {
+    if (!openItem) return;
+    var t = e.target;
+    if (sheet && sheet.contains(t)) {
+      if (t.closest('a')) closeDrops();
+      return;
+    }
+    if (!t.closest || !t.closest('.gnb-item')) closeDrops();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeDrops();
+  });
+  // 넓은 화면과 좁은 화면은 펴는 자리가 달라, 경계를 넘으면 닫고 다시 열게 합니다.
+  if (narrow.addEventListener) narrow.addEventListener('change', closeDrops);
+
+  /* ── 3. 햄버거 ── */
   var btn = document.getElementById('ah-menu-btn');
   var mnav = document.getElementById('ah-mnav');
   if (btn && mnav) {
@@ -1051,7 +1229,7 @@
     });
   }
 
-  /* ── 3·4. 스크롤 ──
+  /* ── 4. 스크롤 ──
      두 가지를 한 번에 봅니다: 헤더 그림자, 떠 있는 후원 버튼.
      requestAnimationFrame 으로 묶어 스크롤마다 계산이 몰리지 않게 합니다. */
   var floatCta = document.getElementById('ah-float');
@@ -1089,7 +1267,7 @@
 
        ⚠️ 사진이 없는 둘(참여예산 상담소 · 참여예산 고민대회)은 색 타일로 채웁니다.
           점선 빈 칸을 두면 그 카드만 미완성으로 보여 줄이 어그러집니다.
-          사진이 생기면 slide-bg 안의 <span class="mark"> 를 <img> 로 바꾸면 됩니다. -->
+          사진이 생기면 slide-shot 안의 <span class="mark"> 를 <img> 로 바꾸면 됩니다. -->
   <section class="lead" id="lead">
     <div class="wrap">
       <div class="sec-hd">
@@ -1103,7 +1281,9 @@
         <div class="stage" id="lead-stage">
         <article class="slide" data-due="2026-08-31" style="--tile:#0079a6">
           <a class="slide-link" href="/27/?idx=173013295&amp;bmode=view">
-            <span class="slide-bg"><img src="https://cdn.imweb.me/thumbnail/20260811/59d0381d6c5b7.png" alt="더 걷힐 세금, 어디에 쓸래? 추가세수 시민의견 수렴 캠페인"></span>
+            <span class="slide-shot">
+              <img src="https://cdn.imweb.me/thumbnail/20260811/59d0381d6c5b7.png" alt="더 걷힐 세금, 어디에 쓸래? 추가세수 시민의견 수렴 캠페인">
+            </span>
             <span class="slide-in">
               <span class="pill">진행 중</span>
               <strong class="slide-t">더 걷힐 세금, 어디에 쓸래?</strong>
@@ -1114,7 +1294,9 @@
         </article>
         <article class="slide" data-due="2026-09-15" style="--tile:#062330">
           <a class="slide-link" href="https://dokseong-action.bada523082.chatgpt.site/">
-            <span class="slide-bg"><img src="https://cdn.imweb.me/thumbnail/20260825/c4b8e2d1b259d.png" alt="2026 하반기 밑빠진 독상"></span>
+            <span class="slide-shot">
+              <img src="https://cdn.imweb.me/thumbnail/20260825/c4b8e2d1b259d.png" alt="2026 하반기 밑빠진 독상">
+            </span>
             <span class="slide-in">
               <span class="pill">진행 중</span>
               <strong class="slide-t">2026 하반기 밑빠진독상</strong>
@@ -1125,7 +1307,9 @@
         </article>
         <article class="slide" style="--tile:#0d4f66">
           <a class="slide-link" href="https://vote.action.or.kr/">
-            <span class="slide-bg"><img src="https://vote.action.or.kr/og-budget-vote-v1.png?v=2" alt="10만원 예산 편성"></span>
+            <span class="slide-shot">
+              <img src="https://vote.action.or.kr/og-budget-vote-v1.png?v=2" alt="10만원 예산 편성">
+            </span>
             <span class="slide-in">
               <span class="pill is-todo">진행 중</span>
               <strong class="slide-t">10만원 예산편성</strong>
@@ -1136,7 +1320,9 @@
         </article>
         <article class="slide" style="--tile:#062330">
           <a class="slide-link" href="/pb/">
-            <span class="slide-bg"><span class="mark" aria-hidden="true">상담</span></span>
+            <span class="slide-shot">
+              <span class="mark" aria-hidden="true">상담</span>
+            </span>
             <span class="slide-in">
               <span class="pill is-todo">확인 필요</span>
               <strong class="slide-t">참여예산 상담소</strong>
@@ -1147,7 +1333,9 @@
         </article>
         <article class="slide" style="--tile:#0d4f66">
           <a class="slide-link" href="#">
-            <span class="slide-bg"><span class="mark" aria-hidden="true">대회</span></span>
+            <span class="slide-shot">
+              <span class="mark" aria-hidden="true">대회</span>
+            </span>
             <span class="slide-in">
               <span class="pill is-todo">확인 필요</span>
               <strong class="slide-t">1회 참여예산 고민대회</strong>
@@ -1495,9 +1683,9 @@
       </div>
 
       <div class="ft-col">
-        <h3>SNS</h3>
+        <h3>소셜미디어</h3>
         <div class="ft-btns">
-          <a href="https://blog.naver.com/together_action" target="_blank" rel="noopener">네이버 블로그 <span class="mark" aria-hidden="true">blog</span></a>
+          <a href="https://blog.naver.com/together_action" target="_blank" rel="noopener">네이버 블로그 <span class="mark" aria-hidden="true">N</span></a>
           <a href="https://www.youtube.com/user/actionCANvideo" target="_blank" rel="noopener">유튜브 <span class="mark" aria-hidden="true">▶</span></a>
           <a href="https://www.instagram.com/action.together.1999/" target="_blank" rel="noopener">인스타그램 <span class="mark" aria-hidden="true">◎</span></a>
           <a href="https://www.facebook.com/withAction/" target="_blank" rel="noopener">페이스북 <span class="mark" aria-hidden="true">f</span></a>

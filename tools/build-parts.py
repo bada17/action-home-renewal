@@ -53,6 +53,7 @@ PAGES = [
     ('dok-history.html',     'dok',            'act-dok'),
     ('issue.html',           'iss',            'issue'),
     ('pb.html',              'pb',             'pb'),
+    ('library.html',         'lib',            'library'),
 ]
 
 

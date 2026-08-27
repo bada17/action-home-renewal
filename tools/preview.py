@@ -20,6 +20,7 @@
     /act-budget     활동 > 예산감시       activity-budget.html
     /51             활동 > 참여예산       (아직 없음 — 안내가 뜹니다)
     /dok-history    활동 > 밑빠진 독상    dok-history.html
+    /library        자료실                library.html
     /dok/           밑빠진 독상 원본      옆 저장소를 그 자리에서 읽습니다
     /pb/            참여예산 상담소       pb.html
     /pb-old/        상담소 옛 초안        옆 저장소를 그 자리에서 읽습니다
@@ -63,13 +64,15 @@ ROUTES = {
     '/dok-history': 'dok-history.html',
     '/pb/': 'pb.html',
     '/pb': 'pb.html',
+    '/library': 'library.html',
+    '/library/': 'library.html',
 }
 
 # 아직 화면이 없는 주소. 404 대신 "무엇이 없는지"를 알려 줍니다.
 STUBS = {
     '/51': ('활동 &gt; 참여예산', '이 활동의 화면은 아직 없습니다. 캠페이너스 /51 (주민참여예산 활성화) 게시판으로 이어질 자리입니다.'),
     '/52': ('활동 전체', '활동 다섯을 모아 보여 줄 목록 화면입니다. 아직 안 만들었습니다.'),
-    '/23': ('발행물', '자료실입니다. 각 활동 페이지의 &lsquo;자료실&rsquo; 링크가 여기로 옵니다.'),
+    '/23': ('발행물', '게시판입니다. 자료실은 이제 /library 에 따로 있습니다.'),
     '/24': ('뉴스룸', '보도자료 게시판입니다.'),
     '/25': ('뉴스레터', '스티비 구독 페이지입니다.'),
     '/26': ('소식', '공지 게시판입니다.'),
@@ -113,6 +116,7 @@ SHELL = u'''<!doctype html>
   <a href="/dok-history"%(a_dok)s>밑빠진 독상</a>
   <b>이슈</b>
   <a href="/pb/"%(a_pb)s>참여예산 상담소</a>
+  <a href="/library"%(a_lib)s>자료실</a>
   <b>원본</b>
   <a href="/pb-old/">상담소 옛 초안</a>
   <a href="/dok/"%(a_dokorg)s>독상 사이트</a>
@@ -136,6 +140,7 @@ TITLES = {
     '/49': '활동 > 지자체 감시', '/act-power': '활동 > 권력감시',
     '/act-budget': '활동 > 예산감시', '/dok-history': '활동 > 밑빠진 독상',
     '/pb/': '이슈 > 참여예산 상담소', '/pb': '이슈 > 참여예산 상담소',
+    '/library': '자료실', '/library/': '자료실',
 }
 
 MIME = {
@@ -159,11 +164,13 @@ def wrap(path, body, title):
     marks = {
         'a_home': '', 'a_issue': '', 'a_local': '', 'a_power': '',
         'a_budget': '', 'a_pb51': '', 'a_dok': '', 'a_pb': '', 'a_dokorg': '',
+        'a_lib': '',
     }
     key = {'/': 'a_home', '/69': 'a_home', '/issue/': 'a_issue', '/issue': 'a_issue',
            '/49': 'a_local', '/act-power': 'a_power', '/act-budget': 'a_budget',
            '/51': 'a_pb51', '/dok-history': 'a_dok',
-           '/pb/': 'a_pb', '/pb': 'a_pb'}.get(path)
+           '/pb/': 'a_pb', '/pb': 'a_pb',
+           '/library': 'a_lib', '/library/': 'a_lib'}.get(path)
     if key:
         marks[key] = ' class="on"'
     d = dict(marks)
