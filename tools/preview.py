@@ -67,6 +67,8 @@ ROUTES = {
     '/pb': 'pb.html',
     '/library': 'library.html',
     '/library/': 'library.html',
+    '/sign': 'sign.html',
+    '/sign/': 'sign.html',
 }
 
 # 아직 화면이 없는 주소. 404 대신 "무엇이 없는지"를 알려 줍니다.
@@ -120,6 +122,7 @@ SHELL = u'''<!doctype html>
   <a href="/dok-history"%(a_dok)s>밑빠진 독상</a>
   <b>캠페인</b>
   <a href="/pb/"%(a_pb)s>참여예산 상담소</a>
+  <a href="/sign"%(a_sign)s>서명</a>
   <a href="/library"%(a_lib)s>자료실</a>
   <b>원본</b>
   <a href="/pb-old/">상담소 옛 초안</a>
@@ -146,6 +149,7 @@ TITLES = {
     '/dok-history': '활동 > 밑빠진 독상',
     '/pb/': '캠페인 > 참여예산 상담소', '/pb': '캠페인 > 참여예산 상담소',
     '/library': '자료실', '/library/': '자료실',
+    '/sign': '캠페인 > 서명', '/sign/': '캠페인 > 서명',
 }
 
 MIME = {
@@ -294,13 +298,14 @@ def wrap(path, body, title):
     marks = {
         'a_home': '', 'a_issue': '', 'a_local': '', 'a_power': '',
         'a_budget': '', 'a_pb51': '', 'a_dok': '', 'a_pb': '', 'a_dokorg': '',
-        'a_lib': '',
+        'a_lib': '', 'a_sign': '',
     }
     key = {'/': 'a_home', '/69': 'a_home', '/issue/': 'a_issue', '/issue': 'a_issue',
            '/49': 'a_local', '/act-power': 'a_power', '/act-budget': 'a_budget',
            '/51': 'a_pb51', '/dok-history': 'a_dok',
            '/pb/': 'a_pb', '/pb': 'a_pb',
-           '/library': 'a_lib', '/library/': 'a_lib'}.get(path)
+           '/library': 'a_lib', '/library/': 'a_lib',
+           '/sign': 'a_sign', '/sign/': 'a_sign'}.get(path)
     if key:
         marks[key] = ' class="on"'
     d = dict(marks)

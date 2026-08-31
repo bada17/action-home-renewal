@@ -69,6 +69,7 @@ PAGES = [
     ('issue.html',           'iss',            'issue'),
     ('pb.html',              'pb',             'pb'),
     ('library.html',         'lib',            'library'),
+    ('sign.html',            'sign',           'issue'),
 ]
 
 
