@@ -72,6 +72,8 @@ TEMPLATE = u'''<style>
   font-size:16px; line-height:1.7; word-break:keep-all; -webkit-font-smoothing:antialiased;
 }}
 #act *{{box-sizing:border-box}}
+/* 값이 들어올 때만 켜지는 칸(현장 사진)에 씁니다. display 를 손대지 않고 hidden 을 씁니다. */
+#act [hidden]{{display:none!important}}
 #act h1,#act h2,#act h3{{font-family:GmarketSans,'Pretendard Variable',sans-serif; letter-spacing:-.022em; margin:0}}
 #act p{{margin:0}}
 #act ul{{list-style:none; margin:0; padding:0}}
@@ -311,7 +313,7 @@ TEMPLATE = u'''<style>
 }}
 #act .now .m{{display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:8px; font-size:12.5px; color:var(--faint)}}
 #act .now .m:empty{{display:none}}
-/* 마감이 있는 것에만 붙는 표시. 캠페인로 옮길지 판단하는 기준이기도 합니다. */
+/* 마감이 있는 것에만 붙는 표시. 캠페인으로 옮길지 판단하는 기준이기도 합니다. */
 #act .due{{background:var(--tint); color:var(--deep); border-radius:999px; padding:2px 10px; font-weight:700}}
 
 /* ───── 결과 (사건 단위) ───── */
@@ -416,7 +418,7 @@ TEMPLATE = u'''<style>
 <!-- PART:header -->
 <!-- /PART:header -->
 
-<div id="act" aria-label="{title}">
+<div id="act" aria-label="{title}" data-act="{key}">
 
   <!-- ───────── 맨 위 ─────────
        빵부스러기 → 감시 대상 → 제목 → 한 줄 → 숫자 셋이 한 덩이입니다.
@@ -426,9 +428,9 @@ TEMPLATE = u'''<style>
   <section class="top"><div class="wrap">
     <nav class="crumb"><a href="/69?preview_mode=1">홈</a><span>&rsaquo;</span>활동<span>&rsaquo;</span>{title}</nav>
     <span class="who">{who}</span>
-    <h1>{headline}</h1>
-    <p class="by">{lede}</p>
-    <div class="nums">
+    <h1 id="act-head">{headline}</h1>
+    <p class="by" id="act-lede">{lede}</p>
+    <div class="nums" id="act-nums">
 {nums}
     </div>
   </div></section>
@@ -438,9 +440,9 @@ TEMPLATE = u'''<style>
     <!-- ───────── 지금 ───────── -->
     <section class="sec"><div class="sh">
       <h2>지금 무엇을 보고 있나</h2>
-      <p>끝나는 날짜가 붙은 일이 늘어나면 그건 '활동'이 아니라 '캠페인'로 올립니다.</p>
+      <p>끝나는 날짜가 붙은 일이 늘어나면 그건 '활동'이 아니라 '캠페인'으로 올립니다.</p>
     </div>
-      <ul class="now">
+      <ul class="now" id="act-now">
 {now}
       </ul>
     </section>
@@ -452,7 +454,7 @@ TEMPLATE = u'''<style>
       <h2>무엇이 달라졌나</h2>
       <p>글이 아니라 사건으로 적습니다. 무엇을 했고, 그래서 무엇이 바뀌었는지 두 줄입니다.</p>
     </div>
-      <div class="res">
+      <div class="res" id="act-res">
 {result}
       </div>
     </section>
@@ -464,7 +466,7 @@ TEMPLATE = u'''<style>
       <h2>최근에 쓴 글</h2>
       <p>{posts_note}</p>
     </div>
-      <div class="rows">
+      <div class="rows" id="act-posts">
 {posts}
       </div>
       <a class="more" href="{board}">글 전체보기 →</a>
@@ -501,6 +503,7 @@ TEMPLATE = u'''<style>
   </div>
 </div>
 
+{ahdata}
 <script>
 /* 스크롤로 들어올 때 살짝 올라오기.
    숨기는 상태(.is-armed)를 스크립트가 직접 붙입니다. 그래서 스크립트가 막히면
@@ -525,6 +528,153 @@ TEMPLATE = u'''<style>
     io.observe(el);
   }});
 }})();
+</script>
+'''
+
+
+# ══════════════════════════════════════════════════════════════════
+#  내용 갈아 끼우는 자리 — TEMPLATE 의 {ahdata} 에 그대로 들어갑니다
+#
+#  TEMPLATE 은 .format() 문자열이라 중괄호를 전부 두 번 써야 합니다. 자바스크립트를
+#  거기 직접 넣으면 중괄호 하나만 빠뜨려도 조용히 깨집니다. 그래서 따로 뒀습니다 —
+#  여기서는 중괄호를 그냥 한 번만 쓰면 됩니다.
+# ══════════════════════════════════════════════════════════════════
+AH_SCRIPT = u'''<script>
+/* ═══════════════════════════════════════════════════════════════
+   내용 갈아 끼우는 자리 — window.AH_DATA          ← 자세한 것은 CONTENT.md
+
+   홈(index.html)·캠페인 목록(issue.html)에 낸 것과 같은 자리입니다.
+   이 화면이 읽는 것은 D.activity['<열쇠>'] 하나입니다.
+   열쇠는 #act 의 data-act 에 적혀 있습니다 (local · power · budget · civic).
+
+   ★ 값이 없으면 아무것도 하지 않습니다. 아래 HTML 에 적힌 글이 그대로 남습니다.
+     그래서 게시판이 끊겨도 화면이 비지 않습니다('켜는 것만 스크립트가 한다' 원칙).
+     단, HTML 에 남은 것은 씨앗이지 진짜 내용이 아닙니다. 낡을 수 있습니다.
+
+   ⚠ 이 스크립트는 아래 '스크롤로 올라오기' 스크립트보다 **먼저** 돌아야 합니다.
+     순서를 바꾸면 새로 그린 '결과' 칸이 화면에 안 나타납니다(.rv 가 안 잡힙니다).
+   ⚠ 여기서 만드는 조각은 이 파일의 build_nums / build_now / build_result /
+     build_posts / build_photos 가 만드는 것과 **모양이 같아야 합니다.**
+     한쪽을 고치면 다른 쪽도 고치세요. 안 그러면 게시판을 물리는 순간 화면이 달라집니다.
+   ⚠ 이 활동만의 칸(sig — 지역 태그 · 물음과 답 · 달력 · 문)은 여기 없습니다.
+     구조가 활동마다 달라 게시판 글 한 편으로 담기 어렵습니다(CONTENT.md).
+   ═══════════════════════════════════════════════════════════════ */
+(function () {
+  var D = window.AH_DATA;
+  if (!D || typeof D !== 'object' || !D.activity) return;
+
+  var box = document.getElementById('act');
+  if (!box) return;
+  var A = D.activity[box.getAttribute('data-act')];
+  if (!A || typeof A !== 'object') return;
+
+  // 게시판 글에 들어있는 꺾쇠가 화면을 깨뜨립니다. 반드시 거칩니다.
+  function esc(v) {
+    var d = document.createElement('div');
+    d.textContent = (v === null || v === undefined) ? '' : String(v);
+    return d.innerHTML;
+  }
+  function some(a) { return Object.prototype.toString.call(a) === '[object Array]' && a.length > 0; }
+  function put(id, html) {
+    var el = document.getElementById(id);
+    if (el) el.innerHTML = html;
+  }
+  function text(id, v) {
+    var el = document.getElementById(id);
+    if (el && v) el.textContent = v;
+  }
+
+  // ───── 제목 · 한 줄 ─────
+  text('act-head', A.headline);
+  text('act-lede', A.lede);
+
+  // ───── 숫자 셋 ─────
+  // 값이 없는 자리는 '확인 필요' 딱지입니다. 지어낸 값을 올리지 않기 위한 자리입니다.
+  if (some(A.nums)) {
+    var nh = '';
+    A.nums.slice(0, 3).forEach(function (r) {
+      var b = (r.n === null || r.n === undefined || r.n === '')
+        ? '<b><span class="tbd">확인 필요</span></b>'
+        : '<b>' + esc(r.n) + '<i>' + esc(r.unit) + '</i></b>';
+      nh += '<div class="num">' + b + '<span>' + esc(r.label) + '</span></div>';
+    });
+    put('act-nums', nh);
+  }
+
+  // ───── 지금 무엇을 보고 있나 ─────
+  if (some(A.now)) {
+    var wh = '';
+    A.now.forEach(function (r) {
+      // 사진이 있으면 data-mark 를 안 붙입니다 — 글자 무늬가 사진을 덮습니다.
+      var shot = r.img
+        ? '<span class="shot"><img src="' + esc(r.img) + '" alt="' + esc(r.alt) + '" loading="lazy"></span>'
+        : '<span class="shot" data-mark="' + esc(r.mark) + '" aria-hidden="true"></span>';
+      var m = (r.due ? '<span class="due">' + esc(r.due) + '</span>' : '')
+            + (r.tbd ? '<span class="tbd">확인 필요</span>' : '');
+      wh += '<li><a href="' + esc(r.href || '#') + '">' + shot
+          +   '<span class="t">' + esc(r.t) + '</span>'
+          +   '<span class="m">' + m + '</span>'
+          + '</a></li>';
+    });
+    put('act-now', wh);
+  }
+
+  // ───── 무엇이 달라졌나 ─────
+  // 글이 아니라 사건입니다. [무엇을 했나] + [무엇이 바뀌었나] 두 줄이 규칙입니다.
+  if (some(A.result)) {
+    var rh = '';
+    A.result.forEach(function (c) {
+      var src = '';
+      if (some(c.src)) {
+        var links = '';
+        c.src.forEach(function (s) {
+          links += '<a href="' + esc(s[1]) + '">' + esc(s[0]) + ' →</a>';
+        });
+        src = '<div class="src">' + links + '</div>';
+      }
+      rh += '<article class="case rv">'
+          +   '<h3>' + esc(c.t) + (c.tbd ? ' <span class="tbd">확인 필요</span>' : '') + '</h3>'
+          +   '<p class="did">' + esc(c.did) + '</p>'
+          +   '<p class="got">' + esc(c.got) + '</p>'
+          +   src
+          +   '<p class="when">' + esc(c.when) + '</p>'
+          + '</article>';
+    });
+    put('act-res', rh);
+  }
+
+  // ───── 최근에 쓴 글 ─────
+  if (some(A.posts)) {
+    var ph = '';
+    A.posts.forEach(function (r) {
+      ph += '<a class="row" href="' + esc(r.url || '#') + '">'
+          +   '<span class="t">' + esc(r.title) + '</span>'
+          +   '<span class="meta">' + esc(r.date) + '</span>'
+          + '</a>';
+    });
+    put('act-posts', ph);
+  }
+
+  // ───── 현장 사진 ─────
+  // 씨앗에서는 이 칸이 hidden 입니다(사진 0장이면 칸을 안 만든다는 규칙).
+  // 사진이 들어올 때만 hidden 을 떼어 켭니다 — 여기서도 켜는 것만 스크립트가 합니다.
+  if (some(A.photos)) {
+    var sh = '';
+    A.photos.forEach(function (p) {
+      sh += '<div class="shot"><figure>'
+          +   '<span class="ph"><img src="' + esc(p.src) + '" alt="' + esc(p.alt) + '" loading="lazy"></span>'
+          +   '<figcaption><b>' + esc(p.t) + '</b>' + esc(p.d) + '</figcaption>'
+          + '</figure></div>';
+    });
+    var rail = document.getElementById('act-photos');
+    var head = document.getElementById('act-photos-h');
+    if (rail) {
+      rail.innerHTML = sh;
+      rail.parentNode.hidden = false;
+      if (head) head.hidden = false;
+    }
+  }
+})();
 </script>
 '''
 
@@ -835,26 +985,34 @@ def build_posts(rows):
 
 
 def build_photos(rows):
-    """사진이 없으면 빈 문자열을 돌려줘 칸 자체가 안 만들어지게 합니다."""
-    if not rows:
-        return u''
-    shots = u'\n'.join(
+    """현장 사진 칸.
+
+    사진이 0장이면 화면에 안 보입니다 — 다만 **자리는 만들어 두고 hidden 으로 끕니다.**
+    예전에는 빈 문자열을 돌려 칸 자체가 없었습니다. 그러면 나중에 아임웹 게시판에서
+    사진이 들어와도 스크립트가 넣을 자리가 없습니다. hidden 은 AH_SCRIPT 가 뗍니다.
+    (2026-08-26 사용자 선택 "만들되 비면 저절로 숨김" 은 그대로 지켜집니다.)
+
+    한 줄은 (주소, 대체글, 제목, 설명) 입니다. PAGES[...]['photos'] 를 고치세요.
+    """
+    shots = chr(10).join(
         u'''          <div class="shot"><figure>
             <span class="ph"><img src="%s" alt="%s" loading="lazy"></span>
             <figcaption><b>%s</b>%s</figcaption>
           </figure></div>''' % (src, alt, title, note)
         for src, alt, title, note in rows)
+    off = u'' if rows else u' hidden'
     return u'''
     <!-- ───────── 현장 사진 ─────────
-         사진이 없으면 이 칸은 아예 안 나옵니다(build-activity.py 의 build_photos).
-         사진을 늘리려면 PAGES[...]['photos'] 에 (주소, 대체글, 제목, 설명) 을 더하세요. -->
-    <section class="sec"><div class="sh">
+         사진이 없으면 이 칸은 hidden 이라 화면에 안 나옵니다.
+         사진을 늘리려면 PAGES[...]['photos'] 에 (주소, 대체글, 제목, 설명) 을 더하세요.
+         게시판에서 받아 넣을 때는 AH_SCRIPT 가 hidden 을 뗍니다. -->
+    <section class="sec"%(off)s id="act-photos-h"><div class="sh">
       <h2>현장에서는 이런 일이 있었습니다</h2>
     </div></section>
-    <div class="shots"><div class="shots-rail">
-%s
+    <div class="shots"%(off)s><div class="shots-rail" id="act-photos">
+%(shots)s
     </div></div>
-''' % shots
+''' % {'shots': shots, 'off': off}
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -1038,6 +1196,8 @@ def main():
             continue
         d = PAGES[key]
         html = TEMPLATE.format(
+            key=key,
+            ahdata=AH_SCRIPT,
             title=name,
             who=who,
             headline=d['headline'],

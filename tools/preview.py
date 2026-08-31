@@ -233,9 +233,54 @@ def demo_data():
          'url': '/pb/', 'mark': '상담', 'tile': '#0b4a5e', 'cat': '시민참여'},
     ]
 
+    # ── 종료된 캠페인 (issue.html 의 '종료' 탭) ──
+    #    씨앗에 있는 실제 두 건입니다. 지어낸 값이 아닙니다.
+    issues_done = [
+        {'title': '2026 지방선거 서울시민행동',
+         'lead': '시민사회가 함께 정책을 제안하고 후보자의 답을 기록했습니다.',
+         'url': '/27/?idx=170844085&bmode=view', 'mark': '선거',
+         'tile': '#3d5765', 'when': '2026년 6월 종료'},
+        {'title': '한강버스 주민감사청구',
+         'lead': '경제성 근거 없이 추진된 사업에 주민감사를 청구했고, 감사 결과가 나왔습니다.',
+         'url': '/27/?idx=172916152&bmode=view',
+         'img': 'https://cdn.imweb.me/thumbnail/20260810/50abe1798d723.png',
+         'tile': '#3d5765', 'when': '2026년 8월 종료'},
+    ]
+
+    # ── 활동 다섯 장 ──
+    #    글 목록만 게시판에서 받아 채웁니다. 이게 실제로 제일 먼저 붙을 자리입니다.
+    #    숫자 셋은 값을 비워 두어 '확인 필요' 딱지가 그대로 뜨는 것을 보입니다.
+    #
+    #    ⚠️ 제목·한 줄·결과·현장 사진은 일부러 넣지 않았습니다. 자리는 나 있지만
+    #       채울 값이 없어서, 넣으려면 지어내야 합니다. 그건 이 저장소의 규칙에 어긋납니다
+    #       ("지어낸 값을 화면에 올리지 않는다"). 실제 값은 '페이지 문구' 게시판에서 옵니다.
+    ACT_BOARD = {'local': ['27'], 'power': ['27'], 'budget': ['57', '27'], 'civic': ['51']}
+    ACT_NUM = {
+        'local':  [u'감시한 지자체 수', u'올해 낸 의견서'],
+        'power':  [u'정보공개 청구', u'답을 못 받은 것'],
+        'budget': [u'들여다본 사업', u'짚어낸 금액'],
+        'civic':  [u'함께한 참여예산위원', u'연 교육 횟수'],
+    }
+    activity = {}
+    for key, boards in ACT_BOARD.items():
+        rows = []
+        for b in items:
+            link = pick(b, 'link')
+            m = re.search(r'/(\d+)/', link)
+            if m and m.group(1) in boards:
+                rows.append({'title': pick(b, 'title'), 'date': ymd(pick(b, 'pubDate')), 'url': link})
+            if len(rows) >= 4:
+                break
+        activity[key] = {
+            'posts': rows,
+            'nums': [{'n': None, 'unit': '', 'label': t} for t in ACT_NUM[key]],
+        }
+
     return ('<script>/* 미리보기 데모 — 게시판에서 받았다고 치는 값 */\n'
-            'window.AH_DATA = ' + json.dumps({'news': news, 'issues': issues},
-                                             ensure_ascii=False, indent=1) + ';</script>\n')
+            'window.AH_DATA = ' + json.dumps(
+                {'news': news, 'issues': issues,
+                 'issuesDone': issues_done, 'activity': activity},
+                ensure_ascii=False, indent=1) + ';</script>\n')
 
 
 def sibling_root(prefix):
