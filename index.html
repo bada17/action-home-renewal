@@ -28,7 +28,9 @@
   @font-face{font-family:'GmarketSans';src:url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');font-weight:700;font-display:swap}
   @font-face{font-family:'GmarketSans';src:url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');font-weight:500;font-display:swap}
 
-  /* /69 전용: 기존 데이터와 섹션은 삭제하지 않고 미리보기에서만 감춥니다. */
+  /* /69 전용: 기존 데이터와 섹션은 삭제하지 않고 미리보기에서만 감춥니다.
+     #doz_ 로 시작하는 이름은 캠페이너스가 밑바탕(아임웹)에서 물려받은 것입니다.
+     실제로 그렇게 나오는 값이라 바꾸지 마세요. 지우면 기본 헤더가 겹쳐 보입니다. */
   #doz_header,#doz_footer,
   #s20260824531954aa8efcb,#s2026082451de3e2a1b78b,#s20260824c19284ed30faf,
   #s2026082441c7e5f034dc7,#s20260824709dc98874a00,#s202608242200af242e980,
@@ -663,11 +665,11 @@
   #ah-nav .ico:hover{border-color:var(--brand);color:var(--brand-deep)}
 
   /* ───────── 통합검색 ─────────
-     아임웹이 이미 갖고 있는 사이트 검색으로 보냅니다 — /search?keyword=...
+     캠페이너스가 이미 갖고 있는 사이트 검색으로 보냅니다 — /search?keyword=...
      (실제 action.or.kr 헤더의 폼에서 확인한 주소와 이름입니다.)
      그래서 검색 결과 화면을 따로 만들 필요가 없습니다.
 
-     ⚠️ 미리보기에서는 /search 가 안내 화면으로 뜹니다. 진짜 결과는 아임웹에서 납니다.
+     ⚠️ 미리보기에서는 /search 가 안내 화면으로 뜹니다. 진짜 결과는 캠페이너스에서 납니다.
      모양 규칙은 DESIGN.md — 입력칸·버튼은 알약(999px). */
   #ah-nav .hd-search{display:flex;align-items:center;gap:4px;
     border:1.5px solid var(--line);border-radius:999px;padding:3px 4px 3px 14px;
@@ -983,7 +985,7 @@
     </nav>
 
     <div class="hd-tools">
-      <!-- 아임웹 통합검색. action·name 은 실제 action.or.kr 폼에서 가져온 값입니다.
+      <!-- 캠페이너스 통합검색. action·name 은 실제 action.or.kr 폼에서 가져온 값입니다.
            바꾸지 마세요 — 이름이 다르면 검색어가 안 넘어갑니다. -->
       <form class="hd-search" action="/search" method="get" role="search">
         <input type="search" name="keyword" placeholder="무엇을 찾으세요?" aria-label="통합검색" autocomplete="off">
@@ -1615,7 +1617,7 @@
       <div>
         <h2>세금이 어디로 갔는지,<br>메일로 먼저 알려드립니다</h2>
         <p>예산과 권력을 감시하며 찾아낸 것, 지금 참여할 수 있는 캠페인을 보냅니다.</p>
-        <!-- 지난 호는 아임웹 뉴스레터 게시판(/25)에 쌓입니다.
+        <!-- 지난 호는 캠페이너스 뉴스레터 게시판(/25)에 쌓입니다.
              2026-08-31 실제 action.or.kr 메뉴에서 /25 = '뉴스레터' 임을 확인했습니다.
              새로 만들지 않고 있는 것을 씁니다. -->
         <a class="nl-past" href="/25">지난 뉴스레터 보기 →</a>
@@ -1743,7 +1745,7 @@
    내용 갈아 끼우는 자리 — window.AH_DATA          ← 자세한 것은 CONTENT.md
 
    2026-08-31 사용자 결정: 여러 사람이 손대는 내용은 코드 안에 두지 않는다.
-   아임웹 게시판에서 받은 값을 GPT 가 window.AH_DATA 에 담아 주면,
+   캠페이너스 게시판에서 받은 값을 GPT 가 window.AH_DATA 에 담아 주면,
    이 스크립트가 그 값으로 화면을 다시 그립니다.
 
    ★ 값이 없으면 아무것도 하지 않습니다. 아래 HTML 에 적힌 글·사진이 그대로 남습니다.

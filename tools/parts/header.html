@@ -148,11 +148,11 @@
   #ah-nav .ico:hover{border-color:var(--brand);color:var(--brand-deep)}
 
   /* ───────── 통합검색 ─────────
-     아임웹이 이미 갖고 있는 사이트 검색으로 보냅니다 — /search?keyword=...
+     캠페이너스가 이미 갖고 있는 사이트 검색으로 보냅니다 — /search?keyword=...
      (실제 action.or.kr 헤더의 폼에서 확인한 주소와 이름입니다.)
      그래서 검색 결과 화면을 따로 만들 필요가 없습니다.
 
-     ⚠️ 미리보기에서는 /search 가 안내 화면으로 뜹니다. 진짜 결과는 아임웹에서 납니다.
+     ⚠️ 미리보기에서는 /search 가 안내 화면으로 뜹니다. 진짜 결과는 캠페이너스에서 납니다.
      모양 규칙은 DESIGN.md — 입력칸·버튼은 알약(999px). */
   #ah-nav .hd-search{display:flex;align-items:center;gap:4px;
     border:1.5px solid var(--line);border-radius:999px;padding:3px 4px 3px 14px;
@@ -468,7 +468,7 @@
     </nav>
 
     <div class="hd-tools">
-      <!-- 아임웹 통합검색. action·name 은 실제 action.or.kr 폼에서 가져온 값입니다.
+      <!-- 캠페이너스 통합검색. action·name 은 실제 action.or.kr 폼에서 가져온 값입니다.
            바꾸지 마세요 — 이름이 다르면 검색어가 안 넘어갑니다. -->
       <form class="hd-search" action="/search" method="get" role="search">
         <input type="search" name="keyword" placeholder="무엇을 찾으세요?" aria-label="통합검색" autocomplete="off">
