@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""공통 부품(헤더)을 각 화면에 심습니다.
+"""공통 부품(헤더 · 맨 아래)을 각 화면에 심습니다.
 
 왜 이렇게 하는가
 ----------------
@@ -37,9 +37,23 @@ except Exception:
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 PART = os.path.join(HERE, 'parts', 'header.html')
+FOOT = os.path.join(HERE, 'parts', 'footer.html')
 
 BEGIN = '<!-- PART:header -->'
 END = '<!-- /PART:header -->'
+
+# 맨 아래(후원 띠 + 푸터). 2026-08-31 사용자 지시:
+#   "이건 소개나 모든 페이지 밑에 같은 형식으로 가자.
+#    있는 모든 페이지에 똑같이 넣고 새로 만드는 페이지에도 무조건 넣어"
+# → 새 화면을 만들면 아래 PAGES 에 한 줄 더하기만 하면 됩니다. 빠뜨리지 마세요.
+FBEGIN = '<!-- PART:footer -->'
+FEND = '<!-- /PART:footer -->'
+
+# 맨 아래 부품을 받지 않는 화면.
+# 홈은 맨 아래가 [CTA 둘] → [뉴스레터] → [푸터] 로 더 길고, 2026-08-31 사용자가
+# "홈만 예전 그대로 되돌린다"를 골랐습니다. 그래서 홈은 자기 푸터를 그대로 씁니다.
+# ⚠️ 그 대신 **푸터를 고치면 두 곳을 고쳐야 합니다** — 이 부품과 index.html.
+NO_FOOT = {'index.html'}
 
 # 화면 → (뿌리 요소 id, 헤더에서 켤 메뉴 값)
 #
@@ -76,6 +90,25 @@ def block_for(here):
     return '%s\n%s\n%s' % (BEGIN, part, END)
 
 
+def foot_block():
+    """맨 아래 부품 원본을 그대로 돌려줍니다(화면마다 다른 곳이 없습니다)."""
+    return '%s\n%s\n%s' % (FBEGIN, read(FOOT).rstrip('\n'), FEND)
+
+
+def inject_foot(text, block):
+    """표시 사이를 덮어쓰거나, 표시가 없으면 파일 맨 끝에 붙입니다.
+
+    맨 끝에 붙이는 이유: 뿌리 요소(<div id="act"> 등)가 닫힌 **뒤**에 와야
+    전체 폭이 제대로 나옵니다. 뿌리는 overflow:hidden 이라 그 안에 두면
+    좌우로 못 펼칩니다(헤더와 같은 이유). 파일 끝의 <script> 뒤에 와도
+    화면에는 아무 차이가 없습니다.
+    """
+    if FBEGIN in text and FEND in text:
+        pat = re.compile(re.escape(FBEGIN) + '.*?' + re.escape(FEND), re.S)
+        return pat.sub(lambda m: block, text, count=1), 'replaced'
+    return text.rstrip('\n') + '\n\n' + block + '\n', 'appended'
+
+
 def inject(text, block, root_id):
     """표시 사이를 덮어쓰거나, 표시가 없으면 뿌리 앞에 새로 넣습니다."""
     if BEGIN in text and END in text:
@@ -109,6 +142,12 @@ def main():
             problems.append('%s: 뿌리 요소 <div id="%s"> 를 못 찾았습니다' % (name, root_id))
             continue
 
+        # 맨 아래(후원 띠 + 푸터) — 홈을 뺀 여덟 화면이 같은 것을 씁니다.
+        if name not in NO_FOOT:
+            new, how_f = inject_foot(new, foot_block())
+            if how == 'replaced' and how_f != 'replaced':
+                how = how_f
+
         if new == old:
             print('  = %-22s 그대로' % name)
             continue
@@ -128,7 +167,9 @@ def main():
         return 1
     if problems:
         return 1
-    print('\n헤더 원본: tools/parts/header.html — 고칠 곳은 여기 한 곳뿐입니다.')
+    print('\n원본은 두 곳뿐입니다:')
+    print('  헤더      tools/parts/header.html')
+    print('  맨 아래   tools/parts/footer.html   (후원 띠 + 푸터)')
     return 0
 
 

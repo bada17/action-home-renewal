@@ -58,19 +58,19 @@ DOK_CANDIDATES = [
 # 정적 호스팅에서 /49 로 들어와도 그대로 열리고, 화면 안의 링크(/49)를 안 고쳐도 됩니다.
 PAGES = [
     ('index.html',           'index.html',              '홈',                    'home'),
-    ('issue.html',           'issue/index.html',        '이슈',                  'issue'),
+    ('issue.html',           'issue/index.html',        '캠페인',                  'issue'),
     ('activity-local.html',  '49/index.html',           '활동 › 지자체 감시',    'local'),
     ('activity-power.html',  'act-power/index.html',    '활동 › 권력감시',       'power'),
     ('activity-budget.html', 'act-budget/index.html',   '활동 › 예산감시',       'budget'),
     ('activity-civic.html',  '51/index.html',           '활동 › 시민참여',       'civic'),
     ('dok-history.html',     'dok-history/index.html',  '활동 › 밑빠진 독상',    'dok'),
-    ('pb.html',              'pb/index.html',           '이슈 › 참여예산 상담소', 'pb'),
+    ('pb.html',              'pb/index.html',           '캠페인 › 참여예산 상담소', 'pb'),
     ('library.html',         'library/index.html',      '자료실',                'lib'),
 ]
 
 NAV = [
     ('home',   '/',             '홈'),
-    ('issue',  '/issue/',       '이슈'),
+    ('issue',  '/issue/',       '캠페인'),
     ('local',  '/49',           '지자체 감시'),
     ('power',  '/act-power',    '권력감시'),
     ('budget', '/act-budget',   '예산감시'),

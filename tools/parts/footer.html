@@ -1,0 +1,166 @@
+<!-- ═══════════════════════════════════════════════════════════════════
+     공통 맨 아래 — 후원 띠 + 푸터. **아홉 화면 전부**가 같이 쓰는 하나의 부품
+
+     ⚠️ 이 파일만 고치세요. 각 .html 안에 있는 것은 tools/build-parts.py 가
+        여기 내용을 그대로 복사해 넣은 것이라, .html 쪽을 고치면 다음 빌드에서
+        지워집니다.  고친 뒤에는  python tools/build-parts.py  를 돌리세요.
+
+     2026-08-31 신설. 사용자 지시:
+       · 활동의 '알려 주실 것이 있나요' 칸은 의미가 없어 삭제
+       · 그 자리에 홈 맨 아래 화면을 그대로 넣어 통일
+       · 그 위에 후원하기 알약과 띠를 둔다
+
+     범위가 #ah-foot 으로 따로인 이유:
+       화면마다 뿌리 이름이 달라(#act, #iss, #lib, #pb) 뿌리에 기대면 CSS 가
+       안 먹습니다. 그래서 색·글꼴을 자기 안에 다시 정의합니다.
+       값은 DESIGN.md 와 같습니다 — 홈(#action-home-v2)의 푸터와 한 글자도 다르지 않습니다.
+
+     ⚠️ 홈도 이 부품을 씁니다. 홈이 따로 갖고 있던 CTA 둘·푸터는 걷어냈습니다.
+        2026-08-31 사용자 지시: "있는 모든 페이지에 똑같이 넣고 새로 만드는 페이지에도
+        무조건 넣어". → 새 화면을 만들면 tools/build-parts.py 의 PAGES 에 한 줄 더하세요.
+        고칠 곳은 이 파일 한 곳뿐입니다.
+     ═══════════════════════════════════════════════════════════════════ -->
+<style>
+  #ah-foot,#ah-foot *{box-sizing:border-box}
+  #ah-foot{
+    --brand:#00afec;          /* 시민행동 하늘색 */
+    --brand-deep:#0087b8;     /* 흰 바탕 위 글자에 쓰는 진한 쪽 */
+    --ink:#0d1c26;--ink-soft:#47606f;--line:#dde7ec;
+
+    /* 전체 폭으로 펼치기. 뿌리(#act 등)와 같은 값을 씁니다. */
+    margin-left:calc(50% - 50vw + var(--ah-sb, 0px) / 2);
+    margin-right:calc(50% - 50vw + var(--ah-sb, 0px) / 2);
+
+    background:#fff;color:var(--ink);line-height:1.6;
+    font-family:'Pretendard Variable',Pretendard,'Noto Sans KR',-apple-system,sans-serif;
+    word-break:keep-all;-webkit-font-smoothing:antialiased
+  }
+  #ah-foot a{color:inherit;text-decoration:none}
+  #ah-foot h2,#ah-foot h3,#ah-foot p{margin:0}
+  #ah-foot .wrap{width:min(1120px,calc(100% - 48px));margin:0 auto}
+
+  /* ───────── 후원 띠 ─────────
+     홈의 CTA 와 같은 부품입니다(브랜드 색 바탕 + 흰 알약). 홈은 두 칸이지만
+     여기는 한 칸으로 길게 놓습니다 — 활동 화면 맨 아래는 갈래가 하나뿐입니다. */
+  #ah-foot .give{background:var(--brand);color:#fff}
+  #ah-foot .give-in{
+    display:flex;align-items:center;justify-content:space-between;gap:clamp(20px,3vw,48px);
+    flex-wrap:wrap;padding:clamp(36px,4.4vw,60px) 0
+  }
+  #ah-foot .give h2{
+    font-family:GmarketSans,sans-serif;font-weight:700;color:#fff;
+    font-size:clamp(20px,2.2vw,31px);line-height:1.35;letter-spacing:-.02em
+  }
+  #ah-foot .give p{margin-top:10px;font-size:14.5px;color:rgba(255,255,255,.9)}
+  #ah-foot .give a{
+    flex:none;background:#fff;color:var(--ink);border-radius:999px;
+    padding:15px 30px;font-weight:700;font-size:16px;transition:transform .15s
+  }
+  #ah-foot .give a:hover{transform:translateY(-2px)}
+
+  /* ───────── 푸터 ─────────
+     레퍼런스: 서울환경연합 — 왼쪽에 단체 정보, 오른쪽에 세로 버튼 목록 두 줄,
+     맨 아래 약관 작은 버튼. 홈의 것을 그대로 옮긴 것입니다. */
+  #ah-foot .ft{border-top:4px solid var(--brand);padding:clamp(40px,4.5vw,64px) 0 30px;font-size:14px;color:var(--ink-soft)}
+  #ah-foot .ft-grid{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(2,minmax(0,.7fr));gap:clamp(28px,4vw,64px)}
+  #ah-foot .ft-brand{font-size:18px;font-weight:800;color:var(--ink);margin-bottom:20px}
+  /* 항목 이름과 값을 두 칸으로 맞춰 세우는 부분입니다. */
+  #ah-foot .ft-org dl{display:grid;grid-template-columns:auto 1fr;gap:8px 20px;margin:0}
+  #ah-foot .ft-org dt{font-weight:700;color:var(--ink);white-space:nowrap}
+  #ah-foot .ft-org dd{margin:0;line-height:1.6}
+  #ah-foot .ft-org a:hover{color:var(--brand-deep)}
+  #ah-foot .ft-col h3{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:14px}
+  /* 테두리가 겹쳐 한 줄로 보이도록 아래쪽 여백을 -1px 줍니다. */
+  #ah-foot .ft-btns{display:grid}
+  #ah-foot .ft-btns a{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    border:1px solid var(--line);margin-bottom:-1px;padding:12px 16px;
+    font-size:14px;font-weight:700;color:var(--ink);background:#fff
+  }
+  #ah-foot .ft-btns a:hover{border-color:var(--brand);color:var(--brand-deep);position:relative;z-index:1}
+  #ah-foot .ft-btns .mark{flex:none;font-size:12px;color:var(--ink-soft)}
+  #ah-foot .ft-policy{display:flex;flex-wrap:wrap;gap:6px;margin-top:22px}
+  #ah-foot .ft-policy a{border:1px solid var(--line);padding:7px 12px;font-size:12.5px;font-weight:700;color:var(--ink-soft)}
+  #ah-foot .ft-policy a:hover{border-color:var(--brand);color:var(--brand-deep)}
+  #ah-foot .ft-copy{margin-top:clamp(30px,3.5vw,48px);font-size:13px}
+
+  @media(max-width:1100px){
+    #ah-foot .ft-grid{grid-template-columns:1fr 1fr}
+    #ah-foot .ft-org{grid-column:1/-1}
+  }
+  @media(max-width:820px){
+    #ah-foot .wrap{width:min(100% - 36px,1120px)}
+    #ah-foot .give-in{padding:clamp(30px,4vw,44px) 0}
+    #ah-foot .ft-grid{grid-template-columns:1fr}
+    #ah-foot .ft-org dl{grid-template-columns:1fr}
+    #ah-foot .ft-org dt{margin-top:6px}
+    /* 오른쪽 아래 떠 있는 후원 버튼에 가리지 않게 아래를 비웁니다. */
+    #ah-foot .ft{padding-bottom:104px}
+  }
+  @media(max-width:430px){
+    #ah-foot .wrap{width:min(100% - 28px,1120px)}
+    #ah-foot .give a{width:100%;text-align:center}
+  }
+</style>
+
+<div id="ah-foot">
+
+  <!-- ───────── 후원 띠 ───────── -->
+  <section class="give"><div class="wrap"><div class="give-in">
+    <div>
+      <h2>당신이 낸 세금, 누가 지켜보고 있을까요?</h2>
+      <p>시민행동은 정부와 기업의 돈을 감시합니다. 그 일은 시민의 후원으로만 굴러갑니다.</p>
+    </div>
+    <a href="https://donate.action.or.kr/">후원으로 함께하기 →</a>
+  </div></div></section>
+
+  <!-- ───────── 푸터 ───────── -->
+  <footer class="ft"><div class="wrap">
+    <div class="ft-grid">
+
+      <div class="ft-org">
+        <div class="ft-brand">함께하는 시민행동</div>
+        <dl>
+          <dt>대표</dt><dd>김주일</dd>
+          <dt>고유번호</dt><dd>101-82-60646</dd>
+          <dt>주소</dt><dd>(03969) 서울 마포구 월드컵로26길 39 시민공간 나루 5층</dd>
+          <dt>전화</dt><dd><a href="tel:02-921-4709">02-921-4709</a></dd>
+          <dt>이메일</dt><dd><a href="mailto:action@action.or.kr">action@action.or.kr</a></dd>
+          <dt>후원계좌</dt><dd>신한 325-01-167213</dd>
+        </dl>
+      </div>
+
+      <div class="ft-col">
+        <h3>소셜미디어</h3>
+        <div class="ft-btns">
+          <a href="https://blog.naver.com/together_action" target="_blank" rel="noopener">네이버 블로그 <span class="mark" aria-hidden="true">N</span></a>
+          <a href="https://www.youtube.com/user/actionCANvideo" target="_blank" rel="noopener">유튜브 <span class="mark" aria-hidden="true">▶</span></a>
+          <a href="https://www.instagram.com/action.together.1999/" target="_blank" rel="noopener">인스타그램 <span class="mark" aria-hidden="true">◎</span></a>
+          <a href="https://www.facebook.com/withAction/" target="_blank" rel="noopener">페이스북 <span class="mark" aria-hidden="true">f</span></a>
+          <a href="https://twitter.com/actioncan" target="_blank" rel="noopener">트위터 <span class="mark" aria-hidden="true">X</span></a>
+        </div>
+      </div>
+
+      <!-- ⚠️ 좋은기업센터는 화면에 적힌 주소(csr.action.or.kr)와 실제 연결되는 주소
+           (csrcenter.cafe24.com)가 다릅니다. 현재 홈에 걸린 링크를 그대로 가져온 것이라
+           어느 쪽이 맞는지 확인이 필요합니다. -->
+      <div class="ft-col">
+        <h3>관련 페이지</h3>
+        <div class="ft-btns">
+          <a href="http://www.goodbudget.kr" target="_blank" rel="noopener">좋은예산센터 <span class="mark" aria-hidden="true">▸</span></a>
+          <a href="http://csrcenter.cafe24.com" target="_blank" rel="noopener">좋은기업센터 <span class="mark" aria-hidden="true">▸</span></a>
+          <a href="http://www.privacy.or.kr" target="_blank" rel="noopener">정보인권센터 <span class="mark" aria-hidden="true">▸</span></a>
+          <a href="https://donate.action.or.kr/" target="_blank" rel="noopener">후원 안내 <span class="mark" aria-hidden="true">▸</span></a>
+        </div>
+        <div class="ft-policy">
+          <a href="/34">이용약관</a>
+          <a href="/37">단체 규약</a>
+          <a href="/8">개인정보처리방침</a>
+        </div>
+      </div>
+
+    </div>
+    <div class="ft-copy">© 함께하는 시민행동. All Rights Reserved.</div>
+  </div></footer>
+
+</div>

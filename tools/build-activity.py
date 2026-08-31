@@ -78,7 +78,7 @@ TEMPLATE = u'''<style>
 #act a{{color:inherit; text-decoration:none}}
 #act :focus-visible{{outline:2.5px solid var(--brand); outline-offset:3px}}
 
-#act .wrap{{width:min(880px,calc(100% - 44px)); margin:0 auto}}
+#act .wrap{{width:min(1120px,calc(100% - 44px)); margin:0 auto}}
 #act .sec{{padding:clamp(38px,4.6vw,64px) 0; border-top:1px solid var(--line)}}
 #act .sec:first-of-type{{border-top:none}}
 
@@ -311,7 +311,7 @@ TEMPLATE = u'''<style>
 }}
 #act .now .m{{display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:8px; font-size:12.5px; color:var(--faint)}}
 #act .now .m:empty{{display:none}}
-/* 마감이 있는 것에만 붙는 표시. 이슈로 옮길지 판단하는 기준이기도 합니다. */
+/* 마감이 있는 것에만 붙는 표시. 캠페인로 옮길지 판단하는 기준이기도 합니다. */
 #act .due{{background:var(--tint); color:var(--deep); border-radius:999px; padding:2px 10px; font-weight:700}}
 
 /* ───── 결과 (사건 단위) ───── */
@@ -386,10 +386,6 @@ TEMPLATE = u'''<style>
 #act .sib:hover{{border-color:var(--brand); background:var(--tint); color:var(--deep)}}
 
 /* ───── 연락 ───── */
-#act .contact{{display:flex; gap:26px; flex-wrap:wrap; font-size:14.5px; color:var(--soft)}}
-#act .contact b{{font-family:GmarketSans,sans-serif; color:var(--ink); display:block; font-size:13px}}
-#act .contact a{{color:var(--deep)}}
-#act .contact a:hover{{text-decoration:underline; text-underline-offset:3px}}
 
 /* 스크롤로 들어올 때 살짝 올라오기.
    숨기는 상태는 스크립트가 붙입니다 — 막히면 그냥 다 보입니다. */
@@ -410,7 +406,6 @@ TEMPLATE = u'''<style>
   #act .case{{padding:18px 18px}}
   /* 제목과 날짜가 서로 밀지 않게 아래위로 */
   #act .row{{flex-direction:column; gap:5px}}
-  #act .contact{{gap:16px}}
 }}
 @media(prefers-reduced-motion:reduce){{
   #act *{{transition:none!important; animation:none!important}}
@@ -443,7 +438,7 @@ TEMPLATE = u'''<style>
     <!-- ───────── 지금 ───────── -->
     <section class="sec"><div class="sh">
       <h2>지금 무엇을 보고 있나</h2>
-      <p>끝나는 날짜가 붙은 일이 늘어나면 그건 '활동'이 아니라 '이슈'로 올립니다.</p>
+      <p>끝나는 날짜가 붙은 일이 늘어나면 그건 '활동'이 아니라 '캠페인'로 올립니다.</p>
     </div>
       <ul class="now">
 {now}
@@ -499,17 +494,9 @@ TEMPLATE = u'''<style>
       </div>
     </section>
 
-    <!-- ───────── 연락 ───────── -->
-    <section class="sec"><div class="sh">
-      <h2>알려 주실 것이 있나요</h2>
-    </div>
-      <div class="contact">
-        <p><b>제보 · 문의</b><a href="mailto:action@action.or.kr">action@action.or.kr</a></p>
-        <p><b>전화</b><a href="tel:02-921-4709">02-921-4709</a></p>
-        <p><b>소식</b><a href="/25">뉴스레터 받아보기</a></p>
-        <p><b>함께하기</b><a href="https://donate.action.or.kr/">후원</a></p>
-      </div>
-    </section>
+    <!-- 예전에 여기 '알려 주실 것이 있나요' 칸이 있었습니다. 2026-08-31 사용자 지시로
+         삭제했습니다("의미 없음"). 연락처·후원은 이제 아홉 화면이 같이 쓰는
+         맨 아래 부품(tools/parts/footer.html)이 맡습니다. -->
 
   </div>
 </div>
@@ -720,7 +707,7 @@ PAGES = {
         # 다른 넷은 우리가 무엇을 보는지를 말하지만, 이 활동은 **시민이 할 수 있는 것**을
         # 말해야 합니다. 그래서 감시 대상이 아니라 '들어오는 문'을 늘어놓습니다.
         #
-        # ⚠️ 아래 넷은 이미 근거가 있는 것만 적었습니다(상담소·고민대회는 이슈 목록에,
+        # ⚠️ 아래 넷은 이미 근거가 있는 것만 적었습니다(상담소·고민대회는 캠페인 목록에,
         #    10만원 편성은 vote.action.or.kr 에, 주민참여예산은 /51 게시판에 있습니다).
         #    '지금 열려 있나'가 확인 안 된 것은 tbd=True 로 두었습니다.
         sig=dict(

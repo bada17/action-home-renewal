@@ -42,7 +42,7 @@
   #ah-nav img{display:block;width:100%}
   #ah-nav ul{list-style:none;margin:0;padding:0}
   #ah-nav p{margin:0}
-  #ah-nav .wrap{width:min(1280px,calc(100% - 48px));margin:0 auto}
+  #ah-nav .wrap{width:min(1120px,calc(100% - 48px));margin:0 auto}
 
   #ah-nav .hd-in{display:flex;align-items:center;gap:20px;min-height:72px}
   #ah-nav .logo{display:flex;align-items:center;gap:11px;flex:none}
@@ -118,11 +118,11 @@
   #ah-nav .drow .dmain:hover em{color:var(--brand-deep)}
   #ah-nav .msub a.is-all{background:var(--brand-tint);color:var(--brand-deep);font-weight:700}
 
-  /* ───────── 이슈 하위 목차 ─────────
-     2026-08-27 사용자 지시: "이슈 목차도 다른 목차랑 마찬가지로 줄글로 내려오는 형식으로".
+  /* ───────── 캠페인 하위 목차 ─────────
+     2026-08-27 사용자 지시: "캠페인 목차도 다른 목차랑 마찬가지로 줄글로 내려오는 형식으로".
 
      예전에는 헤더 아래 전체 폭에 사진 카드 다섯을 깐 큰 판이었습니다.
-     혼자만 모양이 달라서, 목차를 훑는 동안 이슈만 화면이 확 바뀌었습니다.
+     혼자만 모양이 달라서, 목차를 훑는 동안 캠페인만 화면이 확 바뀌었습니다.
      이제 소개·활동·소식과 같은 줄글 판입니다. 마감일만 오른쪽에 답니다. */
   #ah-nav .drop.is-iss ul{min-width:290px;padding:6px}
   #ah-nav .drop.is-iss a{
@@ -134,7 +134,7 @@
   }
   #ah-nav .drop.is-iss a:hover .idue{color:var(--brand-deep)}
   /* '함께보기' — 이 갈래를 한자리에서 다 보는 곳으로 보내는 줄.
-     맨 위에 두고 아래에 선을 그어, 낱낱의 이슈와 성격이 다르다는 것을 보입니다. */
+     맨 위에 두고 아래에 선을 그어, 낱낱의 캠페인와 성격이 다르다는 것을 보입니다. */
   #ah-nav .drop .iall{
     font-weight:700;color:var(--brand-deep);background:var(--brand-tint)
   }
@@ -146,6 +146,40 @@
   #ah-nav .hd-tools{display:flex;align-items:center;gap:6px;flex:none;margin-left:8px}
   #ah-nav .ico{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:17px;color:var(--ink-soft);background:none;cursor:pointer}
   #ah-nav .ico:hover{border-color:var(--brand);color:var(--brand-deep)}
+
+  /* ───────── 통합검색 ─────────
+     아임웹이 이미 갖고 있는 사이트 검색으로 보냅니다 — /search?keyword=...
+     (실제 action.or.kr 헤더의 폼에서 확인한 주소와 이름입니다.)
+     그래서 검색 결과 화면을 따로 만들 필요가 없습니다.
+
+     ⚠️ 미리보기에서는 /search 가 안내 화면으로 뜹니다. 진짜 결과는 아임웹에서 납니다.
+     모양 규칙은 DESIGN.md — 입력칸·버튼은 알약(999px). */
+  #ah-nav .hd-search{display:flex;align-items:center;gap:4px;
+    border:1.5px solid var(--line);border-radius:999px;padding:3px 4px 3px 14px;
+    background:#fff;transition:border-color .18s,box-shadow .18s}
+  #ah-nav .hd-search:focus-within{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-tint)}
+  #ah-nav .hd-search input{
+    width:clamp(120px,13vw,190px);border:0;outline:0;background:none;padding:8px 0;
+    font-family:inherit;font-size:14.5px;color:var(--ink);min-width:0
+  }
+  #ah-nav .hd-search input::placeholder{color:#9fb2bc}
+  /* 크롬이 붙이는 X 버튼은 알약 안에서 어긋나 보여 지웁니다. */
+  #ah-nav .hd-search input::-webkit-search-cancel-button{display:none}
+  #ah-nav .hd-search button{
+    flex:none;width:34px;height:34px;border:0;border-radius:50%;cursor:pointer;
+    background:var(--brand);color:#fff;font-size:17px;line-height:1;
+    display:grid;place-items:center;transition:background .18s
+  }
+  #ah-nav .hd-search button:hover{background:var(--brand-deep)}
+
+  /* 좁은 화면에서는 헤더에서 감추고 전체 메뉴 맨 위에 넣습니다(☰ 안). */
+  #ah-nav .msearch{display:flex;align-items:center;gap:4px;margin:0 0 14px;
+    border:1.5px solid var(--line);border-radius:999px;padding:4px 5px 4px 16px;background:#fff}
+  #ah-nav .msearch input{flex:1;border:0;outline:0;background:none;padding:10px 0;
+    font-family:inherit;font-size:16px;color:var(--ink);min-width:0}
+  #ah-nav .msearch input::-webkit-search-cancel-button{display:none}
+  #ah-nav .msearch button{flex:none;width:38px;height:38px;border:0;border-radius:50%;cursor:pointer;
+    background:var(--brand);color:#fff;font-size:18px;display:grid;place-items:center}
   #ah-nav .menu-btn{display:none}
 
   /* ═══════════ 후원하기 — 반짝이는 버튼 (2026-08-27) ═══════════
@@ -263,6 +297,7 @@
     #ah-nav .gnb-item:last-child{padding-right:14px}
     #ah-nav .drop{display:none}
     #ah-nav .menu-btn{display:grid}
+    #ah-nav .hd-search{display:none}   /* 좁으면 ☰ 안의 검색칸을 씁니다 */
 
     /* ── 알약 밑에 펼쳐지는 하위 목차 ──
        예전에는 알약을 누르면 그냥 그 주소로 갔습니다. 활동(/52)처럼 아직 화면이
@@ -302,7 +337,7 @@
     #ah-nav .gnb-item>a.is-here{box-shadow:inset 3px 0 0 var(--brand)}
   }
   @media(max-width:820px){
-    #ah-nav .wrap{width:min(100% - 36px,1280px)}
+    #ah-nav .wrap{width:min(100% - 36px,1120px)}
     #ah-nav .hd-in{gap:10px}
     #ah-nav .logo-mark{width:32px;height:32px;font-size:15px}
     #ah-nav .logo b{font-size:15px}
@@ -316,7 +351,7 @@
     .ah-float .arrow{width:32px;height:32px;font-size:14px}
   }
   @media(max-width:430px){
-    #ah-nav .wrap{width:min(100% - 28px,1280px)}
+    #ah-nav .wrap{width:min(100% - 28px,1120px)}
     #ah-nav .logo small{display:none}
     .ah-float span:first-child br{display:none}
     .ah-float{font-size:13.5px}
@@ -339,10 +374,20 @@
 
     <!-- 하위 목차는 현재 action.or.kr 실제 메뉴 트리입니다. 이번 개편에서 손본 곳:
            · 자료실 메뉴를 없애고 발행물·뉴스룸을 '소식' 밑으로 옮김
-           · '캠페인' 대신 '이슈'를 두고 그 안에 캠페인을 넣음
-           · 회원 공간은 메뉴에서 제외(페이지는 그대로 있음)
+           · '캠페인' 대신 '캠페인'를 두고 그 안에 캠페인을 넣음
+           · 회원 공간 · 지역 예산 감시 사례 · 뉴스레터는 메뉴에서 뺐습니다
+             (2026-08-31 사용자 지시. 페이지 자체는 그대로 있습니다)
            · 갈 곳이 안 정해진 메뉴는 '자리 미정' 알약에 모아 둠 -->
     <nav class="gnb" aria-label="주요 메뉴">
+      <div class="gnb-item">
+        <a class="is-cta" href="https://donate.action.or.kr/"><span class="ah-heart" aria-hidden="true">♥</span>후원하기</a>
+        <!-- ⚠️ '25년의 시민행동'(/67)은 실제 사이트에서 후원 밑에 들어가 있습니다. -->
+        <div class="drop"><ul>
+          <li><a href="/join">후원 신청</a></li>
+          <li><a href="/36">후원 행사</a></li>
+          <li><a href="/67">25년의 시민행동</a></li>
+        </ul></div>
+      </div>
       <div class="gnb-item">
         <a href="/aboutus" data-nav="about">소개</a>
         <div class="drop"><ul>
@@ -354,7 +399,7 @@
         </ul></div>
       </div>
 
-      <!-- 활동 = 끝나는 날짜가 없는 일. 마감이 있으면 '이슈'로 갑니다.
+      <!-- 활동 = 끝나는 날짜가 없는 일. 마감이 있으면 '캠페인'로 갑니다.
            ⚠️ /act-power · /act-budget · /dok-history 는 미리보기 전용 경로입니다.
               캠페이너스 페이지를 만들면 그 번호로 바꾸세요. -->
       <div class="gnb-item">
@@ -378,10 +423,10 @@
         </ul></div>
       </div>
 
-      <!-- 이슈 = 끝나는 날짜가 있는 것. 마감이 지나면 내리고, 그 결과는 해당
+      <!-- 캠페인 = 끝나는 날짜가 있는 것. 마감이 지나면 내리고, 그 결과는 해당
            활동 페이지의 '결과' 칸으로 내려갑니다. -->
       <div class="gnb-item">
-        <a href="/issue/" data-nav="issue">이슈</a>
+        <a href="/issue/" data-nav="issue">캠페인</a>
         <div class="drop is-iss"><ul>
           <!-- 맨 위 '함께보기' — 진행 중과 종료된 캠페인을 탭으로 한자리에서 봅니다.
                ⚠️ /issue/ 는 미리보기 전용 경로입니다. 캠페이너스 페이지 번호로 바꾸세요. -->
@@ -405,6 +450,7 @@
           <li><a href="/26">공지</a></li>
           <li><a href="/23">발행물</a></li>
           <li><a href="/24">뉴스룸</a></li>
+          <li><a href="/54">연대 활동</a></li>
           <li><a href="#">투명성<span class="todo-mark">미정</span></a></li>
         </ul></div>
       </div>
@@ -415,28 +461,19 @@
       <div class="gnb-item">
         <a class="is-todo" href="#">자리 미정</a>
         <div class="drop"><ul>
-          <li><a href="/50">지자체 ESG 평가<span class="todo-mark">내년</span></a></li>
-          <li><a href="/54">연대 활동</a></li>
-          <li><a href="/27">일반 활동</a></li>
-          <li><a href="/46">지역 예산 감시 사례</a></li>
-          <li><a href="/40">회원 공간</a></li>
-          <li><a href="/25">뉴스레터</a></li>
+          <li><a href="/27">2026년 하반기 이전</a></li>
         </ul></div>
       </div>
 
-      <div class="gnb-item">
-        <a class="is-cta" href="https://donate.action.or.kr/"><span class="ah-heart" aria-hidden="true">♥</span>후원하기</a>
-        <!-- ⚠️ '25년의 시민행동'(/67)은 실제 사이트에서 후원 밑에 들어가 있습니다. -->
-        <div class="drop"><ul>
-          <li><a href="/join">후원 신청</a></li>
-          <li><a href="/36">후원 행사</a></li>
-          <li><a href="/67">25년의 시민행동</a></li>
-        </ul></div>
-      </div>
     </nav>
 
     <div class="hd-tools">
-      <a class="ico" href="/search" aria-label="검색">⌕</a>
+      <!-- 아임웹 통합검색. action·name 은 실제 action.or.kr 폼에서 가져온 값입니다.
+           바꾸지 마세요 — 이름이 다르면 검색어가 안 넘어갑니다. -->
+      <form class="hd-search" action="/search" method="get" role="search">
+        <input type="search" name="keyword" placeholder="무엇을 찾으세요?" aria-label="통합검색" autocomplete="off">
+        <button type="submit" aria-label="검색">⌕</button>
+      </form>
       <button class="ico menu-btn" type="button" id="ah-menu-btn" aria-label="전체 메뉴" aria-expanded="false" aria-controls="ah-mnav">☰</button>
     </div>
   </div>
@@ -448,7 +485,13 @@
   <div class="gnb-sheet" id="ah-sheet" hidden></div>
 
   <!-- 좁은 화면 전용 메뉴판. 위 알약 메뉴와 같은 항목이니 한쪽을 고치면 여기도 고칠 것. -->
-  <nav class="mnav" id="ah-mnav" aria-label="전체 메뉴"><div class="wrap"><ul>
+  <nav class="mnav" id="ah-mnav" aria-label="전체 메뉴"><div class="wrap">
+    <form class="msearch" action="/search" method="get" role="search">
+      <input type="search" name="keyword" placeholder="무엇을 찾으세요?" aria-label="통합검색" autocomplete="off">
+      <button type="submit" aria-label="검색">⌕</button>
+    </form>
+    <ul>
+    <li><a class="is-cta" href="https://donate.action.or.kr/">후원하기 →</a></li>
     <li>
       <a href="/aboutus">소개</a>
       <ul class="msub">
@@ -470,7 +513,7 @@
       </ul>
     </li>
     <li>
-      <a href="/issue/">이슈</a>
+      <a href="/issue/">캠페인</a>
       <ul class="msub">
         <li><a class="is-all" href="/issue/">함께보기 →</a></li>
         <li><a href="/27/?idx=173013295&amp;bmode=view">더 걷힐 세금, 어디에 쓸래?</a></li>
@@ -487,21 +530,16 @@
         <li><a href="/26">공지</a></li>
         <li><a href="/23">발행물</a></li>
         <li><a href="/24">뉴스룸</a></li>
+        <li><a href="/54">연대 활동</a></li>
         <li><a href="#">투명성(미정)</a></li>
       </ul>
     </li>
     <li>
       <a href="#">자리 미정</a>
       <ul class="msub">
-        <li><a href="/50">지자체 ESG 평가(내년)</a></li>
-        <li><a href="/54">연대 활동</a></li>
-        <li><a href="/27">일반 활동</a></li>
-        <li><a href="/46">지역 예산 감시 사례</a></li>
-        <li><a href="/40">회원 공간</a></li>
-        <li><a href="/25">뉴스레터</a></li>
+        <li><a href="/27">2026년 하반기 이전</a></li>
       </ul>
     </li>
-    <li><a class="is-cta" href="https://donate.action.or.kr/">후원하기 →</a></li>
   </ul></div></nav>
 </header>
 
@@ -552,7 +590,7 @@
   if (here && here !== 'home') {
     var marks = [here];
     if (here.indexOf('act-') === 0) marks.push('act');   // 활동 밑이면 '활동'도
-    if (here === 'pb') marks.push('issue');              // 상담소는 이슈 밑
+    if (here === 'pb') marks.push('issue');              // 상담소는 캠페인 밑
     marks.forEach(function (key) {
       hd.querySelectorAll('[data-nav="' + key + '"]').forEach(function (el) {
         el.classList.add('is-here');

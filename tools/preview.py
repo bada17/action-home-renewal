@@ -8,13 +8,13 @@
     **조각**입니다. <head> 가 없어서 파일을 그냥 열면 한글이 깨집니다.
     이 서버가 charset·viewport 를 씌워서 내보냅니다.
 
-    또 하나. 활동/이슈 페이지가 서로를 /49, /act-power 같은 주소로 가리키기
+    또 하나. 활동/캠페인 페이지가 서로를 /49, /act-power 같은 주소로 가리키기
     때문에, 파일을 직접 열면 링크가 전부 깨집니다. 여기서는 그 주소를 실제
     파일에 이어 줍니다.
 
 이어 둔 주소
     /               홈                    index.html
-    /issue/         이슈 목록             issue.html
+    /issue/         캠페인 목록             issue.html
     /49             활동 > 지자체 감시    activity-local.html
     /act-power      활동 > 권력감시       activity-power.html
     /act-budget     활동 > 예산감시       activity-budget.html
@@ -71,6 +71,10 @@ ROUTES = {
 
 # 아직 화면이 없는 주소. 404 대신 "무엇이 없는지"를 알려 줍니다.
 STUBS = {
+    '/search': ('통합검색은 아임웹이 합니다',
+                '헤더의 검색칸은 <b>/search?keyword=...</b> 로 보냅니다. 실제 action.or.kr 의 '
+                '검색 폼에서 가져온 주소·이름이라 그대로 두면 아임웹 통합검색이 받습니다. '
+                '미리보기에는 그 검색 기능이 없어 이 안내만 뜹니다 — 결함이 아닙니다.'),
     '/52': ('활동 전체', '활동 다섯을 모아 보여 줄 목록 화면입니다. 아직 안 만들었습니다.'),
     '/23': ('발행물', '게시판입니다. 자료실은 이제 /library 에 따로 있습니다.'),
     '/24': ('뉴스룸', '보도자료 게시판입니다.'),
@@ -107,14 +111,14 @@ SHELL = u'''<!doctype html>
 <nav id="pv">
   <b>미리보기</b>
   <a href="/"%(a_home)s>홈</a>
-  <a href="/issue/"%(a_issue)s>이슈</a>
+  <a href="/issue/"%(a_issue)s>캠페인</a>
   <b>활동</b>
   <a href="/49"%(a_local)s>지자체 감시</a>
   <a href="/act-power"%(a_power)s>권력감시</a>
   <a href="/act-budget"%(a_budget)s>예산감시</a>
   <a href="/51"%(a_pb51)s>참여예산</a>
   <a href="/dok-history"%(a_dok)s>밑빠진 독상</a>
-  <b>이슈</b>
+  <b>캠페인</b>
   <a href="/pb/"%(a_pb)s>참여예산 상담소</a>
   <a href="/library"%(a_lib)s>자료실</a>
   <b>원본</b>
@@ -136,11 +140,11 @@ STUB_BODY = u'''<div style="max-width:640px;margin:14vh auto;padding:0 24px;
 </div>'''
 
 TITLES = {
-    '/': '홈', '/69': '홈', '/issue/': '이슈', '/issue': '이슈',
+    '/': '홈', '/69': '홈', '/issue/': '캠페인', '/issue': '캠페인',
     '/49': '활동 > 지자체 감시', '/act-power': '활동 > 권력감시',
     '/act-budget': '활동 > 예산감시', '/51': '활동 > 시민참여',
     '/dok-history': '활동 > 밑빠진 독상',
-    '/pb/': '이슈 > 참여예산 상담소', '/pb': '이슈 > 참여예산 상담소',
+    '/pb/': '캠페인 > 참여예산 상담소', '/pb': '캠페인 > 참여예산 상담소',
     '/library': '자료실', '/library/': '자료실',
 }
 
@@ -152,6 +156,86 @@ MIME = {
     '.woff': 'font/woff', '.woff2': 'font/woff2', '.ico': 'image/x-icon',
     '.txt': 'text/plain; charset=utf-8',
 }
+
+
+# ─────────────────────────────────────────────────────────────
+# ?data=demo  —  "게시판이 붙으면 이렇게 된다"를 눈으로 보는 장치
+#
+# tools/data/action-rss.xml (진짜 action.or.kr 게시판 글)을 읽어
+# window.AH_DATA 를 만들어 화면 앞에 끼워 넣습니다.
+# 미리보기 전용입니다. 실제 화면과는 상관없습니다.
+#
+# ★ RSS 에는 사진이 없습니다. 그래서 이 데모의 소식 카드는 전부 색 타일입니다.
+#   그게 지금 GPT 가 게시판만 물렸을 때 실제로 보게 될 모습입니다.
+# ─────────────────────────────────────────────────────────────
+BOARD_NAME = {'51': '주민참여예산', '27': '일반 활동', '57': '예산 모니터링',
+              '26': '소식', '23': '발행물', '25': '뉴스룸'}
+
+
+def demo_data():
+    import re, json
+    f = os.path.join(ROOT, 'tools', 'data', 'action-rss.xml')
+    if not os.path.isfile(f):
+        return ''
+    xml = io.open(f, encoding='utf-8').read()
+    items = re.findall(r'<item>(.*?)</item>', xml, re.S)
+
+    try:
+        from html import unescape
+    except ImportError:
+        from HTMLParser import HTMLParser
+        unescape = HTMLParser().unescape
+
+    def pick(block, tag):
+        m = re.search(r'<%s>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</%s>' % (tag, tag), block, re.S)
+        # ★ 엔티티를 풀어서 넘깁니다. RSS 는 주소를 '&amp;' 로 주는데 그대로 넘기면
+        #   화면 코드가 한 번 더 감싸 '&amp;amp;' 가 되어 링크가 깨집니다.
+        return unescape(m.group(1).strip()) if m else ''
+
+    MON = {'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
+           'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'}
+
+    def ymd(pub):
+        # 'Tue, 25 Aug 2026 09:00:00 +0900'  ->  '2026.08.25'
+        m = re.search(r'(\d{1,2})\s+(\w{3})\s+(\d{4})', pub)
+        if not m:
+            return pub[:16]
+        return '%s.%s.%02d' % (m.group(3), MON.get(m.group(2), '01'), int(m.group(1)))
+
+    news = []
+    for b in items[:8]:
+        link = pick(b, 'link')
+        bid = re.search(r'/(\d+)/', link)
+        date = ymd(pick(b, 'pubDate'))
+        news.append({
+            'title': pick(b, 'title'),
+            'url': link,
+            'date': date,
+            'board': BOARD_NAME.get(bid.group(1) if bid else '', '게시판'),
+            # img 없음 — RSS 가 사진을 안 줍니다
+        })
+
+    issues = [
+        {'title': '더 걷힐 세금, 어디에 쓸래?',
+         'lead': '추가세수 100조의 쓰임을 시민이 직접 고르고, 그 순위를 정부와 국회에 전합니다.',
+         'url': '/27/?idx=173013295&bmode=view', 'mark': '세금',
+         'tile': '#0079a6', 'cat': '예산감시', 'due': '2026-08-31'},
+        {'title': '2026 하반기 밑빠진독상',
+         'lead': '세금이 새는 현장을 시민이 제보하고, 그중 최악의 사업을 함께 고릅니다.',
+         'url': 'https://dokseong-action.bada523082.chatgpt.site/', 'mark': '독상',
+         'tile': '#062330', 'cat': '밑빠진 독상', 'due': '2026-09-15'},
+        {'title': '10만원 예산편성',
+         'lead': '내 몫의 예산 10만원을 어디에 쓸지 직접 짜 봅니다.',
+         'url': 'https://vote.action.or.kr/', 'mark': '편성',
+         'tile': '#0d4f66', 'cat': '예산감시'},
+        {'title': '참여예산 상담소',
+         'lead': '참여예산위원들이 현장에서 부딪히는 고민을 모아 함께 풀어 봅니다.',
+         'url': '/pb/', 'mark': '상담', 'tile': '#0b4a5e', 'cat': '시민참여'},
+    ]
+
+    return ('<script>/* 미리보기 데모 — 게시판에서 받았다고 치는 값 */\n'
+            'window.AH_DATA = ' + json.dumps({'news': news, 'issues': issues},
+                                             ensure_ascii=False, indent=1) + ';</script>\n')
 
 
 def sibling_root(prefix):
@@ -200,6 +284,7 @@ class H(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = self.path.split('?', 1)[0].split('#', 1)[0]
+        query = self.path.split('?', 1)[1] if '?' in self.path else ''
 
         # ── 옆 저장소 그대로 물려 주기 ──
         for prefix in SIBLINGS:
@@ -233,6 +318,8 @@ class H(BaseHTTPRequestHandler):
                 self.send_bytes(wrap(path, STUB_BODY % ('파일이 없습니다', ROUTES[path], path), '없음'), code=404)
                 return
             body = io.open(f, encoding='utf-8').read()
+            if 'data=demo' in query:
+                body = demo_data() + body
             self.send_bytes(wrap(path, body, TITLES.get(path, path)))
             return
 

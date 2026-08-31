@@ -194,7 +194,7 @@ TEMPLATE = u'''<style>
   border-radius:999px; padding:1px 8px; font-size:.78em; font-weight:700; white-space:nowrap}}
 
 /* ───── 맨 위 ─────  (2026-08-27 다시 짬)
-   활동·이슈와 같은 틀입니다. 예전에는 짙은 남색 띠였는데, 활동 페이지에서
+   활동·캠페인와 같은 틀입니다. 예전에는 짙은 남색 띠였는데, 활동 페이지에서
    "띠가 겹겹이 쌓여 마음에 안 든다"는 지적을 받아 색면을 걷어냈습니다.
    여기만 남색으로 두면 이번엔 자료실만 다른 사이트로 보입니다. */
 #lib .top{{padding:clamp(20px,2.4vw,30px) 0 0; border-bottom:2px solid var(--ink)}}
@@ -332,7 +332,7 @@ TEMPLATE = u'''<style>
 <div id="lib">
 
   <!-- ───────── 맨 위 ─────────
-       ⚠️ 색 띠를 두르지 마세요. 활동·이슈와 같은 틀이어야 한 사이트로 읽힙니다. -->
+       ⚠️ 색 띠를 두르지 마세요. 활동·캠페인와 같은 틀이어야 한 사이트로 읽힙니다. -->
   <section class="top">
     <div class="wrap">
       <p class="crumb"><a href="/69?preview_mode=1">홈</a><span>›</span>자료실</p>
