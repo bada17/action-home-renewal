@@ -74,15 +74,8 @@
      구별은 아래 '이 활동만의 칸'이 합니다(지역 태그 / 물음과 답 / 달력 / 문). */
 #act .top{padding:clamp(20px,2.4vw,30px) 0 0; border-bottom:2px solid var(--ink)}
 #act .top .crumb{padding:0}
-/* 감시 대상 — 활동 다섯이 '감시'라는 같은 말을 써서 이름만으로는 안 갈립니다.
-   그래서 제목 위에 무엇을 보는 활동인지 먼저 말합니다. */
-#act .top .who{
-  display:inline-block; margin-top:clamp(18px,2vw,26px);
-  background:var(--tint); color:var(--deep); border-radius:999px;
-  padding:5px 14px; font-size:12.5px; font-weight:700
-}
 #act .top h1{
-  margin-top:12px;
+  margin-top:clamp(18px,2vw,26px);
   font-size:clamp(28px,4.4vw,46px); font-weight:700; line-height:1.24;
   letter-spacing:-.03em; text-wrap:balance
 }
@@ -296,21 +289,6 @@
 #act .row:hover .t{color:var(--deep); text-decoration:underline; text-underline-offset:3px}
 #act .row .t{font-family:GmarketSans,sans-serif; font-weight:700; font-size:15.5px; line-height:1.5}
 #act .row .meta{font-size:12.5px; color:var(--faint); white-space:nowrap}
-#act .more{display:inline-block; margin-top:18px; font-size:14px; font-weight:700; color:var(--deep)}
-#act .more:hover{text-decoration:underline; text-underline-offset:3px}
-
-/* ───── 자료 ─────
-   활동하면서 나온 보고서로 바로 가는 칸입니다.
-   ⚠️ 지금은 셋 다 발행물(/23)로 갑니다. 활동별로 따로 모여 있다면 그 주소로 바꾸세요. */
-#act .docs{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:10px}
-#act .doc{
-  display:flex; align-items:center; justify-content:space-between; gap:12px;
-  border:1px solid var(--line); background:#fff; padding:16px 18px;
-  font-size:14.5px; font-weight:700; line-height:1.4; transition:.16s
-}
-#act .doc:hover{border-color:var(--brand); color:var(--deep); transform:translateY(-2px)}
-#act .doc small{display:block; margin-top:3px; font-size:12px; font-weight:600; color:var(--faint)}
-#act .doc .go{flex:none; color:var(--brand)}
 
 /* ───── 현장 사진 ─────
    ⚠️ 사진이 한 장도 없으면 이 칸은 **아예 안 만들어집니다**(빌드에서 통째로 빠짐).
@@ -1113,13 +1091,19 @@
        ⚠️ 숫자는 확인된 값만 올립니다. 모르면 딱지를 붙이고 비워 두세요. -->
   <section class="top"><div class="wrap">
     <nav class="crumb"><a href="/69?preview_mode=1">홈</a><span>&rsaquo;</span>활동<span>&rsaquo;</span>시민참여</nav>
-    <span class="who">참여예산 · 시민 교육</span>
+    <!-- 2026-09-01 사용자 지시로 감시 대상 알약(<span class="who">)을 뺐습니다.
+         빵부스러기에 이미 활동 이름이 있고, 홈의 활동 다섯 줄에도 부제가 있습니다.
+         값 자체는 ALL 에 그대로 있습니다(참여예산 · 시민 교육) — 다시 넣으려면 이 자리에 넣으세요. -->
     <h1 id="act-head">예산을 정하는 자리에<br>시민이 앉아야 합니다</h1>
     <p class="by" id="act-lede">주민참여예산 제도가 이름만 남지 않도록 따지고, 시민이 실제로 결정할 수 있게 바꿉니다.</p>
+    <!-- ⚠️ 숫자 칸은 2026-09-01 사용자 지시로 **주석 처리**했습니다.
+         "나중에 사용할 수 있음" — 지우지 마세요. 값은 PAGES 의 nums 에 그대로 있고,
+         build_nums 도 그대로 돕니다. 아래 두 줄의 주석만 벗기면 되살아납니다.
     <div class="nums" id="act-nums">
     <div class="num"><b><span class="tbd">확인 필요</span></b><span>올해 연 상담 · 교육</span></div>
     <div class="num"><b><span class="tbd">확인 필요</span></b><span>제도 개선 의견서</span></div>
     </div>
+    -->
   </div></section>
 
   <div class="wrap">
@@ -1202,8 +1186,12 @@
     </section>
 
     <!-- ───────── 글 ─────────
-         ⚠️ 코드에 박아 둔 목록이라 새 글이 자동으로 올라오지 않습니다.
-            캠페이너스 기본 게시판 위젯으로 바꿀 자리입니다. -->
+         ★ 2026-09-01 사용자 결정: 이 칸이 **그 게시판의 글을 다 보여 주는 자리**입니다.
+           → 여기에 **캠페이너스 게시판 위젯**을 앉힙니다(페이지 나눔·검색까지 위젯이 합니다).
+             GPT 가 위젯을 넣을 자리는 아래 .rows 를 통째로 갈아 끼우는 곳입니다.
+           → 위젯이 들어오면 '글 전체보기' 링크는 필요 없어집니다. 그래서 미리 뺐습니다.
+         ⚠️ 아래 목록은 위젯이 들어오기 전까지 자리를 지키는 **씨앗**입니다.
+            코드에 박혀 있어 새 글이 자동으로 올라오지 않습니다. -->
     <section class="sec"><div class="sh">
       <h2>최근에 쓴 글</h2>
       <p>주민참여예산(/51) 게시판의 최근 글입니다.</p>
@@ -1222,22 +1210,10 @@
           <span class="meta">2026.03.02</span>
         </a>
       </div>
-      <a class="more" href="/51">글 전체보기 →</a>
     </section>
 
-    <!-- ───────── 자료 ─────────
-         활동하면서 나온 보고서로 바로 가는 칸입니다.
-         ⚠️ 셋 다 발행물(/23)로 걸어 뒀습니다. 활동별 자료 주소가 따로 있으면 바꾸세요. -->
-    <section class="sec"><div class="sh">
-      <h2>더 깊이 보려면</h2>
-      <p>이 활동에서 나온 보고서와 자료를 모아 둔 곳입니다. <span class="tbd">주소 확인 필요</span></p>
-    </div>
-      <div class="docs">
-        <a class="doc" href="/23">발행물<small>보고서 · 이슈페이퍼</small><span class="go" aria-hidden="true">→</span></a>
-        <a class="doc" href="/24">뉴스룸<small>보도자료 · 언론보도</small><span class="go" aria-hidden="true">→</span></a>
-        <a class="doc" href="/51">게시판<small>시민참여 글 전체</small><span class="go" aria-hidden="true">→</span></a>
-      </div>
-    </section>
+    <!-- 예전에 여기 '더 깊이 보려면'(발행물·뉴스룸·게시판 세 칸)이 있었습니다.
+         2026-09-01 사용자 지시로 삭제했습니다. -->
 
 
     <!-- ───────── 현장 사진 ─────────
