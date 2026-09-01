@@ -37,6 +37,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
+HEADER_PART = os.path.join(HERE, 'parts', 'header.html')
+FOOTER_PART = os.path.join(HERE, 'parts', 'footer.html')
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8777
 
 # 옆 저장소. 없으면 그 주소만 안내가 뜨고 나머지는 그대로 돕니다.
@@ -227,7 +229,7 @@ def demo_data():
 
     # 2026-09-01: '더 걷힐 세금, 어디에 쓸래?' 는 사용자 지시로 캠페인에서 뺐습니다.
     issues = [
-        {'title': '2026 하반기 밑빠진독상',
+        {'title': '2026 하반기 밑빠진 독상',
          'lead': '세금이 새는 현장을 시민이 제보하고, 그중 최악의 사업을 함께 고릅니다.',
          'url': 'https://dokseong-action.bada523082.chatgpt.site/', 'mark': '독상',
          'tile': '#062330', 'cat': '밑빠진 독상', 'due': '2026-09-15'},
@@ -431,7 +433,12 @@ class H(BaseHTTPRequestHandler):
             if not os.path.isfile(f):
                 self.send_bytes(wrap(path, STUB_BODY % ('파일이 없습니다', ROUTES[path], path), '없음'), code=404)
                 return
-            body = io.open(f, encoding='utf-8').read()
+            page_body = io.open(f, encoding='utf-8').read()
+            # 캠페이너스에서는 공통 상단·하단 위젯이 따로 붙입니다.
+            # 페이지 조각에는 둘 다 없으므로 로컬 미리보기에서만 앞뒤로 합칩니다.
+            body = (io.open(HEADER_PART, encoding='utf-8').read().rstrip() + '\n\n' +
+                    page_body.strip() + '\n\n' +
+                    io.open(FOOTER_PART, encoding='utf-8').read().lstrip())
             if 'data=demo' in query:
                 body = demo_data() + body
             self.send_bytes(wrap(path, body, TITLES.get(path, path)))

@@ -1,41 +1,46 @@
+<!-- CAMPAIGNERS:COMMON-HEADER START -->
+<!-- 이 파일 전체를 페이지 맨 아래 코드 위젯 하나에 붙이고 그 섹션을 '섹션 반복'으로 설정합니다. 화면에서는 고정 상단으로 보입니다. 페이지 본문 코드에 다시 넣지 않습니다. -->
 <!-- ═══════════════════════════════════════════════════════════════════
      공통 헤더 — 여섯 화면이 같이 쓰는 하나의 부품
 
-     ⚠️ 이 파일만 고치세요. 각 .html 안에 있는 헤더는 tools/build-parts.py 가
-        여기 내용을 그대로 복사해 넣은 것이라, .html 쪽을 고치면 다음 빌드에서
-        지워집니다.  고친 뒤에는  python tools/build-parts.py  를 돌리세요.
+     2026-09-01 사용자 결정: 이 파일을 페이지마다 복사하지 않습니다.
+       캠페이너스 페이지 맨 아래의 반복 섹션 한 곳에만 붙여 모든 페이지가 공유합니다.
+       '상단 편집'에는 코드 위젯이 없으므로 그곳에 붙이는 코드가 아닙니다.
+       섹션 반복은 페이지 맨 아래에서만 켤 수 있어 코드 위젯은 아래에 있지만,
+       #ah-nav 는 position:fixed 로 화면 위에 보이고 #ah-nav-space 만 위로 옮겨집니다.
+       각 .html 은 본문만 가지며, 로컬·정적 미리보기 도구만 이 파일을 앞에 붙입니다.
 
-     왜 페이지 뿌리(#action-home-v2 · #act · #dok · #iss · #pb) **밖에** 두는가:
-       그 뿌리들은 전체 폭을 쓰려고 overflow:hidden 을 걸고 있습니다.
-       position:sticky 는 overflow:hidden 인 조상 안에서는 붙어 있지 못합니다.
-       그래서 헤더는 뿌리의 형제로 앞에 놓고, 스스로 범위(#ah-nav)를 가집니다.
+     2026-09-01 사용자 결정: 이 메뉴는 스크롤해도 화면 맨 위에 계속 둡니다.
+       캠페이너스 코드 위젯의 조상 요소가 sticky 를 막을 수 있어 position:fixed 를
+       쓰고, 바로 뒤 #ah-nav-space 가 같은 높이를 비워 본문이 가려지지 않게 합니다.
 
      범위가 #ah-nav 로 따로인 이유:
        화면마다 뿌리 이름이 달라(#act, #dok …) 뿌리에 기대면 CSS 가 안 먹습니다.
        그래서 색·글꼴을 자기 안에 다시 정의합니다. 값은 DESIGN.md 와 같습니다.
      ═══════════════════════════════════════════════════════════════════ -->
 <style>
+  /* 새 공통 상단은 본문 맨 위 반복 섹션에 있습니다. 캠페이너스 기본 상단은 숨깁니다. */
+  #doz_header{display:none!important}
   #ah-nav,#ah-nav *,.ah-float,.ah-float *{box-sizing:border-box}
   #ah-nav{
     --brand:#00afec;          /* 시민행동 하늘색 */
     --brand-deep:#0087b8;     /* 흰 바탕 위 글자에 쓰는 진한 쪽 */
     --brand-tint:#e5f7fe;
     --ink:#0d1c26;--ink-soft:#47606f;--line:#dde7ec;--paper:#f7fafb;
-    /* 위에 붙어 따라오기 + 전체 폭으로 펼치기.
-       ⚠️ 전체 폭을 `left:50%; margin-left:-50vw` 로 만들면 안 됩니다.
-          position:sticky 에서 left 는 '위치를 옮기는 값'이 아니라 '가로로 붙는 조건'이라,
-          세로로만 붙어야 할 헤더가 가로 방향 계산까지 끌어들여 브라우저마다 다르게 굽니다.
-          그래서 **여백만으로** 폭을 넓힙니다. 여백은 배치라서 sticky 와 안 부딪힙니다. */
-    position:sticky;top:0;z-index:80;
-    /* --ah-sb 는 세로 스크롤바 폭입니다. 100vw 에는 스크롤바가 들어 있어서
-       그냥 쓰면 화면이 스크롤바 폭만큼 옆으로 삐져나오고 가로 스크롤바가 생깁니다.
-       아래 스크립트가 재서 넣어 줍니다. 스크립트가 막히면 0 이라 지금까지와 같습니다. */
-    margin-left:calc(50% - 50vw + var(--ah-sb, 0px) / 2);margin-right:calc(50% - 50vw + var(--ah-sb, 0px) / 2);
+    /* 캠페이너스 섹션의 overflow 영향 없이 화면 위에 계속 보이도록 고정합니다. */
+    /* 코드 위젯의 1100px 안쪽 폭에 갇히지 않도록 화면 폭을 직접 씁니다. */
+    position:fixed;top:0;left:0;right:auto;z-index:80;
+    width:calc(100vw - var(--ah-sb,0px));max-width:none;
+    margin:0;
     border-bottom:1px solid var(--line);background:#fff;
     color:var(--ink);line-height:1.6;
     font-family:'Pretendard Variable',Pretendard,'Noto Sans KR',-apple-system,sans-serif;
     word-break:keep-all;-webkit-font-smoothing:antialiased
   }
+  /* 고정 헤더가 문서 흐름에서 빠진 만큼 자리를 비웁니다.
+     반복 섹션은 맨 아래에 있어야 하므로, 스크립트가 이 칸만 실제 본문 앞으로 옮기고
+     헤더 높이를 잽니다. 막혀도 넓은 화면 기본 높이는 유지합니다. */
+  #ah-nav-space{height:72px}
   /* 스크롤을 내리면 그림자가 생겨, 아래 내용과 겹쳐도 띠가 떠 보입니다. */
   #ah-nav.is-stuck{box-shadow:0 6px 20px rgba(13,28,38,.09)}
   #ah-nav a{color:inherit;text-decoration:none}
@@ -45,10 +50,12 @@
   #ah-nav .wrap{width:min(1120px,calc(100% - 48px));margin:0 auto}
 
   #ah-nav .hd-in{display:flex;align-items:center;gap:20px;min-height:72px}
-  #ah-nav .logo{display:flex;align-items:center;gap:11px;flex:none}
-  #ah-nav .logo-mark{width:36px;height:36px;border-radius:50%;background:var(--brand);display:grid;place-items:center;color:#fff;font-size:16px;font-weight:900;flex:none}
-  #ah-nav .logo b{display:block;font-size:16.5px;font-weight:800;letter-spacing:-.03em;line-height:1.2}
-  #ah-nav .logo small{display:block;font-size:10.5px;letter-spacing:.08em;color:var(--ink-soft)}
+  /* 사용자 제공 공식 로고. 원본 PNG 좌우에 투명 여백이 있어 링크 상자에서 잘라 냅니다. */
+  #ah-nav .logo{display:block;flex:none;width:145px;height:56px;overflow:hidden}
+  #ah-nav .logo-img{
+    display:block;width:auto;max-width:none;height:56px;
+    transform:translateX(-24px)
+  }
 
   /* ───────── 알약 메뉴 ───────── */
   #ah-nav .gnb{display:flex;align-items:stretch;gap:8px;margin-left:auto}
@@ -89,9 +96,19 @@
     opacity:0;visibility:hidden;transform:translateY(-6px);
     transition:opacity .15s,transform .15s,visibility .15s
   }
-  #ah-nav .gnb-item:hover .drop,
+  /* ⚠️ 여는 것을 :hover 로 하지 않습니다 (2026-09-01 사용자 지적).
+     :hover 는 알약을 스치기만 해도 그 자리에서 열고 닫습니다. 그래서
+     ① 알약 줄을 가로질러 갈 때마다 판이 번짝거렸고(정신사나움),
+     ② 알약에서 판으로 커서를 내리는 도중에 옆 알약을 스치면 그쪽으로
+        넘어가 버려서, 누르지 않고는 하위 목차를 고를 수가 없었습니다.
+     이제 스크립트가 .is-hover 를 붙입니다 — 잠깐 머무를 때만 열고,
+     커서가 나간 뒤에도 잠깐 남아 그 사이에 판 안으로 들어갈 수 있습니다.
+     스크립트가 죽으면 판은 안 열리지만 알약은 그대로 누르면 되고,
+     키보드(:focus-within)로도 여전히 열립니다. */
+  #ah-nav .gnb-item.is-hover .drop,
   #ah-nav .gnb-item:focus-within .drop,
   #ah-nav .gnb-item.is-open .drop{opacity:1;visibility:visible;transform:none}
+  #ah-nav .gnb-item.is-hover>a{border-color:var(--brand);color:var(--brand-deep)}
   /* 눌러서 연 알약은 열려 있다는 것이 보여야 합니다 — 손을 떼도 판이 남기 때문입니다. */
   #ah-nav .gnb-item.is-open>a{border-color:var(--brand);color:var(--brand-deep)}
   #ah-nav .drop ul{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;box-shadow:0 14px 34px rgba(13,28,38,.14)}
@@ -143,6 +160,23 @@
 
   /* ───────── 오른쪽 도구 ───────── */
   #ah-nav .hd-tools{display:flex;align-items:center;gap:6px;flex:none;margin-left:8px}
+
+  /* ───────── 회원 — 로그인 · 회원가입 (2026-09-01) ─────────
+     캐페이너스 기본 헤더(#doz_header)를 우리가 감추는데, 로그인·회원가입이
+     원래 거기 있었습니다. 그래서 이 자리에 다시 냅니다.
+     후원하기 버튼과 다투지 않게 알약이 아니라 작은 글자입니다. */
+  #ah-nav .hd-acc{display:flex;align-items:center;gap:9px;flex:none;margin-left:4px}
+  #ah-nav .hd-acc a{font-size:12.5px;font-weight:700;color:var(--ink-soft);white-space:nowrap}
+  #ah-nav .hd-acc a:hover{color:var(--brand-deep)}
+  #ah-nav .hd-acc a+a{position:relative;padding-left:11px}
+  #ah-nav .hd-acc a+a::before{
+    content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+    width:1px;height:11px;background:var(--line)
+  }
+  /* 좁은 화면의 ☰ 안에 들어가는 같은 것. 검색칸 바로 밑입니다. */
+  #ah-nav .macc{display:flex;align-items:center;gap:12px;margin:-6px 0 16px}
+  #ah-nav .macc a{font-size:13.5px;font-weight:700;color:var(--ink-soft)}
+  #ah-nav .macc a:hover{color:var(--brand-deep)}
   #ah-nav .ico{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:17px;color:var(--ink-soft);background:none;cursor:pointer}
   #ah-nav .ico:hover{border-color:var(--brand);color:var(--brand-deep)}
 
@@ -284,6 +318,7 @@
   /* 알약을 감추지 않고 둘째 줄로 내려 가로로 넘깁니다.
      감춰 버리면 이 단체가 무엇을 하는 곳인지 첫 화면에서 안 보입니다. */
   @media(max-width:1060px){
+    #ah-nav-space{height:102px}
     #ah-nav .hd-in{flex-wrap:wrap;min-height:0;padding:10px 0 8px;row-gap:9px}
     #ah-nav .gnb{
       order:3;flex-basis:100%;margin:0;align-items:center;justify-content:flex-start;
@@ -297,6 +332,7 @@
     #ah-nav .drop{display:none}
     #ah-nav .menu-btn{display:grid}
     #ah-nav .hd-search{display:none}   /* 좁으면 ☰ 안의 검색칸을 씁니다 */
+    #ah-nav .hd-acc{display:none}      /* 로그인·회원가입도 ☰ 안으로 들어갑니다 */
 
     /* ── 알약 밑에 펼쳐지는 하위 목차 ──
        예전에는 알약을 누르면 그냥 그 주소로 갔습니다. 활동(/52)처럼 아직 화면이
@@ -338,8 +374,8 @@
   @media(max-width:820px){
     #ah-nav .wrap{width:min(100% - 36px,1120px)}
     #ah-nav .hd-in{gap:10px}
-    #ah-nav .logo-mark{width:32px;height:32px;font-size:15px}
-    #ah-nav .logo b{font-size:15px}
+    #ah-nav .logo{width:119px;height:46px}
+    #ah-nav .logo-img{height:46px;transform:translateX(-20px)}
     #ah-nav .ico{width:38px;height:38px}
     /* 떠 있는 버튼이 아래쪽 내용을 가리지 않게 가로로 눕힙니다.
        env(safe-area-inset-bottom) 은 아이폰 아래 홈 표시줄을 피하는 값입니다. */
@@ -351,7 +387,6 @@
   }
   @media(max-width:430px){
     #ah-nav .wrap{width:min(100% - 28px,1120px)}
-    #ah-nav .logo small{display:none}
     .ah-float span:first-child br{display:none}
     .ah-float{font-size:13.5px}
   }
@@ -364,11 +399,11 @@
   }
 </style>
 
-<header id="ah-nav" data-here="home">
+<header id="ah-nav" data-here="auto">
   <div class="wrap hd-in">
-    <a class="logo" href="/69?preview_mode=1">
-      <span class="logo-mark" aria-hidden="true">행</span>
-      <span><b>함께하는 시민행동</b><small>ACTION TOGETHER</small></span>
+    <a class="logo" href="/69?preview_mode=1" aria-label="함께하는 시민행동 홈">
+      <!-- 사용자 제공 2a859fe4ace59.png. 파일의 원래 action.or.kr CDN 주소를 사용합니다. -->
+      <img class="logo-img" src="https://cdn.imweb.me/upload/S20210826b814397ca4e6d/2a859fe4ace59.png" alt="함께하는 시민행동">
     </a>
 
     <!-- 하위 목차는 현재 action.or.kr 실제 메뉴 트리입니다. 이번 개편에서 손본 곳:
@@ -383,8 +418,16 @@
         <a class="is-cta" href="https://donate.action.or.kr/"><span class="ah-heart" aria-hidden="true">♥</span>후원하기</a>
         <!-- ⚠️ '25년의 시민행동'(/67)은 실제 사이트에서 후원 밑에 들어가 있습니다. -->
         <div class="drop"><ul>
-          <li><a href="/join">후원 신청</a></li>
-          <li><a href="/36">후원 행사</a></li>
+          <!-- 2026-09-01 사용자가 정한 네 줄입니다.
+               · 정기후원하기 — 실제 신청서입니다. 랜딩 페이지의 후원 버튼이 가는
+                 곳과 같습니다. 밖의 회원관리 시스템(mrmweb)이라 주소를 그대로 적습니다.
+               · 정기후원 안내 — 랜딩 페이지(donate.action.or.kr). 위의 '후원하기' 버튼도
+                 같은 곳으로 갑니다.
+               ✖ 예전에 있던 '후원 신청'(/join)은 2026-09-01 사용자 결정으로
+                  삭제했습니다. 되살리지 마세요. -->
+          <li><a href="https://mrmweb.hsit.co.kr/v2/Member/MemberJoin.aspx?action=join&amp;server=GdGrmt6XtgAAdxPdh65AQQ==" target="_blank" rel="noopener">정기후원하기</a></li>
+          <li><a href="https://donate.action.or.kr/">정기후원 안내</a></li>
+          <li><a href="/36">후원행사</a></li>
           <li><a href="/67">25년의 시민행동</a></li>
         </ul></div>
       </div>
@@ -409,7 +452,8 @@
             <a class="dmain" href="/49" data-nav="act-local">지자체 감시<em>지방정부 · 지방의회</em></a>
           </li>
           <li class="drow">
-            <a class="dmain" href="/act-power" data-nav="act-power">권력감시<em>중앙정부 · 국회</em></a>
+          <!-- 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 확정되면 주석만 벗기세요.
+               <a class="dmain" href="/act-power" data-nav="act-power">권력감시<em>중앙정부 · 국회</em></a> -->
           </li>
           <li class="drow">
             <a class="dmain" href="/act-budget" data-nav="act-budget">예산감시<em>나라살림 · 지방재정</em></a>
@@ -432,7 +476,7 @@
                ⚠️ /issue/ 는 미리보기 전용 경로입니다. 캠페이너스 페이지 번호로 바꾸세요. -->
           <li><a class="iall" href="/issue/" data-nav="issue">함께하기<span class="idue">진행 중 · 종료</span></a></li>
           <li class="isep" aria-hidden="true"></li>
-          <li><a href="https://dokseong-action.bada523082.chatgpt.site/">2026 하반기 밑빠진독상<!--<span class="idue">9/15 마감</span>--></a></li>
+          <li><a href="https://dokseong-action.bada523082.chatgpt.site/">2026 하반기 밑빠진 독상<!--<span class="idue">9/15 마감</span>--></a></li>
           <li><a href="https://vote.action.or.kr/">10만원 예산편성<!--<span class="idue">기간 미정</span>--></a></li>
           <!-- ⚠️ /pb/ 는 미리보기 전용 경로입니다. 캠페이너스 페이지 번호로 바꾸세요. -->
           <li><a href="/pb/" data-nav="pb">참여예산 상담소<!--<span class="idue">상시</span>--></a></li>
@@ -444,12 +488,14 @@
         <div class="drop"><ul>
           <!-- 자료실은 발행물·뉴스룸을 아우르는 상위 칸이라 맨 위에 둡니다.
                ⚠️ /library 는 미리보기 전용 경로입니다. 캠페이너스 페이지 번호로 바꾸세요. -->
-          <li><a href="/library" data-nav="library">자료실</a></li>
+          <!-- 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 쓰게 되면 주석만 벗기세요.
+               <li><a href="/library" data-nav="library">자료실</a></li> -->
           <li><a href="/26">공지</a></li>
           <li><a href="/23">발행물</a></li>
           <li><a href="/24">뉴스룸</a></li>
           <li><a href="/54">연대 활동</a></li>
-          <li><a href="#">투명성<span class="todo-mark">미정</span></a></li>
+          <!-- 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 쓰게 되면 주석만 벗기세요.
+               <li><a href="#">투명성<span class="todo-mark">미정</span></a></li> -->
         </ul></div>
       </div>
 
@@ -462,6 +508,23 @@
         <input type="search" name="keyword" placeholder="무엇을 찾으세요?" aria-label="통합검색" autocomplete="off">
         <button type="submit" aria-label="검색">⌕</button>
       </form>
+      <!-- 회원. 우리가 만드는 게 아니라 캐페이너스 것을 그대로 부릅니다.
+           실제 action.or.kr 헤더가 부르는 함수를 그대로 옮겼습니다 —
+             로그인    SITE_MEMBER.openLogin(<돌아올 곳>, 'null', null, 'Y')
+             회원가입  SITE_MEMBER.openJoinPatternChoice(<돌아올 곳>, '')
+           ⚠️ SITE_MEMBER 는 캐페이너스가 페이지에 심어 주는 것이라 미리보기엔 없습니다.
+              그래서 href 에 실제로 열리는 /login 을 먼저 적어 둡니다. 스크립트가
+              죽어도 눌러집니다 — 켜는 것만 스크립트가 합니다.
+           ⚠️ 회원가입을 /join 으로 걸지 마세요. 거기는 '후원 신청' 화면입니다.
+           ⚠️ 후원회원 가입과도 다릅니다 — 그건 밖의 CRM(mrmweb.hsit.co.kr)으로 나갑니다.
+           ✖ 실제 헤더에 있는 '내 페이지'는 안 넣습니다 (2026-09-01 사용자 결정).
+              그것도 결국 openLogin 을 부를 뿐이라 '로그인'과 하는 일이 같습니다. 다시 제안하지 마세요.
+           ✖ 로그인 상태를 재지 않습니다. 실제 action.or.kr 헤더도 로그인 여부와 상관없이
+              같은 버튼을 늘 보여 줍니다. 상태를 읽는 코드를 지을 필요 없습니다. -->
+      <div class="hd-acc">
+        <a href="/login" data-acc="login">로그인</a>
+        <a href="/login" data-acc="join">회원가입</a>
+      </div>
       <button class="ico menu-btn" type="button" id="ah-menu-btn" aria-label="전체 메뉴" aria-expanded="false" aria-controls="ah-mnav">☰</button>
     </div>
   </div>
@@ -478,6 +541,11 @@
       <input type="search" name="keyword" placeholder="무엇을 찾으세요?" aria-label="통합검색" autocomplete="off">
       <button type="submit" aria-label="검색">⌕</button>
     </form>
+    <!-- 넓은 화면에서는 검색 옆 작은 글자(.hd-acc)로 있는 것과 같은 것입니다. -->
+    <div class="macc">
+      <a href="/login" data-acc="login">로그인</a>
+      <a href="/login" data-acc="join">회원가입</a>
+    </div>
     <ul>
     <li><a class="is-cta" href="https://donate.action.or.kr/">후원하기 →</a></li>
     <li>
@@ -494,7 +562,8 @@
       <a href="/52">활동</a>
       <ul class="msub">
         <li><a href="/49" data-nav="act-local">지자체 감시</a></li>
-        <li><a href="/act-power" data-nav="act-power">권력감시</a></li>
+        <!-- 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 확정되면 주석만 벗기세요.
+             <li><a href="/act-power" data-nav="act-power">권력감시</a></li> -->
         <li><a href="/act-budget" data-nav="act-budget">예산감시</a></li>
         <li><a href="/51" data-nav="act-civic">시민참여</a></li>
         <li><a href="/dok-history" data-nav="act-dok">밑빠진 독상</a></li>
@@ -504,7 +573,7 @@
       <a href="/issue/">캠페인</a>
       <ul class="msub">
         <li><a class="is-all" href="/issue/">함께하기 →</a></li>
-        <li><a href="https://dokseong-action.bada523082.chatgpt.site/">2026 하반기 밑빠진독상</a></li>
+        <li><a href="https://dokseong-action.bada523082.chatgpt.site/">2026 하반기 밑빠진 독상</a></li>
         <li><a href="https://vote.action.or.kr/">10만원 예산편성</a></li>
         <li><a href="/pb/" data-nav="pb">참여예산 상담소</a></li>
       </ul>
@@ -512,16 +581,20 @@
     <li>
       <a href="/26">소식</a>
       <ul class="msub">
-        <li><a href="/library" data-nav="library">자료실</a></li>
+        <!-- 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 쓰게 되면 주석만 벗기세요.
+             <li><a href="/library" data-nav="library">자료실</a></li> -->
         <li><a href="/26">공지</a></li>
         <li><a href="/23">발행물</a></li>
         <li><a href="/24">뉴스룸</a></li>
         <li><a href="/54">연대 활동</a></li>
-        <li><a href="#">투명성(미정)</a></li>
+        <!-- 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 쓰게 되면 주석만 벗기세요.
+             <li><a href="#">투명성(미정)</a></li> -->
       </ul>
     </li>
   </ul></div></nav>
 </header>
+
+<div id="ah-nav-space" aria-hidden="true"></div>
 
 <a class="ah-float" id="ah-float" href="https://donate.action.or.kr/">
   <span>예산은 저절로 지켜지지 않습니다<br><b>월 1만원으로 감시에 함께하기</b></span>
@@ -542,6 +615,42 @@
   'use strict';
   var hd = document.getElementById('ah-nav');
   if (!hd) return;
+  var hdSpace = document.getElementById('ah-nav-space');
+
+  /* 섹션 반복은 페이지 맨 아래에서만 켤 수 있습니다. 그래서 코드 위젯은 아래에 두되,
+     빈자리만 캠페이너스 기본 상단 바로 뒤(즉 실제 본문 앞)로 옮깁니다.
+     그러면 기존 페이지의 두 번째 목차가 고정 헤더 밑에 잘리지 않고 이어집니다. */
+  function placeHeaderSpace() {
+    if (!hdSpace) return;
+    var oldHeader = document.getElementById('doz_header');
+    if (oldHeader && oldHeader.parentNode) {
+      oldHeader.parentNode.insertBefore(hdSpace, oldHeader.nextSibling);
+      return;
+    }
+
+    /* 로컬·정적 미리보기에는 #doz_header 가 없습니다. 미리보기 안내 띠가 있으면
+       그 뒤에 두고, 그것도 없으면 문서 맨 앞에 둡니다. */
+    var previewBar = document.getElementById('pv') || document.querySelector('.draft-bar');
+    if (previewBar && previewBar.parentNode) {
+      previewBar.parentNode.insertBefore(hdSpace, previewBar.nextSibling);
+    } else if (document.body) {
+      document.body.insertBefore(hdSpace, document.body.firstChild);
+    }
+  }
+  placeHeaderSpace();
+
+  /* 고정 헤더 높이만큼 본문 시작을 내려 내용이 헤더 뒤에 숨지 않게 합니다.
+     좁은 화면에서 메뉴가 두 줄이 되거나 펼침판이 열려 높이가 달라져도 다시 잽니다. */
+  function syncHeaderSpace() {
+    if (hdSpace) hdSpace.style.height = hd.offsetHeight + 'px';
+  }
+  syncHeaderSpace();
+  requestAnimationFrame(syncHeaderSpace);
+  window.addEventListener('load', syncHeaderSpace);
+  window.addEventListener('resize', syncHeaderSpace);
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(syncHeaderSpace).observe(hd);
+  }
 
   /* ── 0. 세로 스크롤바 폭 재기 ──
      전체 폭으로 펼칠 때 쓰는 100vw 에는 스크롤바가 들어 있습니다. 그대로 쓰면
@@ -564,9 +673,33 @@
   window.addEventListener('resize', measureBar);
 
   /* ── 1. 지금 보고 있는 곳 표시 ──
-     헤더의 data-here 값(예: "act-budget")과 같은 data-nav 를 가진 링크를 켭니다.
+     공통 상단은 모든 페이지가 같은 코드 하나를 쓰므로 현재 주소에서 위치를 찾습니다.
+     data-here 에 특정 값을 적으면 그 값이 우선하고, auto 일 때만 주소를 봅니다.
      활동 하위(act-*)면 위쪽 '활동' 알약도 같이 켜서, 큰 갈래가 어디인지 보이게 합니다. */
-  var here = hd.getAttribute('data-here') || '';
+  var here = hd.getAttribute('data-here') || 'auto';
+  if (here === 'auto') {
+    var path = (window.location.pathname || '/').replace(/\/+$/, '') || '/';
+    var routeHere = [
+      ['/act-power', 'act-power'],
+      ['/act-budget', 'act-budget'],
+      ['/dok-history', 'act-dok'],
+      ['/library', 'library'],
+      ['/issue', 'issue'],
+      ['/sign', 'issue'],
+      ['/pb', 'pb'],
+      ['/49', 'act-local'],
+      ['/51', 'act-civic'],
+      ['/69', 'home']
+    ];
+    here = 'home';
+    routeHere.some(function (pair) {
+      if (path === pair[0] || path.slice(-pair[0].length) === pair[0]) {
+        here = pair[1];
+        return true;
+      }
+      return false;
+    });
+  }
   if (here && here !== 'home') {
     var marks = [here];
     if (here.indexOf('act-') === 0) marks.push('act');   // 활동 밑이면 '활동'도
@@ -625,6 +758,7 @@
     closeDrops();
     if (was === item) return;          // 같은 알약을 다시 누르면 닫기
 
+    hoverClear();                      // 눌렀으면 커서로 열린 것은 거둡니다
     item.classList.add('is-open');
     var a = item.querySelector('a');
     if (a) a.setAttribute('aria-expanded', 'true');
@@ -641,13 +775,43 @@
     }
   }
 
+  /* ── 커서로 여닫기 ──
+     IN  알약에 이만큼 머물러야 열립니다. 그냥 지나가는 건 무시합니다.
+     OUT 커서가 나간 뒤에도 이만큼 남습니다. 알약과 판 사이가 잠시 끊겨도
+         닫히지 않아서, 판 안으로 커서를 내릴 수 있습니다.
+     이미 하나 열려 있을 때 옆 알약으로 옮기면 기다리지 않고 바로 바뀝니다 —
+     메뉴를 둘러볼 때까지 느리면 답답합니다. */
+  var HOVER_IN = 150, HOVER_OUT = 280;
+  var openTimer = null, closeTimer = null, hoverItem = null;
+
+  function hoverClear() {
+    if (hoverItem) { hoverItem.classList.remove('is-hover'); hoverItem = null; }
+  }
+  function hoverShow(item) {
+    if (hoverItem === item) return;
+    hoverClear();
+    item.classList.add('is-hover');
+    hoverItem = item;
+  }
+
   hd.querySelectorAll('.gnb-item').forEach(function (item) {
-    // 넓은 화면에서 다른 알약에 커서를 올리면 눌러 둔 판은 닫습니다.
-    // 커서를 올린 쪽은 CSS 의 :hover 가 대신 펴 줍니다 — 한 번에 하나만 보입니다.
-    // ⚠️ 후원하기(is-cta)에도 겁니다. 하위 목차가 없어도, 그 위를 지나갈 때
-    //    눌러 둔 판이 안 닫히면 판과 알약이 겹쳐 보입니다.
     item.addEventListener('mouseenter', function () {
-      if (!narrow.matches && openItem && openItem !== item) closeDrops();
+      if (narrow.matches) return;          // 좁은 화면은 눌러서 여는 서랍(#ah-sheet)입니다
+      clearTimeout(openTimer);
+      clearTimeout(closeTimer);
+      // 눌러서 고정해 둔 판이 따로 있으면 닫습니다 — 한 번에 하나만 보입니다.
+      if (openItem && openItem !== item) closeDrops();
+      var self = this;
+      if (!self.querySelector('.drop')) { hoverClear(); return; }
+      if (hoverItem) hoverShow(self);      // 이미 열려 있으면 기다리지 않음
+      else openTimer = setTimeout(function () { hoverShow(self); }, HOVER_IN);
+    });
+    // 판(.drop)은 알약 칸 안에 들어 있어서, 판으로 내려가는 것은 '나감'이 아닙니다.
+    item.addEventListener('mouseleave', function () {
+      if (narrow.matches) return;
+      clearTimeout(openTimer);
+      clearTimeout(closeTimer);
+      closeTimer = setTimeout(hoverClear, HOVER_OUT);
     });
 
     var a = item.querySelector('a');
@@ -722,5 +886,31 @@
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+
+  /* ── 5. 회원 (로그인 · 회원가입) ──
+     캐페이너스 안에서는 SITE_MEMBER 가 로그인 창을 띄우고, 그게 없는
+     미리보기에서는 href 에 적어 둔 /login 으로 그냥 갑니다.
+     돌아올 곳은 실제 헤더와 같은 꼴입니다 — 지금 주소를 base64 로 싸서 넘깁니다. */
+  var accBtns = document.querySelectorAll('#ah-nav [data-acc]');
+  function accBack() {
+    try { return encodeURIComponent(btoa(location.pathname + location.search)); }
+    catch (err) { return 'Lw%3D%3D'; }   /* '/' 를 싸둔 값 */
+  }
+  for (var ai = 0; ai < accBtns.length; ai++) {
+    accBtns[ai].addEventListener('click', function (e) {
+      var M = window.SITE_MEMBER;
+      if (!M) return;
+      if (this.getAttribute('data-acc') === 'join') {
+        if (!M.openJoinPatternChoice) return;
+        e.preventDefault();
+        M.openJoinPatternChoice(accBack(), '');
+      } else {
+        if (!M.openLogin) return;
+        e.preventDefault();
+        M.openLogin(accBack(), 'null', null, 'Y');
+      }
+    });
+  }
 })();
 </script>
+<!-- CAMPAIGNERS:COMMON-HEADER END -->

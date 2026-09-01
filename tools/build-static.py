@@ -45,6 +45,8 @@ except Exception:
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 DIST = os.path.join(ROOT, 'dist')
+HEADER_PART = os.path.join(HERE, 'parts', 'header.html')
+FOOTER_PART = os.path.join(HERE, 'parts', 'footer.html')
 
 # 밑빠진 독상 저장소 — 지도·수상 기록 데이터를 여기서 가져옵니다.
 DOK_CANDIDATES = [
@@ -60,24 +62,28 @@ PAGES = [
     ('index.html',           'index.html',              '홈',                    'home'),
     ('issue.html',           'issue/index.html',        '캠페인',                  'issue'),
     ('activity-local.html',  '49/index.html',           '활동 › 지자체 감시',    'local'),
-    ('activity-power.html',  'act-power/index.html',    '활동 › 권력감시',       'power'),
+    # 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 확정되면 주석만 벗기세요.
+    # ('activity-power.html',  'act-power/index.html',    '활동 › 권력감시',       'power'),
     ('activity-budget.html', 'act-budget/index.html',   '활동 › 예산감시',       'budget'),
     ('activity-civic.html',  '51/index.html',           '활동 › 시민참여',       'civic'),
     ('dok-history.html',     'dok-history/index.html',  '활동 › 밑빠진 독상',    'dok'),
     ('pb.html',              'pb/index.html',           '캠페인 › 참여예산 상담소', 'pb'),
-    ('library.html',         'library/index.html',      '자료실',                'lib'),
+    # 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 쓰게 되면 주석만 벗기세요.
+    # ('library.html',         'library/index.html',      '자료실',                'lib'),
 ]
 
 NAV = [
     ('home',   '/',             '홈'),
     ('issue',  '/issue/',       '캠페인'),
     ('local',  '/49',           '지자체 감시'),
-    ('power',  '/act-power',    '권력감시'),
+    # 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 확정되면 주석만 벗기세요.
+    # ('power',  '/act-power',    '권력감시'),
     ('budget', '/act-budget',   '예산감시'),
     ('civic',  '/51',           '시민참여'),
     ('dok',    '/dok-history',  '밑빠진 독상'),
     ('pb',     '/pb/',          '참여예산 상담소'),
-    ('lib',    '/library',      '자료실'),
+    # 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 쓰게 되면 주석만 벗기세요.
+    # ('lib',    '/library',      '자료실'),
 ]
 
 SHELL = u'''<!doctype html>
@@ -317,7 +323,12 @@ def main():
             print(u'  ⚠ %s 없음 — 건너뜁니다' % name)
             continue
 
-        body = read(path)
+        page_body = read(path)
+
+        # 실제 캠페이너스에서는 공통 상단·하단 위젯이 따로 붙습니다.
+        # 페이지 조각에는 둘 다 없으므로 정적 검토본을 만들 때만 앞뒤로 합칩니다.
+        body = (read(HEADER_PART).rstrip() + '\n\n' + page_body.strip() + '\n\n' +
+                read(FOOTER_PART).lstrip())
 
         # 밑빠진 독상만: 데이터를 같은 출처에서 읽게 바꿉니다.
         # 원본 파일은 그대로 두고 여기 나가는 사본만 바꿉니다

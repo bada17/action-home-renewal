@@ -1,9 +1,13 @@
+<!-- CAMPAIGNERS:COMMON-FOOTER START -->
+<!-- 이 파일 전체를 캠페이너스 하단 반복 섹션의 코드 위젯 하나에 붙입니다. 페이지 본문 코드에 다시 넣지 않습니다. -->
 <!-- ═══════════════════════════════════════════════════════════════════
-     공통 맨 아래 — 후원 띠 + 푸터. **아홉 화면 전부**가 같이 쓰는 하나의 부품
+     캠페이너스 공통 맨 아래 — 후원 띠 + 푸터
 
-     ⚠️ 이 파일만 고치세요. 각 .html 안에 있는 것은 tools/build-parts.py 가
-        여기 내용을 그대로 복사해 넣은 것이라, .html 쪽을 고치면 다음 빌드에서
-        지워집니다.  고친 뒤에는  python tools/build-parts.py  를 돌리세요.
+     ★ 이 파일 전체를 캠페이너스 코드 위젯 하나에 붙이고, 그 위젯이 든 섹션을
+        '섹션 반복'으로 설정합니다. 그러면 모든 페이지 하단에 한 번씩 나타납니다.
+     ★ 각 페이지의 index.html · activity-*.html 등에 이 코드를 다시 넣지 마세요.
+        페이지 코드와 반복 하단에 둘 다 있으면 같은 하단이 두 번 보입니다.
+     ★ 하단을 고칠 때는 이 파일과 캠페이너스 반복 섹션 한 곳만 고칩니다.
 
      2026-08-31 신설. 사용자 지시:
        · 활동의 '알려 주실 것이 있나요' 칸은 의미가 없어 삭제
@@ -15,12 +19,14 @@
        안 먹습니다. 그래서 색·글꼴을 자기 안에 다시 정의합니다.
        값은 DESIGN.md 와 같습니다 — 홈(#action-home-v2)의 푸터와 한 글자도 다르지 않습니다.
 
-     ⚠️ 홈도 이 부품을 씁니다. 홈이 따로 갖고 있던 CTA 둘·푸터는 걷어냈습니다.
-        2026-08-31 사용자 지시: "있는 모든 페이지에 똑같이 넣고 새로 만드는 페이지에도
-        무조건 넣어". → 새 화면을 만들면 tools/build-parts.py 의 PAGES 에 한 줄 더하세요.
-        고칠 곳은 이 파일 한 곳뿐입니다.
+     2026-09-01 사용자 결정: 하단은 페이지별 코드에서 완전히 분리합니다.
+     로컬·GitHub 검토본은 preview.py · build-static.py 가 이 파일을 화면 끝에 붙이고,
+     실제 캠페이너스는 반복 섹션이 붙입니다.
      ═══════════════════════════════════════════════════════════════════ -->
 <style>
+  /* 캠페이너스 기본 푸터는 숨기고 이 반복 섹션을 공통 푸터로 씁니다. */
+  #doz_footer_wrap,#doz_footer{display:none!important}
+
   #ah-foot,#ah-foot *{box-sizing:border-box}
   #ah-foot{
     --brand:#00afec;          /* 시민행동 하늘색 */
@@ -78,7 +84,21 @@
     font-size:14px;font-weight:700;color:var(--ink);background:#fff
   }
   #ah-foot .ft-btns a:hover{border-color:var(--brand);color:var(--brand-deep);position:relative;z-index:1}
-  #ah-foot .ft-btns .mark{flex:none;font-size:12px;color:var(--ink-soft)}
+  /* 오른쪽 아이콘. 글꼴 문자(N · f · X …)로 그리면 기기마다 다른 글꼴이 잡혀
+     모양·굵기가 제각각이고, 없는 글꼴이면 네모로 깨집니다. 그래서 SVG 를
+     여기에 직접 그려 넣습니다 — 바깥 파일도, 아이콘 글꼴도 부르지 않습니다.
+     색은 currentColor 라 아래 hover 규칙 하나로 글자와 함께 따라 변합니다. */
+  /* 산하 센터는 이름 대신 로고를 넣습니다 — 로고 안에 이미 이름이 있어
+     글자를 같이 두면 한 줄에 이름이 두 번 나옵니다. 그림이 안 뜼면 alt 의
+     센터 이름이 그대로 보입니다. 주소는 지금 홈페이지가 쓰는 그 파일입니다
+     (https 라 섬임 경고가 뜼지 않습니다). 세 로고는 비율이 서로 달라
+     높이만 맞추면 가로가 긴 것만 커 보입니다. 높이와 폭에 각각 한계를 줘
+     넣은 네모 안에 알아서 들어가게 합니다. */
+  #ah-foot .ft-btns .ft-logo{flex:none;display:block;height:auto;width:auto;
+    max-height:34px;max-width:118px}
+  #ah-foot .ft-btns .mark{flex:none;display:flex;align-items:center;color:var(--ink-soft)}
+  #ah-foot .ft-btns .mark svg{width:17px;height:17px;display:block;fill:currentColor}
+  #ah-foot .ft-btns a:hover .mark{color:var(--brand-deep)}
   #ah-foot .ft-policy{display:flex;flex-wrap:wrap;gap:6px;margin-top:22px}
   #ah-foot .ft-policy a{border:1px solid var(--line);padding:7px 12px;font-size:12.5px;font-weight:700;color:var(--ink-soft)}
   #ah-foot .ft-policy a:hover{border-color:var(--brand);color:var(--brand-deep)}
@@ -133,11 +153,11 @@
       <div class="ft-col">
         <h3>소셜미디어</h3>
         <div class="ft-btns">
-          <a href="https://blog.naver.com/together_action" target="_blank" rel="noopener">네이버 블로그 <span class="mark" aria-hidden="true">N</span></a>
-          <a href="https://www.youtube.com/user/actionCANvideo" target="_blank" rel="noopener">유튜브 <span class="mark" aria-hidden="true">▶</span></a>
-          <a href="https://www.instagram.com/action.together.1999/" target="_blank" rel="noopener">인스타그램 <span class="mark" aria-hidden="true">◎</span></a>
-          <a href="https://www.facebook.com/withAction/" target="_blank" rel="noopener">페이스북 <span class="mark" aria-hidden="true">f</span></a>
-          <a href="https://twitter.com/actioncan" target="_blank" rel="noopener">트위터 <span class="mark" aria-hidden="true">X</span></a>
+          <a href="https://blog.naver.com/together_action" target="_blank" rel="noopener">네이버 블로그 <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect width="24" height="24" rx="4"/><path fill="#fff" d="M7.4 6.9h3.5l2.8 4.4V6.9h3.1v10.2h-3.5l-2.8-4.4v4.4H7.4Z"/></svg></span></a>
+          <a href="https://www.youtube.com/user/actionCANvideo" target="_blank" rel="noopener">유튜브 <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="1" y="4" width="22" height="16" rx="5"/><path fill="#fff" d="M10 8.4 16.2 12 10 15.6Z"/></svg></span></a>
+          <a href="https://www.instagram.com/action.together.1999/" target="_blank" rel="noopener">인스타그램 <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect width="24" height="24" rx="6"/><circle cx="12" cy="12" r="4.1" fill="none" stroke="#fff" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.4" fill="#fff"/></svg></span></a>
+          <a href="https://www.facebook.com/withAction/" target="_blank" rel="noopener">페이스북 <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="10"/><path fill="#fff" d="M13.6 20.6V12.9h2.5l.4-3h-2.9V7.9c0-.8.3-1.2 1.4-1.2h1.6V3.9h-2.5c-2.7 0-3.7 1.6-3.7 3.8v2.2H8.2v3h2.2v7.7Z"/></svg></span></a>
+          <a href="https://twitter.com/actioncan" target="_blank" rel="noopener">트위터 <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect width="24" height="24" rx="5"/><path fill="#fff" d="M6.4 5.2 10.9 11 6.1 18.8h2l3.7-6 4.2 6h4.2l-4.9-6.9 4.7-6.7h-2.1l-3.5 5.1-3.8-5.1Z"/></svg></span></a>
         </div>
       </div>
 
@@ -147,10 +167,10 @@
       <div class="ft-col">
         <h3>관련 페이지</h3>
         <div class="ft-btns">
-          <a href="http://www.goodbudget.kr" target="_blank" rel="noopener">좋은예산센터 <span class="mark" aria-hidden="true">▸</span></a>
-          <a href="http://csrcenter.cafe24.com" target="_blank" rel="noopener">좋은기업센터 <span class="mark" aria-hidden="true">▸</span></a>
-          <a href="http://www.privacy.or.kr" target="_blank" rel="noopener">정보인권센터 <span class="mark" aria-hidden="true">▸</span></a>
-          <a href="https://donate.action.or.kr/" target="_blank" rel="noopener">후원 안내 <span class="mark" aria-hidden="true">▸</span></a>
+          <a href="http://www.goodbudget.kr" target="_blank" rel="noopener"><img class="ft-logo" src="https://cdn.imweb.me/thumbnail/20230216/c6bdf8489c62b.jpeg" alt="좋은예산센터" loading="lazy" decoding="async"> <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 13.5V19a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 19V7A1.5 1.5 0 0 1 6 5.5h5.5"/><path d="M15 3.5h5.5V9"/><path d="M11.2 12.8 20.2 3.8"/></svg></span></a>
+          <a href="http://csrcenter.cafe24.com" target="_blank" rel="noopener"><img class="ft-logo" src="https://cdn.imweb.me/thumbnail/20230216/3a2115a51c49e.jpg" alt="좋은기업센터" loading="lazy" decoding="async"> <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 13.5V19a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 19V7A1.5 1.5 0 0 1 6 5.5h5.5"/><path d="M15 3.5h5.5V9"/><path d="M11.2 12.8 20.2 3.8"/></svg></span></a>
+          <a href="http://www.privacy.or.kr" target="_blank" rel="noopener"><img class="ft-logo" src="https://cdn.imweb.me/thumbnail/20230216/d3611c220acbd.png" alt="정보인권센터" loading="lazy" decoding="async"> <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 13.5V19a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 19V7A1.5 1.5 0 0 1 6 5.5h5.5"/><path d="M15 3.5h5.5V9"/><path d="M11.2 12.8 20.2 3.8"/></svg></span></a>
+          <a href="https://donate.action.or.kr/" target="_blank" rel="noopener">후원 안내 <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 13.5V19a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 19V7A1.5 1.5 0 0 1 6 5.5h5.5"/><path d="M15 3.5h5.5V9"/><path d="M11.2 12.8 20.2 3.8"/></svg></span></a>
         </div>
         <div class="ft-policy">
           <a href="/34">이용약관</a>
@@ -164,3 +184,4 @@
   </div></footer>
 
 </div>
+<!-- CAMPAIGNERS:COMMON-FOOTER END -->

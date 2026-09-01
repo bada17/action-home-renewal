@@ -326,9 +326,6 @@ TEMPLATE = u'''<style>
 }}
 </style>
 
-<!-- PART:header -->
-<!-- /PART:header -->
-
 <div id="lib">
 
   <!-- ───────── 맨 위 ─────────
@@ -546,10 +543,9 @@ def main():
     print(u'자료실 만들기 —')
     build()
 
-    # 방금 찍어낸 화면에는 헤더 자리가 비어 있습니다. 공통 헤더를 이어서 심습니다.
-    # (따로 돌리는 걸 잊으면 자료실에만 목차가 없어집니다.)
+    # 페이지 코드에는 공통 상단·하단을 넣지 않습니다. 붙여넣기 범위만 정리합니다.
     print(u'')
-    print(u'  공통 헤더 심기 —')
+    print(u'  캠페이너스 붙여넣기 범위 정리 —')
     import subprocess
     subprocess.call([sys.executable, os.path.join(HERE, 'build-parts.py')])
 

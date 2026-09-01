@@ -1,21 +1,19 @@
 # -*- coding: utf-8 -*-
-"""공통 부품(헤더 · 맨 아래)을 각 화면에 심습니다.
+"""페이지 코드에서 공통 상단·하단을 빼고 붙여넣기 범위를 정리합니다.
 
 왜 이렇게 하는가
 ----------------
-캠페이너스는 화면마다 코드 위젯을 따로 붙이는 구조라, 여섯 화면이
-스타일시트나 헤더를 **공유할 수 없습니다.** 그래서 같은 내용을 여섯 번
-복사해 넣어야 합니다. 손으로 복사하면 반드시 어긋납니다(실제로 색이
-#0087b8 과 #0079a6 으로 갈렸던 적이 있습니다).
+2026-09-01 사용자 결정으로 상단과 하단을 모두 페이지 코드에서 분리했습니다.
+캠페이너스에서는 공통 상단·하단 코드 위젯을 페이지 맨 아래의 반복 섹션에
+각각 한 번만 두고, 각 페이지 코드 위젯에는 본문만 붙입니다. 공통 상단은
+코드가 화면 맨 위로 고정하고, 빈자리만 실제 본문 앞으로 옮깁니다.
 
-그래서 원본은 tools/parts/header.html 한 곳에만 두고, 이 스크립트가
-각 .html 의 표시 사이를 그 내용으로 덮어씁니다.
+이 스크립트는 예전에 페이지마다 들어 있던 아래 블록을 제거합니다.
 
     <!-- PART:header --> ... <!-- /PART:header -->
+    <!-- PART:footer --> ... <!-- /PART:footer -->
 
-표시가 없는 파일에는 뿌리 요소(<div id="...">) 바로 앞에 새로 만들어
-넣습니다. 헤더가 뿌리 **밖**에 있어야 하는 이유는 header.html 맨 위
-주석에 적어 두었습니다(overflow:hidden 과 position:sticky 문제).
+그리고 각 파일의 CAMPAIGNERS:PAGE-CODE START/END 표시를 다시 맞춥니다.
 
 쓰는 법
 -------
@@ -36,40 +34,35 @@ except Exception:
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-PART = os.path.join(HERE, 'parts', 'header.html')
-FOOT = os.path.join(HERE, 'parts', 'footer.html')
+HEADER_PART = os.path.join(HERE, 'parts', 'header.html')
+FOOTER_PART = os.path.join(HERE, 'parts', 'footer.html')
+HBEGIN = '<!-- PART:header -->'
+HEND = '<!-- /PART:header -->'
+PBEGIN_RE = re.compile(r'<!-- CAMPAIGNERS:PAGE-CODE START .*?-->\s*')
+PEND_RE = re.compile(r'\s*<!-- CAMPAIGNERS:PAGE-CODE END -->')
+PNOTE_RE = re.compile(
+    r'<!-- 이 파일 전체를 해당 페이지의 코드 위젯 하나에 붙입니다\..*?-->\s*', re.S)
+PNOTE = ('<!-- 이 파일 전체를 해당 페이지의 코드 위젯 하나에 붙입니다. '
+         '공통 상단은 tools/parts/header.html, 공통 하단은 tools/parts/footer.html이 '
+         '각각 따로 맡습니다. -->')
 
-BEGIN = '<!-- PART:header -->'
-END = '<!-- /PART:header -->'
-
-# 맨 아래(후원 띠 + 푸터). 2026-08-31 사용자 지시:
-#   "이건 소개나 모든 페이지 밑에 같은 형식으로 가자.
-#    있는 모든 페이지에 똑같이 넣고 새로 만드는 페이지에도 무조건 넣어"
-# → 새 화면을 만들면 아래 PAGES 에 한 줄 더하기만 하면 됩니다. 빠뜨리지 마세요.
+# 2026-09-01 사용자 결정:
+# 공통 상단·하단은 각 페이지 파일에 복사하지 않습니다. 아래 표시는 예전에
+# 페이지마다 들어 있던 블록을 찾아 제거하기 위해서만 남깁니다.
 FBEGIN = '<!-- PART:footer -->'
 FEND = '<!-- /PART:footer -->'
 
-# 맨 아래 부품을 받지 않는 화면.
-# 홈은 맨 아래가 [CTA 둘] → [뉴스레터] → [푸터] 로 더 길고, 2026-08-31 사용자가
-# "홈만 예전 그대로 되돌린다"를 골랐습니다. 그래서 홈은 자기 푸터를 그대로 씁니다.
-# ⚠️ 그 대신 **푸터를 고치면 두 곳을 고쳐야 합니다** — 이 부품과 index.html.
-NO_FOOT = {'index.html'}
-
-# 화면 → (뿌리 요소 id, 헤더에서 켤 메뉴 값)
-#
-# 'here' 값은 header.html 의 data-nav 와 짝을 맞춘 것입니다.
-# 'home' 은 아무것도 켜지 않는다는 뜻입니다(홈에서는 현재 위치 표시가 필요 없음).
 PAGES = [
-    ('index.html',           'action-home-v2', 'home'),
-    ('activity-local.html',  'act',            'act-local'),
-    ('activity-power.html',  'act',            'act-power'),
-    ('activity-budget.html', 'act',            'act-budget'),
-    ('activity-civic.html',  'act',            'act-civic'),
-    ('dok-history.html',     'dok',            'act-dok'),
-    ('issue.html',           'iss',            'issue'),
-    ('pb.html',              'pb',             'pb'),
-    ('library.html',         'lib',            'library'),
-    ('sign.html',            'sign',           'issue'),
+    'index.html',
+    'activity-local.html',
+    'activity-power.html',
+    'activity-budget.html',
+    'activity-civic.html',
+    'dok-history.html',
+    'issue.html',
+    'pb.html',
+    'library.html',
+    'sign.html',
 ]
 
 
@@ -83,54 +76,33 @@ def write(path, text):
         f.write(text)
 
 
-def block_for(here):
-    """헤더 원본을 읽고, 이 화면에 맞게 data-here 만 바꿔서 돌려줍니다."""
-    part = read(PART).rstrip('\n')
-    part = part.replace('<header id="ah-nav" data-here="home">',
-                        '<header id="ah-nav" data-here="%s">' % here, 1)
-    return '%s\n%s\n%s' % (BEGIN, part, END)
+def remove_legacy_part(text, begin, end, label):
+    """예전에 페이지마다 복사해 둔 공통 블록 하나를 제거합니다."""
+    if begin in text and end in text:
+        pat = re.compile(re.escape(begin) + '.*?' + re.escape(end), re.S)
+        return pat.sub('', text, count=1).rstrip() + '\n', label + '-removed'
+    return text, 'unchanged'
 
 
-def foot_block():
-    """맨 아래 부품 원본을 그대로 돌려줍니다(화면마다 다른 곳이 없습니다)."""
-    return '%s\n%s\n%s' % (FBEGIN, read(FOOT).rstrip('\n'), FEND)
-
-
-def inject_foot(text, block):
-    """표시 사이를 덮어쓰거나, 표시가 없으면 파일 맨 끝에 붙입니다.
-
-    맨 끝에 붙이는 이유: 뿌리 요소(<div id="act"> 등)가 닫힌 **뒤**에 와야
-    전체 폭이 제대로 나옵니다. 뿌리는 overflow:hidden 이라 그 안에 두면
-    좌우로 못 펼칩니다(헤더와 같은 이유). 파일 끝의 <script> 뒤에 와도
-    화면에는 아무 차이가 없습니다.
-    """
-    if FBEGIN in text and FEND in text:
-        pat = re.compile(re.escape(FBEGIN) + '.*?' + re.escape(FEND), re.S)
-        return pat.sub(lambda m: block, text, count=1), 'replaced'
-    return text.rstrip('\n') + '\n\n' + block + '\n', 'appended'
-
-
-def inject(text, block, root_id):
-    """표시 사이를 덮어쓰거나, 표시가 없으면 뿌리 앞에 새로 넣습니다."""
-    if BEGIN in text and END in text:
-        pat = re.compile(re.escape(BEGIN) + '.*?' + re.escape(END), re.S)
-        return pat.sub(lambda m: block, text, count=1), 'replaced'
-
-    anchor = '<div id="%s"' % root_id
-    i = text.find(anchor)
-    if i < 0:
-        return None, 'no-anchor'
-    return text[:i] + block + '\n\n' + text[i:], 'inserted'
+def mark_page_code(text, name):
+    """캠페이너스에서 파일별로 잘라 붙이는 범위를 파일 자체에 표시합니다."""
+    text = PBEGIN_RE.sub('', text, count=1)
+    text = PEND_RE.sub('', text, count=1)
+    text = PNOTE_RE.sub('', text, count=1)
+    begin = '<!-- CAMPAIGNERS:PAGE-CODE START file=%s -->' % name
+    return '%s\n%s\n%s\n<!-- CAMPAIGNERS:PAGE-CODE END -->\n' % (
+        begin, PNOTE, text.strip())
 
 
 def main():
     check = '--check' in sys.argv
-    if not os.path.exists(PART):
-        print('원본이 없습니다: %s' % PART)
-        return 1
+    for part in (HEADER_PART, FOOTER_PART):
+        if not os.path.exists(part):
+            print('원본이 없습니다: %s' % part)
+            return 1
 
     changed, problems = [], []
-    for name, root_id, here in PAGES:
+    for name in PAGES:
         path = os.path.join(ROOT, name)
         if not os.path.exists(path):
             # pb.html 처럼 아직 안 만든 화면은 조용히 건너뜁니다.
@@ -138,27 +110,31 @@ def main():
             continue
 
         old = read(path)
-        new, how = inject(old, block_for(here), root_id)
-        if new is None:
-            problems.append('%s: 뿌리 요소 <div id="%s"> 를 못 찾았습니다' % (name, root_id))
-            continue
+        new, how_h = remove_legacy_part(old, HBEGIN, HEND, 'header')
+        new, how_f = remove_legacy_part(new, FBEGIN, FEND, 'footer')
 
-        # 맨 아래(후원 띠 + 푸터) — 홈을 뺀 여덟 화면이 같은 것을 씁니다.
-        if name not in NO_FOOT:
-            new, how_f = inject_foot(new, foot_block())
-            if how == 'replaced' and how_f != 'replaced':
-                how = how_f
+        new = mark_page_code(new, name)
+
+        if '<header id="ah-nav"' in new:
+            problems.append('%s: 페이지 코드에 공통 헤더가 남아 있습니다' % name)
+            continue
+        if 'id="ah-foot"' in new:
+            problems.append('%s: 페이지 코드에 공통 하단이 남아 있습니다' % name)
+            continue
 
         if new == old:
             print('  = %-22s 그대로' % name)
             continue
 
         changed.append(name)
+        how = how_h if how_h != 'unchanged' else how_f
+        if how == 'unchanged':
+            how = 'markers'
         if check:
             print('  ! %-22s 어긋남 (%s)' % (name, how))
         else:
             write(path, new)
-            print('  * %-22s %s (here=%s)' % (name, '덮어씀' if how == 'replaced' else '새로 넣음', here))
+            print('  * %-22s 상단·하단 분리 / 범위 표시 정리' % name)
 
     for p in problems:
         print('  ⚠ %s' % p)
@@ -168,9 +144,9 @@ def main():
         return 1
     if problems:
         return 1
-    print('\n원본은 두 곳뿐입니다:')
-    print('  헤더      tools/parts/header.html')
-    print('  맨 아래   tools/parts/footer.html   (후원 띠 + 푸터)')
+    print('\n캠페이너스에 따로 붙이는 공통 원본:')
+    print('  공통 상단 tools/parts/header.html   (페이지 맨 아래 반복 섹션, 화면에서는 고정 상단)')
+    print('  공통 하단 tools/parts/footer.html   (하단 반복 섹션의 코드 위젯에 한 번)')
     return 0
 
 
