@@ -64,7 +64,7 @@ PAGES = [
     ('activity-local.html',  '49/index.html',           '활동 › 지자체 감시',    'local'),
     # 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 확정되면 주석만 벗기세요.
     # ('activity-power.html',  'act-power/index.html',    '활동 › 권력감시',       'power'),
-    ('activity-budget.html', 'act-budget/index.html',   '활동 › 예산감시',       'budget'),
+    ('activity-budget.html', '27/index.html',           '활동 › 예산감시',       'budget'),
     ('activity-civic.html',  '51/index.html',           '활동 › 시민참여',       'civic'),
     ('dok-history.html',     'dok-history/index.html',  '활동 › 밑빠진 독상',    'dok'),
     ('pb.html',              'pb/index.html',           '캠페인 › 참여예산 상담소', 'pb'),
@@ -78,7 +78,7 @@ NAV = [
     ('local',  '/49',           '지자체 감시'),
     # 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 확정되면 주석만 벗기세요.
     # ('power',  '/act-power',    '권력감시'),
-    ('budget', '/act-budget',   '예산감시'),
+    ('budget', '/27',           '예산감시'),
     ('civic',  '/51',           '시민참여'),
     ('dok',    '/dok-history',  '밑빠진 독상'),
     ('pb',     '/pb/',          '참여예산 상담소'),

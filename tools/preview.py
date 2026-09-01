@@ -17,7 +17,7 @@
     /issue/         캠페인 목록             issue.html
     /49             활동 > 지자체 감시    activity-local.html
     /act-power      활동 > 권력감시       activity-power.html
-    /act-budget     활동 > 예산감시       activity-budget.html
+    /27     활동 > 예산감시       activity-budget.html
     /51             활동 > 시민참여       activity-civic.html
     /dok-history    활동 > 밑빠진 독상    dok-history.html
     /library        자료실                library.html
@@ -62,7 +62,8 @@ ROUTES = {
     '/issue': 'issue.html',
     '/49': 'activity-local.html',
     '/act-power': 'activity-power.html',
-    '/act-budget': 'activity-budget.html',
+    '/27': 'activity-budget.html',
+    '/27/': 'activity-budget.html',
     '/51': 'activity-civic.html',
     '/dok-history': 'dok-history.html',
     '/pb/': 'pb.html',
@@ -84,7 +85,6 @@ STUBS = {
     '/24': ('뉴스룸', '보도자료 게시판입니다.'),
     '/25': ('뉴스레터', '스티비 구독 페이지입니다.'),
     '/26': ('소식', '공지 게시판입니다.'),
-    '/27': ('일반 활동', '게시판입니다.'),
     '/57': ('예산 모니터링', '게시판입니다. 활동 &gt; 예산감시의 글이 여기 올라가 있습니다.'),
 }
 
@@ -119,7 +119,7 @@ SHELL = u'''<!doctype html>
   <b>활동</b>
   <a href="/49"%(a_local)s>지자체 감시</a>
   <a href="/act-power"%(a_power)s>권력감시</a>
-  <a href="/act-budget"%(a_budget)s>예산감시</a>
+  <a href="/27"%(a_budget)s>예산감시</a>
   <a href="/51"%(a_pb51)s>참여예산</a>
   <a href="/dok-history"%(a_dok)s>밑빠진 독상</a>
   <b>캠페인</b>
@@ -147,7 +147,7 @@ STUB_BODY = u'''<div style="max-width:640px;margin:14vh auto;padding:0 24px;
 TITLES = {
     '/': '홈', '/69': '홈', '/issue/': '캠페인', '/issue': '캠페인',
     '/49': '활동 > 지자체 감시', '/act-power': '활동 > 권력감시',
-    '/act-budget': '활동 > 예산감시', '/51': '활동 > 시민참여',
+    '/27': '활동 > 예산감시', '/51': '활동 > 시민참여',
     '/dok-history': '활동 > 밑빠진 독상',
     '/pb/': '캠페인 > 참여예산 상담소', '/pb': '캠페인 > 참여예산 상담소',
     '/library': '자료실', '/library/': '자료실',
@@ -367,7 +367,7 @@ def wrap(path, body, title):
         'a_lib': '', 'a_sign': '',
     }
     key = {'/': 'a_home', '/69': 'a_home', '/issue/': 'a_issue', '/issue': 'a_issue',
-           '/49': 'a_local', '/act-power': 'a_power', '/act-budget': 'a_budget',
+           '/49': 'a_local', '/act-power': 'a_power', '/27': 'a_budget',
            '/51': 'a_pb51', '/dok-history': 'a_dok',
            '/pb/': 'a_pb', '/pb': 'a_pb',
            '/library': 'a_lib', '/library/': 'a_lib',

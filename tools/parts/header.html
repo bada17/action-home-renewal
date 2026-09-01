@@ -443,7 +443,8 @@
       </div>
 
       <!-- 활동 = 끝나는 날짜가 없는 일. 마감이 있으면 '캠페인'로 갑니다.
-           ⚠️ /act-power · /act-budget · /dok-history 는 미리보기 전용 경로입니다.
+           ⚠️ /dok-history 는 아직 미리보기 전용 경로입니다(캠페이너스 번호 없음).
+                예산감시는 2026-09-01 에 /27 로 옮겼습니다.
               캠페이너스 페이지를 만들면 그 번호로 바꾸세요. -->
       <div class="gnb-item">
         <a href="/52" data-nav="act">활동</a>
@@ -456,7 +457,7 @@
                <a class="dmain" href="/act-power" data-nav="act-power">권력감시<em>중앙정부 · 국회</em></a> -->
           </li>
           <li class="drow">
-            <a class="dmain" href="/act-budget" data-nav="act-budget">예산감시<em>나라살림 · 지방재정</em></a>
+            <a class="dmain" href="/27" data-nav="act-budget">예산감시<em>나라살림 · 지방재정</em></a>
           </li>
           <li class="drow">
             <a class="dmain" href="/51" data-nav="act-civic">시민참여<em>참여예산 · 시민 교육</em></a>
@@ -564,7 +565,7 @@
         <li><a href="/49" data-nav="act-local">지자체 감시</a></li>
         <!-- 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 확정되면 주석만 벗기세요.
              <li><a href="/act-power" data-nav="act-power">권력감시</a></li> -->
-        <li><a href="/act-budget" data-nav="act-budget">예산감시</a></li>
+        <li><a href="/27" data-nav="act-budget">예산감시</a></li>
         <li><a href="/51" data-nav="act-civic">시민참여</a></li>
         <li><a href="/dok-history" data-nav="act-dok">밑빠진 독상</a></li>
       </ul>
@@ -681,7 +682,7 @@
     var path = (window.location.pathname || '/').replace(/\/+$/, '') || '/';
     var routeHere = [
       ['/act-power', 'act-power'],
-      ['/act-budget', 'act-budget'],
+      ['/27', 'act-budget'],
       ['/dok-history', 'act-dok'],
       ['/library', 'library'],
       ['/issue', 'issue'],
