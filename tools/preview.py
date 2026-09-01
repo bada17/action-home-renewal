@@ -169,8 +169,9 @@ MIME = {
 # window.AH_DATA 를 만들어 화면 앞에 끼워 넣습니다.
 # 미리보기 전용입니다. 실제 화면과는 상관없습니다.
 #
-# ★ RSS 에는 사진이 없습니다. 그래서 이 데모의 소식 카드는 전부 색 타일입니다.
-#   그게 지금 GPT 가 게시판만 물렸을 때 실제로 보게 될 모습입니다.
+# ★ 2026-09-01 정정: RSS 에 사진이 **있습니다.** 항목마다 <media:content url="...">
+#   로 대표 이미지가 옵니다(49건 전부). 예전 주석은 "사진이 없다"고 적어 두었는데
+#   틀린 말이었고, 그 때문에 소식 카드를 색 타일로만 그렸습니다. 이제 받아 씁니다.
 # ─────────────────────────────────────────────────────────────
 BOARD_NAME = {'51': '주민참여예산', '27': '일반 활동', '57': '예산 모니터링',
               '26': '소식', '23': '발행물', '25': '뉴스룸'}
@@ -189,6 +190,11 @@ def demo_data():
     except ImportError:
         from HTMLParser import HTMLParser
         unescape = HTMLParser().unescape
+
+    def img(block):
+        # <media:content url="https://cdn.imweb.me/thumbnail/..." type="image/png" />
+        m = re.search(r'<media:content[^>]*url="([^"]+)"', block)
+        return unescape(m.group(1).strip()) if m else ''
 
     def pick(block, tag):
         m = re.search(r'<%s>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</%s>' % (tag, tag), block, re.S)
@@ -216,14 +222,11 @@ def demo_data():
             'url': link,
             'date': date,
             'board': BOARD_NAME.get(bid.group(1) if bid else '', '게시판'),
-            # img 없음 — RSS 가 사진을 안 줍니다
+            'img': img(b),          # media:content — 진짜 대표 이미지입니다
         })
 
+    # 2026-09-01: '더 걷힐 세금, 어디에 쓸래?' 는 사용자 지시로 캠페인에서 뺐습니다.
     issues = [
-        {'title': '더 걷힐 세금, 어디에 쓸래?',
-         'lead': '추가세수 100조의 쓰임을 시민이 직접 고르고, 그 순위를 정부와 국회에 전합니다.',
-         'url': '/27/?idx=173013295&bmode=view', 'mark': '세금',
-         'tile': '#0079a6', 'cat': '예산감시', 'due': '2026-08-31'},
         {'title': '2026 하반기 밑빠진독상',
          'lead': '세금이 새는 현장을 시민이 제보하고, 그중 최악의 사업을 함께 고릅니다.',
          'url': 'https://dokseong-action.bada523082.chatgpt.site/', 'mark': '독상',
@@ -236,6 +239,67 @@ def demo_data():
          'lead': '참여예산위원들이 현장에서 부딪히는 고민을 모아 함께 풀어 봅니다.',
          'url': '/pb/', 'mark': '상담', 'tile': '#0b4a5e', 'cat': '시민참여'},
     ]
+
+    for it in issues:
+        it['kind'] = u'캠페인'
+
+    # ── 첫 화면에 함께 오르는 '중요한 글' ──────────────────────────
+    #   고르기 : 제목 맨 앞에 [주요] 를 붙인 글. 최신순 두 건까지.
+    #   알약   : 무엇이라고 부를지. 아래 순서로 정합니다.
+    #            1) [주요:논평] 처럼 표식에 적어 두면 그 말
+    #            2) 안 적었으면 제목 머리말에서 — [논평] / 활동가 수첩_ / 뉴스 브리핑 -
+    #            3) 그것도 없으면 게시판 이름 (일반 활동 · 예산 모니터링 …)
+    #   표식과 머리말은 화면에 찍을 때 떼어 냅니다.
+    #   자세한 것은 CONTENT.md 의 '첫 화면에 올릴 글 고르기'.
+    def head_word(t):
+        """제목 머리말을 떼어 (알약글자, 남은제목) 으로 돌려줍니다. 없으면 (None, 제목)."""
+        m = re.match(r'\s*\[\s*([^\]]{1,10})\s*\]\s*(.+)$', t)          # [논평] 제목
+        if m:
+            return m.group(1).strip(), m.group(2).strip()
+        m = re.match(r'\s*(.{2,10}?)\s*(?:_|\s-\s)\s*(.+)$', t)           # 활동가 수첩_제목
+        if m:
+            return m.group(1).strip(), m.group(2).strip()
+        return None, t.strip()
+
+    def lead_post(block, forced=None):
+        t = pick(block, 'title')
+        link = pick(block, 'link')
+        bid = re.search(r'/(\d+)/', link)
+        board = BOARD_NAME.get(bid.group(1) if bid else '', u'게시판')
+        kind, title = head_word(t)
+        return {
+            'kind': forced or kind or board,
+            'title': title,
+            'url': link,
+            'lead': ymd(pick(block, 'pubDate')) + u' · ' + board,
+            'img': img(block),
+            'tile': '#3d5765',
+        }
+
+    MARK = u'[주요]'
+    picked = []
+    for b_ in items:
+        t = pick(b_, 'title').strip()
+        if not t.startswith(u'[주요'):
+            continue
+        m = re.match(r'\[주요(?::\s*([^\]]{1,10}))?\]\s*(.*)$', t)
+        if not m:
+            continue
+        rest = m.group(2)
+        # 표식만 떼어 낸 나머지로 다시 판단합니다.
+        b2 = b_.replace(u'<title>' + pick(b_, 'title') + u'</title>',
+                        u'<title>' + rest + u'</title>')
+        picked.append(lead_post(b2, forced=(m.group(1) or u'').strip() or None))
+        if len(picked) >= 2:
+            break
+
+    # ⚠️ 받아 둔 49건에는 [주요] 가 붙은 글이 아직 하나도 없습니다.
+    #    미리보기에서 모양을 보시라고, 없을 때는 **맨 위 글 한 건**에 담당자가
+    #    표식을 붙였다고 치고 올립니다. 미리보기 전용입니다.
+    #    (맨 위 글이 '[논평]미래대응기금…' 이라 알약은 규칙 2 로 '논평'이 됩니다.)
+    if not picked and items:
+        picked = [lead_post(items[0])]
+    issues = issues + picked
 
     # ── 종료된 캠페인 (issue.html 의 '종료' 탭) ──
     #    씨앗에 있는 실제 두 건입니다. 지어낸 값이 아닙니다.

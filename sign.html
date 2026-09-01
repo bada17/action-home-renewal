@@ -228,7 +228,6 @@
     border:1.5px solid var(--line);font-size:15px;font-weight:700;transition:.15s;white-space:nowrap
   }
   #ah-nav .gnb-item>a:hover{border-color:var(--brand);color:var(--brand-deep)}
-  #ah-nav .is-todo{border-style:dashed!important;color:var(--ink-soft)}
 
   /* ───────── 지금 보고 있는 곳 표시 (2026-08-27) ─────────
      '목차를 눌러 들어가면 어디에 있는지 모르겠다'는 문제를 푸는 곳입니다.
@@ -301,7 +300,7 @@
     flex:none;font-size:11.5px;font-weight:700;color:var(--ink-soft);white-space:nowrap
   }
   #ah-nav .drop.is-iss a:hover .idue{color:var(--brand-deep)}
-  /* '함께보기' — 이 갈래를 한자리에서 다 보는 곳으로 보내는 줄.
+  /* '함께하기' — 이 갈래를 한자리에서 다 보는 곳으로 보내는 줄.
      맨 위에 두고 아래에 선을 그어, 낱낱의 캠페인과 성격이 다르다는 것을 보입니다. */
   #ah-nav .drop .iall{
     font-weight:700;color:var(--brand-deep);background:var(--brand-tint)
@@ -545,7 +544,8 @@
            · 상시 활동과 갈라, 끝나는 날짜가 있는 것만 '캠페인' 메뉴에 모음
            · 회원 공간 · 지역 예산 감시 사례 · 뉴스레터는 메뉴에서 뺐습니다
              (2026-08-31 사용자 지시. 페이지 자체는 그대로 있습니다)
-           · 갈 곳이 안 정해진 메뉴는 '자리 미정' 알약에 모아 둠 -->
+           · '자리 미정' 알약은 2026-09-01 사용자 지시로 삭제했습니다
+             (거기 있던 '2026년 하반기 이전'(/27) 링크도 함께 사라졌습니다) -->
     <nav class="gnb" aria-label="주요 메뉴">
       <div class="gnb-item">
         <a class="is-cta" href="https://donate.action.or.kr/"><span class="ah-heart" aria-hidden="true">♥</span>후원하기</a>
@@ -583,10 +583,10 @@
             <a class="dmain" href="/act-budget" data-nav="act-budget">예산감시<em>나라살림 · 지방재정</em></a>
           </li>
           <li class="drow">
-            <a class="dmain" href="/51" data-nav="act-civic">시민참여<em>참여예산 제도 개선 · 시민 교육</em></a>
+            <a class="dmain" href="/51" data-nav="act-civic">시민참여<em>참여예산 · 시민 교육</em></a>
           </li>
           <li class="drow">
-            <a class="dmain" href="/dok-history" data-nav="act-dok">밑빠진 독상<em>역대 기록 · 지도</em></a>
+            <a class="dmain" href="/dok-history" data-nav="act-dok">밑빠진 독상<em>예산 낭비 · 역대 수상</em></a>
           </li>
         </ul></div>
       </div>
@@ -596,16 +596,14 @@
       <div class="gnb-item">
         <a href="/issue/" data-nav="issue">캠페인</a>
         <div class="drop is-iss"><ul>
-          <!-- 맨 위 '함께보기' — 진행 중과 종료된 캠페인을 탭으로 한자리에서 봅니다.
+          <!-- 맨 위 '함께하기' — 진행 중과 종료된 캠페인을 탭으로 한자리에서 봅니다.
                ⚠️ /issue/ 는 미리보기 전용 경로입니다. 캠페이너스 페이지 번호로 바꾸세요. -->
-          <li><a class="iall" href="/issue/" data-nav="issue">함께보기<span class="idue">진행 중 · 종료</span></a></li>
+          <li><a class="iall" href="/issue/" data-nav="issue">함께하기<span class="idue">진행 중 · 종료</span></a></li>
           <li class="isep" aria-hidden="true"></li>
-          <li><a href="/27/?idx=173013295&amp;bmode=view">더 걷힐 세금, 어디에 쓸래?<!--<span class="idue">8/31 마감</span>--></a></li>
           <li><a href="https://dokseong-action.bada523082.chatgpt.site/">2026 하반기 밑빠진독상<!--<span class="idue">9/15 마감</span>--></a></li>
           <li><a href="https://vote.action.or.kr/">10만원 예산편성<!--<span class="idue">기간 미정</span>--></a></li>
           <!-- ⚠️ /pb/ 는 미리보기 전용 경로입니다. 캠페이너스 페이지 번호로 바꾸세요. -->
           <li><a href="/pb/" data-nav="pb">참여예산 상담소<!--<span class="idue">상시</span>--></a></li>
-          <li><a href="#">1회 참여예산 고민대회<!--<span class="idue">기간 미정</span>--></a></li>
         </ul></div>
       </div>
 
@@ -620,16 +618,6 @@
           <li><a href="/24">뉴스룸</a></li>
           <li><a href="/54">연대 활동</a></li>
           <li><a href="#">투명성<span class="todo-mark">미정</span></a></li>
-        </ul></div>
-      </div>
-
-      <!-- ⚠️ 임시 알약 — 갈 곳이 정해지지 않은 메뉴를 잠시 모아 둔 곳입니다.
-           자리가 정해지면 각 항목을 해당 메뉴로 옮기고 이 알약은 통째로 지우세요.
-           점선 테두리는 "아직 미정" 표시라 공개 전에 반드시 없어져야 합니다. -->
-      <div class="gnb-item">
-        <a class="is-todo" href="#">자리 미정</a>
-        <div class="drop"><ul>
-          <li><a href="/27">2026년 하반기 이전</a></li>
         </ul></div>
       </div>
 
@@ -683,12 +671,10 @@
     <li>
       <a href="/issue/">캠페인</a>
       <ul class="msub">
-        <li><a class="is-all" href="/issue/">함께보기 →</a></li>
-        <li><a href="/27/?idx=173013295&amp;bmode=view">더 걷힐 세금, 어디에 쓸래?</a></li>
+        <li><a class="is-all" href="/issue/">함께하기 →</a></li>
         <li><a href="https://dokseong-action.bada523082.chatgpt.site/">2026 하반기 밑빠진독상</a></li>
         <li><a href="https://vote.action.or.kr/">10만원 예산편성</a></li>
         <li><a href="/pb/" data-nav="pb">참여예산 상담소</a></li>
-        <li><a href="#">1회 참여예산 고민대회</a></li>
       </ul>
     </li>
     <li>
@@ -700,12 +686,6 @@
         <li><a href="/24">뉴스룸</a></li>
         <li><a href="/54">연대 활동</a></li>
         <li><a href="#">투명성(미정)</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#">자리 미정</a>
-      <ul class="msub">
-        <li><a href="/27">2026년 하반기 이전</a></li>
       </ul>
     </li>
   </ul></div></nav>
@@ -793,7 +773,12 @@
     if (openItem) {
       openItem.classList.remove('is-open');
       var a = openItem.querySelector('a');
-      if (a) a.setAttribute('aria-expanded', 'false');
+      if (a) {
+        a.setAttribute('aria-expanded', 'false');
+        // ⚠️ 초점을 떼지 않으면 CSS 의 :focus-within 때문에 판이 그대로 남습니다.
+        //    is-open 만 떼고 끝내면, 다른 목차에 커서를 올렸을 때 판이 둘 겹쳐 보입니다.
+        if (document.activeElement === a && a.blur) a.blur();
+      }
       openItem = null;
     }
     if (sheet) {
@@ -825,6 +810,14 @@
   }
 
   hd.querySelectorAll('.gnb-item').forEach(function (item) {
+    // 넓은 화면에서 다른 알약에 커서를 올리면 눌러 둔 판은 닫습니다.
+    // 커서를 올린 쪽은 CSS 의 :hover 가 대신 펴 줍니다 — 한 번에 하나만 보입니다.
+    // ⚠️ 후원하기(is-cta)에도 겁니다. 하위 목차가 없어도, 그 위를 지나갈 때
+    //    눌러 둔 판이 안 닫히면 판과 알약이 겹쳐 보입니다.
+    item.addEventListener('mouseenter', function () {
+      if (!narrow.matches && openItem && openItem !== item) closeDrops();
+    });
+
     var a = item.querySelector('a');
     var drop = item.querySelector('.drop');
     if (!a || !drop || a.classList.contains('is-cta')) return;
@@ -834,11 +827,6 @@
     a.addEventListener('click', function (e) {
       e.preventDefault();
       openDrop(item);
-    });
-    // 넓은 화면에서 다른 알약에 마우스를 올리면 눌러 둔 판은 닫습니다.
-    // 안 그러면 판이 둘 겹쳐 보입니다.
-    item.addEventListener('mouseenter', function () {
-      if (!narrow.matches && openItem && openItem !== item) closeDrops();
     });
   });
 
