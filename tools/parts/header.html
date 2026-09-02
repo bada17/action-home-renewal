@@ -102,7 +102,7 @@
   }
   /* ⚠️ 여는 것을 :hover 로 하지 않습니다 (2026-09-01 사용자 지적).
      :hover 는 알약을 스치기만 해도 그 자리에서 열고 닫습니다. 그래서
-     ① 알약 줄을 가로질러 갈 때마다 판이 번짝거렸고(정신사나움),
+     ① 알약 줄을 가로질러 갈 때마다 판이 번쩍거렸고(정신사나움),
      ② 알약에서 판으로 커서를 내리는 도중에 옆 알약을 스치면 그쪽으로
         넘어가 버려서, 누르지 않고는 하위 목차를 고를 수가 없었습니다.
      이제 스크립트가 .is-hover 를 붙입니다 — 잠깐 머무를 때만 열고,
@@ -166,7 +166,7 @@
   #ah-nav .hd-tools{display:flex;align-items:center;gap:6px;flex:none;margin-left:8px}
 
   /* ───────── 회원 — 로그인 · 회원가입 (2026-09-01) ─────────
-     캐페이너스 기본 헤더(#doz_header)를 우리가 감추는데, 로그인·회원가입이
+     캠페이너스 기본 헤더(#doz_header)를 우리가 감추는데, 로그인·회원가입이
      원래 거기 있었습니다. 그래서 이 자리에 다시 냅니다.
      후원하기 버튼과 다투지 않게 알약이 아니라 작은 글자입니다. */
   #ah-nav .hd-acc{display:flex;align-items:center;gap:9px;flex:none;margin-left:4px}
@@ -518,11 +518,11 @@
         <input type="search" name="keyword" placeholder="무엇을 찾으세요?" aria-label="통합검색" autocomplete="off">
         <button type="submit" aria-label="검색">⌕</button>
       </form>
-      <!-- 회원. 우리가 만드는 게 아니라 캐페이너스 것을 그대로 부릅니다.
+      <!-- 회원. 우리가 만드는 게 아니라 캠페이너스 것을 그대로 부릅니다.
            실제 action.or.kr 헤더가 부르는 함수를 그대로 옮겼습니다 —
              로그인    SITE_MEMBER.openLogin(<돌아올 곳>, 'null', null, 'Y')
              회원가입  SITE_MEMBER.openJoinPatternChoice(<돌아올 곳>, '')
-           ⚠️ SITE_MEMBER 는 캐페이너스가 페이지에 심어 주는 것이라 미리보기엔 없습니다.
+           ⚠️ SITE_MEMBER 는 캠페이너스가 페이지에 심어 주는 것이라 미리보기엔 없습니다.
               그래서 href 에 실제로 열리는 /login 을 먼저 적어 둡니다. 스크립트가
               죽어도 눌러집니다 — 켜는 것만 스크립트가 합니다.
            ⚠️ 회원가입을 /join 으로 걸지 마세요. 거기는 '후원 신청' 화면입니다.
@@ -947,7 +947,7 @@
   onScroll();
 
   /* ── 5. 회원 (로그인 · 회원가입) ──
-     캐페이너스 안에서는 SITE_MEMBER 가 로그인 창을 띄우고, 그게 없는
+     캠페이너스 안에서는 SITE_MEMBER 가 로그인 창을 띄우고, 그게 없는
      미리보기에서는 href 에 적어 둔 /login 으로 그냥 갑니다.
      돌아올 곳은 실제 헤더와 같은 꼴입니다 — 지금 주소를 base64 로 싸서 넘깁니다. */
   var accBtns = document.querySelectorAll('#ah-nav [data-acc]');
