@@ -29,7 +29,11 @@
     --ink:#0d1c26;--ink-soft:#47606f;--line:#dde7ec;--paper:#f7fafb;
     /* 캠페이너스 섹션의 overflow 영향 없이 화면 위에 계속 보이도록 고정합니다. */
     /* 코드 위젯의 1100px 안쪽 폭에 갇히지 않도록 화면 폭을 직접 씁니다. */
-    position:fixed;top:0;left:0;right:auto;z-index:80;
+    /* z-index 는 캠페이너스(imweb) 쪽 요소보다 위여야 합니다. 편집기 미리보기의
+       위젯 선택 덮개, 기본 헤더, 퀵메뉴가 보통 100~1000 을 씁니다. 80 이면
+       펼침판이 그 덮개 밑으로 깔려, 판으로 내려가는 커서가 판이 아니라 덮개를
+       짚습니다(= 알약에서 나간 것으로 잡혀 판이 닫힙니다). */
+    position:fixed;top:0;left:0;right:auto;z-index:9990;
     width:calc(100vw - var(--ah-sb,0px));max-width:none;
     margin:0;
     border-bottom:1px solid var(--line);background:#fff;
@@ -285,7 +289,7 @@
      ⚠️ position:fixed 라 캠페이너스 쪽에 transform 이 걸린 감싼 요소가 있으면
         화면이 아니라 그 요소를 기준으로 붙습니다. /69 에서 확인이 필요합니다. */
   .ah-float{
-    position:fixed;right:clamp(16px,2.4vw,34px);bottom:clamp(16px,2.4vw,34px);z-index:70;
+    position:fixed;right:clamp(16px,2.4vw,34px);bottom:clamp(16px,2.4vw,34px);z-index:9970;
     display:flex;align-items:center;gap:18px;background:#fff;color:#0d1c26;
     border-radius:999px;padding:16px 20px 16px 26px;text-decoration:none;
     box-shadow:0 12px 34px rgba(13,28,38,.22);
@@ -409,25 +413,30 @@
     <!-- 하위 목차는 현재 action.or.kr 실제 메뉴 트리입니다. 이번 개편에서 손본 곳:
            · 자료실 메뉴를 없애고 발행물·뉴스룸을 '소식' 밑으로 옮김
            · 상시 활동과 갈라, 끝나는 날짜가 있는 것만 '캠페인' 메뉴에 모음
-           · 회원 공간 · 지역 예산 감시 사례 · 뉴스레터는 메뉴에서 뺐습니다
+           · 지역 예산 감시 사례 · 뉴스레터는 메뉴에서 뺐습니다
              (2026-08-31 사용자 지시. 페이지 자체는 그대로 있습니다)
+           · 회원 공간(/40) · 이슈 토론(/41) · 회원 활동(/48)은 삭제 예정이라
+             새 목차에 넣지 않습니다. 회원 총회(/35)는 후원하기 밑으로 옮겼습니다
+             (2026-09-02 사용자 결정)
            · '자리 미정' 알약은 2026-09-01 사용자 지시로 삭제했습니다
              (거기 있던 '2026년 하반기 이전'(/27) 링크도 함께 사라졌습니다) -->
     <nav class="gnb" aria-label="주요 메뉴">
       <div class="gnb-item">
-        <a class="is-cta" href="https://donate.action.or.kr/"><span class="ah-heart" aria-hidden="true">♥</span>후원하기</a>
+        <a class="is-cta" href="https://mrmweb.hsit.co.kr/v2/Member/MemberJoin.aspx?action=join&amp;server=GdGrmt6XtgAAdxPdh65AQQ==" target="_blank" rel="noopener"><span class="ah-heart" aria-hidden="true">♥</span>후원하기</a>
         <!-- ⚠️ '25년의 시민행동'(/67)은 실제 사이트에서 후원 밑에 들어가 있습니다. -->
         <div class="drop"><ul>
-          <!-- 2026-09-01 사용자가 정한 네 줄입니다.
+          <!-- 2026-09-02 사용자가 정한 다섯 줄입니다.
                · 정기후원하기 — 실제 신청서입니다. 랜딩 페이지의 후원 버튼이 가는
                  곳과 같습니다. 밖의 회원관리 시스템(mrmweb)이라 주소를 그대로 적습니다.
-               · 정기후원 안내 — 랜딩 페이지(donate.action.or.kr). 위의 '후원하기' 버튼도
-                 같은 곳으로 갑니다.
-               ✖ 예전에 있던 '후원 신청'(/join)은 2026-09-01 사용자 결정으로
-                  삭제했습니다. 되살리지 마세요. -->
+               · 정기후원 안내 — 랜딩 페이지(donate.action.or.kr).
+               · 회원 총회 — 예전 회원 공간에서 이곳으로 옮겼습니다.
+               ✖ 예전에 있던 '후원 신청'(/join)은 도너스 이관 중이라 막혀 있습니다.
+                  새 도너스 페이지가 나오기 전까지 위 '후원하기' 버튼도 정기후원
+                  신청서로 갑니다. 새 주소가 확정되면 함께 바꾸세요. -->
           <li><a href="https://mrmweb.hsit.co.kr/v2/Member/MemberJoin.aspx?action=join&amp;server=GdGrmt6XtgAAdxPdh65AQQ==" target="_blank" rel="noopener">정기후원하기</a></li>
           <li><a href="https://donate.action.or.kr/">정기후원 안내</a></li>
           <li><a href="/36">후원행사</a></li>
+          <li><a href="/35">회원 총회</a></li>
           <li><a href="/67">25년의 시민행동</a></li>
         </ul></div>
       </div>
@@ -458,6 +467,9 @@
           </li>
           <li class="drow">
             <a class="dmain" href="/27" data-nav="act-budget">예산감시<em>나라살림 · 지방재정</em></a>
+          </li>
+          <li class="drow">
+            <a class="dmain" href="/57" data-nav="act-monitor">예산 모니터링<em>예산 흐름 · 뉴스 브리핑</em></a>
           </li>
           <li class="drow">
             <a class="dmain" href="/51" data-nav="act-civic">시민참여<em>참여예산 · 시민 교육</em></a>
@@ -548,7 +560,16 @@
       <a href="/login" data-acc="join">회원가입</a>
     </div>
     <ul>
-    <li><a class="is-cta" href="https://donate.action.or.kr/">후원하기 →</a></li>
+    <li>
+      <a class="is-cta" href="https://mrmweb.hsit.co.kr/v2/Member/MemberJoin.aspx?action=join&amp;server=GdGrmt6XtgAAdxPdh65AQQ==" target="_blank" rel="noopener">후원하기 →</a>
+      <ul class="msub">
+        <li><a href="https://mrmweb.hsit.co.kr/v2/Member/MemberJoin.aspx?action=join&amp;server=GdGrmt6XtgAAdxPdh65AQQ==" target="_blank" rel="noopener">정기후원하기</a></li>
+        <li><a href="https://donate.action.or.kr/">정기후원 안내</a></li>
+        <li><a href="/36">후원행사</a></li>
+        <li><a href="/35">회원 총회</a></li>
+        <li><a href="/67">25년의 시민행동</a></li>
+      </ul>
+    </li>
     <li>
       <a href="/aboutus">소개</a>
       <ul class="msub">
@@ -566,6 +587,7 @@
         <!-- 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 확정되면 주석만 벗기세요.
              <li><a href="/act-power" data-nav="act-power">권력감시</a></li> -->
         <li><a href="/27" data-nav="act-budget">예산감시</a></li>
+        <li><a href="/57" data-nav="act-monitor">예산 모니터링</a></li>
         <li><a href="/51" data-nav="act-civic">시민참여</a></li>
         <li><a href="/dok-history" data-nav="act-dok">밑빠진 독상</a></li>
       </ul>
@@ -597,7 +619,7 @@
 
 <div id="ah-nav-space" aria-hidden="true"></div>
 
-<a class="ah-float" id="ah-float" href="https://donate.action.or.kr/">
+<a class="ah-float" id="ah-float" href="https://mrmweb.hsit.co.kr/v2/Member/MemberJoin.aspx?action=join&amp;server=GdGrmt6XtgAAdxPdh65AQQ==" target="_blank" rel="noopener">
   <span>예산은 저절로 지켜지지 않습니다<br><b>월 1만원으로 감시에 함께하기</b></span>
   <span class="arrow" aria-hidden="true">→</span>
 </a>
@@ -683,6 +705,7 @@
     var routeHere = [
       ['/act-power', 'act-power'],
       ['/27', 'act-budget'],
+      ['/57', 'act-monitor'],
       ['/dok-history', 'act-dok'],
       ['/library', 'library'],
       ['/issue', 'issue'],
@@ -788,6 +811,42 @@
   function hoverClear() {
     if (hoverItem) { hoverItem.classList.remove('is-hover'); hoverItem = null; }
   }
+
+  /* ⚠️ mouseenter/mouseleave 짝만 믿으면 안 됩니다 (2026-09-02).
+     캠페이너스 편집기 미리보기에는 위젯을 고르라고 깔아 둔 투명한 덮개가 있습니다.
+     알약에서 판으로 커서를 내리는 도중 그 덮개를 짚으면 브라우저는 '알약 밖으로
+     나갔다'고 보고, 판 위에 올라서도 덮개가 계속 위에 있어 '다시 들어왔다'가
+     오지 않습니다. 그래서 0.28초 뒤 그냥 닫혀 버립니다.
+     → 닫기 직전에 커서 좌표가 아직 알약이나 판의 네모 안인지 직접 잽니다.
+       좌표로 보면 무엇이 위에 덮여 있든 상관이 없습니다. */
+  var ptX = -1, ptY = -1;
+  document.addEventListener('mousemove', function (e) {
+    ptX = e.clientX; ptY = e.clientY;
+  }, true);
+
+  function pointerOver(item) {
+    if (ptX < 0) return false;              // 아직 한 번도 움직이지 않았으면 모름
+    var boxes = [item.getBoundingClientRect()];
+    var drop = item.querySelector('.drop');
+    if (drop) boxes.push(drop.getBoundingClientRect());
+    for (var i = 0; i < boxes.length; i++) {
+      var b = boxes[i];
+      // 가장자리에 몇 px 여유를 둡니다 — 반올림 때문에 아슬아슬하게 벗어날 수 있습니다.
+      if (b.width && b.height &&
+          ptX >= b.left - 6 && ptX <= b.right + 6 &&
+          ptY >= b.top - 6 && ptY <= b.bottom + 6) return true;
+    }
+    return false;
+  }
+
+  /* 아직 그 자리에 있으면 닫지 않고 한 번 더 미룹니다. */
+  function hoverMaybeClear() {
+    if (hoverItem && pointerOver(hoverItem)) {
+      closeTimer = setTimeout(hoverMaybeClear, HOVER_OUT);
+      return;
+    }
+    hoverClear();
+  }
   function hoverShow(item) {
     if (hoverItem === item) return;
     hoverClear();
@@ -812,7 +871,7 @@
       if (narrow.matches) return;
       clearTimeout(openTimer);
       clearTimeout(closeTimer);
-      closeTimer = setTimeout(hoverClear, HOVER_OUT);
+      closeTimer = setTimeout(hoverMaybeClear, HOVER_OUT);
     });
 
     var a = item.querySelector('a');
