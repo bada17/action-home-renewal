@@ -68,6 +68,9 @@ PAGES = [
     ('activity-civic.html',  '51/index.html',           '활동 › 시민참여',       'civic'),
     ('dok-history.html',     '76/index.html',           '활동 › 밑빠진 독상',    'dok'),
     ('pb.html',              '80/index.html',           '캠페인 › 참여예산 상담소', 'pb'),
+    # 2026-09-02: 랜딩(donate.action.or.kr)을 안으로 옮기는 중입니다.
+    # 캠페이너스 번호가 아직 없어 임시 주소로 굽습니다 — tools/build-donate.py 를 보세요.
+    ('donate-guide.html',    'donate-guide/index.html', '후원 › 정기후원 안내',  'donate'),
     # 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 쓰게 되면 주석만 벗기세요.
     # ('library.html',         'library/index.html',      '자료실',                'lib'),
 ]

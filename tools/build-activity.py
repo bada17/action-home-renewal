@@ -1165,64 +1165,122 @@ def build_sibs(me):
     return u'\n'.join(out)
 
 
-def build_local_board_before(html):
-    """지자체 감시 /49의 기본 게시판 위에 붙일 코드 조각을 만듭니다.
+# ═════════════════════════════════════════════════════════════════
+#  기본 게시판과 나눠 붙이는 '앞 코드'
+#
+#  캠페이너스 기본 게시판 위젯은 코드 위젯 안에 넣을 수 없습니다. 그래서
+#  활동 소개부터 '무엇이 달라졌나'까지를 독립된 코드 조각으로 닫고,
+#  바로 다음에 기존 게시판 위젯을, 그 다음에 공통 하단을 둡니다.
+#
+#  ✖ 뒤 코드(After)는 쓰지 않습니다. 코드로 만든 최근 글 목록과
+#    '시민행동이 하는 다른 일'은 앞 코드에도 넣지 않습니다
+#    (앞은 게시판이 대신하고, 뒤는 공통 상단 메뉴와 겹칩니다).
+#  ✖ 밑빠진 독상(/76)은 이 구조에서 제외합니다.
+# ═════════════════════════════════════════════════════════════════
 
-    캠페이너스 기본 게시판 위젯은 코드 위젯 안에 넣을 수 없습니다. 그래서 활동 소개와
-    결과까지를 독립된 코드 조각으로 닫고, 그 바로 다음에 기존 /49 게시판 위젯을 둡니다.
-    '다른 활동'은 공통 상단 메뉴와 겹치므로 별도 뒤 코드로 만들지 않습니다.
+BEFORE_BOARD = ['local', 'budget', 'civic']
+
+# 게시판을 둘러싸는 것만 건드립니다. 실측한 캠페이너스 기본 게시판 구조(2026-09-02,
+# action.or.kr/49 · /51)는 아래와 같습니다 — 만들어 낸 이름이 아닙니다.
+#   div.widget.board._list_wrap > div.li_board
+#     ul.li_header.hidden-xs > li.no / li.category / li.tit / li.name / li.date
+#     ul.li_body.holder      > li.link_area(모바일 전용 통째 링크) / li.category.hidden-xs
+#                              li.tit(> a[?category] > em · a.list_text_title) / li.name / li.time
+# li.no · li.name 은 이미 style="display: none" 입니다 — 게시판 디자인 설정에서
+# 끕 것이라 코드로 다시 끄지 않습니다.
+BOARD_CSS = u"""
+/* ───── 이 코드 다음에 오는 캠페이너스 기본 게시판 ─────
+   ⚠ 음수 여백을 쓰지 않습니다. 폭은 표를 늘이지 말고 바깥 위젯 컨테이너를
+      1120px 로 맞춰서 냅니다(활동 본문과 같은 기준).
+   ⚠ No · 글쓴이 열은 캠페이너스 게시판 디자인 설정에서 끕니다. */
+.widget.board._list_wrap .li_board ul.li_body > li.tit .list_text_title,
+.widget.board._list_wrap .li_board ul.li_body > li.tit .list_text_title span{
+  font-weight:700!important
+}
+
+/* 넓은 화면: 카테고리 10% / 제목 75% / 작성시간 15% */
+@media (min-width:768px){
+  .widget.board._list_wrap{
+    width:min(1120px,100%)!important;margin-left:auto!important;margin-right:auto!important
+  }
+  .widget.board._list_wrap .li_board ul.li_header > li.category,
+  .widget.board._list_wrap .li_board ul.li_body > li.category{width:10%!important}
+  .widget.board._list_wrap .li_board ul.li_header > li.tit,
+  .widget.board._list_wrap .li_board ul.li_body > li.tit{width:75%!important}
+  .widget.board._list_wrap .li_board ul.li_header > li.date,
+  .widget.board._list_wrap .li_board ul.li_body > li.time{
+    width:15%!important;white-space:nowrap!important
+  }
+}
+
+/* 좁은 화면: 카테고리 14% / 제목 61% / 작성시간 25%
+   캠페이너스 기본 CSS 가 카테고리 칸을 숨기고(li.category.hidden-xs)
+   제목을 한 줄로 펴 날짜를 제목 아래로 내립니다. 너비만 주면 세 칸이
+   되지 않아, 줄 자체를 고정 표로 되돌린 뒤 세 칸을 다시 세웁니다.
+   게시판 머리줄(li_header.hidden-xs)은 좁은 화면에서도 계속 숨깁니다. */
+@media (max-width:767px){
+  .widget.board._list_wrap .li_board ul.li_body{
+    display:table!important;width:100%!important;table-layout:fixed!important;
+    position:relative!important
+  }
+  /* 세 칸만 세웁니다. 남은 칸(No·글쓴이·조회수 등)이 하나라도 살아 있으면
+     칸이 넷이 되어 14/61/25 가 어긋납니다. 게시판 디자인 설정과 별개로,
+     좁은 화면에서 칸 수를 고정하기 위한 것입니다. */
+  .widget.board._list_wrap .li_board ul.li_body > li{display:none!important}
+  /* 줄 전체를 덮는 모바일 통째 링크. 칸으로 세지 않게 띄워 둡니다. */
+  .widget.board._list_wrap .li_board ul.li_body > li.link_area{
+    display:block!important;position:absolute!important;
+    top:0;left:0;right:0;bottom:0;width:auto!important;z-index:2
+  }
+  .widget.board._list_wrap .li_board ul.li_body > li.link_area > a{
+    display:block!important;width:100%!important;height:100%!important
+  }
+  .widget.board._list_wrap .li_board ul.li_body > li.category{
+    display:table-cell!important;width:14%!important;vertical-align:middle!important
+  }
+  .widget.board._list_wrap .li_board ul.li_body > li.tit{
+    display:table-cell!important;width:61%!important;vertical-align:middle!important
+  }
+  .widget.board._list_wrap .li_board ul.li_body > li.time{
+    display:table-cell!important;width:25%!important;vertical-align:middle!important;
+    text-align:right!important;white-space:nowrap!important
+  }
+  /* 제목 칸 안에 모바일용으로 한 번 더 나오는 카테고리 —
+     왼쪽 칸과 겹치므로 숨깁니다. */
+  .widget.board._list_wrap .li_board ul.li_body > li.tit > a:not(.list_text_title){
+    display:none!important
+  }
+}
+"""
+
+
+def build_board_before(html, key, board):
+    """활동 페이지 하나를 기본 게시판 위에 붙일 코드 조각으로 자릅니다.
+
+    맨 위 · 이 활동만의 칸 · 지금 무엇을 보고 있나 · 무엇이 달라졌나 까지만 남기고,
+    '글'(코드로 만든 목록) 부터 뒤는 버립니다 — 거기부터는 게시판 위젯이 맡습니다.
     """
     style_start = html.index(u'<style>')
     style_end = html.index(u'</style>', style_start) + len(u'</style>')
-    style = html[style_start:style_end]
-    # 앞·뒤 조각이 각각 독립된 id를 쓰지만, :is()로 기존 ID급 CSS 우선순위를
-    # 유지합니다. class로 낮추면 캠페이너스 기본 위젯 스타일이 덮을 수 있습니다.
-    style = style.replace(u'#act', u':is(#act,#act-tail)')
-    style = style.replace(
-        u'</style>',
-        u'''\n/* /49 기본 게시판: 게시글 제목을 굵게 표시하고 표의 세 열 너비를 맞춥니다.
-   No·글쓴이 등 열 표시는 캠페이너스 게시판의 디자인 설정에서 관리합니다. */
-.widget.board._list_wrap .li_body .tit .list_text_title{
-  font-weight:700!important
-}
-/* 넓은 화면: 카테고리를 줄인 만큼 제목 칸을 넓힙니다. */
-@media (min-width:768px){
-  .widget.board._list_wrap .li_header > .category,
-  .widget.board._list_wrap .li_body > .category{width:10%!important}
-  .widget.board._list_wrap .li_header > .tit,
-  .widget.board._list_wrap .li_body > .tit{width:75%!important}
-  .widget.board._list_wrap .li_header > .date,
-  .widget.board._list_wrap .li_body > .time{width:15%!important}
-}
-/* 좁은 화면: 날짜가 줄바꿈되지 않게 별도 비율을 씁니다. */
-@media (max-width:767px){
-  .widget.board._list_wrap .li_header > .category,
-  .widget.board._list_wrap .li_body > .category{width:14%!important}
-  .widget.board._list_wrap .li_header > .tit,
-  .widget.board._list_wrap .li_body > .tit{width:61%!important}
-  .widget.board._list_wrap .li_header > .date,
-  .widget.board._list_wrap .li_body > .time{width:25%!important}
-}
-</style>''',
-        1)
+    style = html[style_start:style_end].replace(u'</style>', BOARD_CSS + u'</style>', 1)
 
     body_start = html.index(u'<div id="act"')
     board_cut = html.index(u'    <!-- ───────── 글 ─────────', body_start)
     before_body = html[body_start:board_cut].rstrip()
 
-    before = u'''<!-- CAMPAIGNERS:ACTIVITY-LOCAL-BEFORE-BOARD START -->
-<!-- /49 지자체 감시: 이 코드를 기본 게시판 위젯 바로 위의 코드 위젯에 붙입니다. -->
-{style}
+    tag = key.upper()
+    return u"""<!-- CAMPAIGNERS:ACTIVITY-%(tag)s-BEFORE-BOARD START -->
+<!-- %(board)s : 이 코드를 기본 게시판 위젯 바로 위의 코드 위젯에 붙입니다.
+     순서는 이 코드 → 기본 게시판 위젯 → 공통 하단 입니다. 뒤 코드는 쓰지 않습니다. -->
+%(style)s
 
-{body}
+%(body)s
 
-    <!-- 이 코드 바로 다음에 캠페이너스 기본 /49 게시판 위젯을 둡니다. -->
+    <!-- 이 코드 바로 다음에 캠페이너스 기본 %(board)s 게시판 위젯을 둡니다. -->
   </div>
 </div>
-<!-- CAMPAIGNERS:ACTIVITY-LOCAL-BEFORE-BOARD END -->
-'''.format(style=style, body=before_body)
-
-    return before
+<!-- CAMPAIGNERS:ACTIVITY-%(tag)s-BEFORE-BOARD END -->
+""" % {'tag': tag, 'board': board, 'style': style, 'body': before_body}
 
 
 def main():
@@ -1254,9 +1312,9 @@ def main():
         io.open(out, 'w', encoding='utf-8', newline='\n').write(html)
         print(u'  %-24s %6d 바이트' % (os.path.basename(out), len(html.encode('utf-8'))))
 
-        if key == 'local':
-            before = build_local_board_before(html)
-            before_out = os.path.join(ROOT, 'activity-local-before-board.html')
+        if key in BEFORE_BOARD:
+            before = build_board_before(html, key, href)
+            before_out = os.path.join(ROOT, 'activity-%s-before-board.html' % key)
             io.open(before_out, 'w', encoding='utf-8', newline='\n').write(before)
             print(u'  %-24s %6d 바이트' %
                   (os.path.basename(before_out), len(before.encode('utf-8'))))

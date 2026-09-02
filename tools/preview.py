@@ -71,6 +71,9 @@ ROUTES = {
     '/80/': 'pb.html',
     '/library': 'library.html',
     '/library/': 'library.html',
+    # 2026-09-02: 랜딩을 안으로 옮기는 중. 캠페이너스 번호가 정해지면 그 번호로 바꾸세요.
+    '/donate-guide': 'donate-guide.html',
+    '/donate-guide/': 'donate-guide.html',
     '/sign': 'sign.html',
     '/sign/': 'sign.html',
 }
@@ -156,6 +159,7 @@ TITLES = {
     '/76': '활동 > 밑빠진 독상', '/76/': '활동 > 밑빠진 독상',
     '/80': '캠페인 > 참여예산 상담소', '/80/': '캠페인 > 참여예산 상담소',
     '/library': '자료실', '/library/': '자료실',
+    '/donate-guide': '후원 > 정기후원 안내', '/donate-guide/': '후원 > 정기후원 안내',
     '/sign': '캠페인 > 서명', '/sign/': '캠페인 > 서명',
 }
 

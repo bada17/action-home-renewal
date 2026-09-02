@@ -1,8 +1,9 @@
-<!-- CAMPAIGNERS:PAGE-CODE START file=activity-local.html -->
-<!-- 미리보기용 전체 파일입니다. 캠페이너스 /49에는 이 파일 전체를 붙이지 말고 activity-local-before-board.html 다음에 기본 게시판 위젯을 두고, 그 다음에 공통 하단을 둡니다. 뒤 코드(After)는 쓰지 않습니다. -->
+<!-- CAMPAIGNERS:ACTIVITY-CIVIC-BEFORE-BOARD START -->
+<!-- /51 : 이 코드를 기본 게시판 위젯 바로 위의 코드 위젯에 붙입니다.
+     순서는 이 코드 → 기본 게시판 위젯 → 공통 하단 입니다. 뒤 코드는 쓰지 않습니다. -->
 <style>
 /* ═══════════════════════════════════════════════════════════════
-   활동 > 지자체 감시
+   활동 > 시민참여
 
    ⚠️ 이 파일은 tools/build-activity.py 가 만듭니다. 직접 고치지 마세요.
       화면을 고치려면 그 파일의 TEMPLATE 을, 내용을 고치려면 PAGES 를 고치고
@@ -353,9 +354,72 @@
   #act *{transition:none!important; animation:none!important}
   #act .rv.is-armed{opacity:1; transform:none}
 }
+
+/* ───── 이 코드 다음에 오는 캠페이너스 기본 게시판 ─────
+   ⚠ 음수 여백을 쓰지 않습니다. 폭은 표를 늘이지 말고 바깥 위젯 컨테이너를
+      1120px 로 맞춰서 냅니다(활동 본문과 같은 기준).
+   ⚠ No · 글쓴이 열은 캠페이너스 게시판 디자인 설정에서 끕니다. */
+.widget.board._list_wrap .li_board ul.li_body > li.tit .list_text_title,
+.widget.board._list_wrap .li_board ul.li_body > li.tit .list_text_title span{
+  font-weight:700!important
+}
+
+/* 넓은 화면: 카테고리 10% / 제목 75% / 작성시간 15% */
+@media (min-width:768px){
+  .widget.board._list_wrap{
+    width:min(1120px,100%)!important;margin-left:auto!important;margin-right:auto!important
+  }
+  .widget.board._list_wrap .li_board ul.li_header > li.category,
+  .widget.board._list_wrap .li_board ul.li_body > li.category{width:10%!important}
+  .widget.board._list_wrap .li_board ul.li_header > li.tit,
+  .widget.board._list_wrap .li_board ul.li_body > li.tit{width:75%!important}
+  .widget.board._list_wrap .li_board ul.li_header > li.date,
+  .widget.board._list_wrap .li_board ul.li_body > li.time{
+    width:15%!important;white-space:nowrap!important
+  }
+}
+
+/* 좁은 화면: 카테고리 14% / 제목 61% / 작성시간 25%
+   캠페이너스 기본 CSS 가 카테고리 칸을 숨기고(li.category.hidden-xs)
+   제목을 한 줄로 펴 날짜를 제목 아래로 내립니다. 너비만 주면 세 칸이
+   되지 않아, 줄 자체를 고정 표로 되돌린 뒤 세 칸을 다시 세웁니다.
+   게시판 머리줄(li_header.hidden-xs)은 좁은 화면에서도 계속 숨깁니다. */
+@media (max-width:767px){
+  .widget.board._list_wrap .li_board ul.li_body{
+    display:table!important;width:100%!important;table-layout:fixed!important;
+    position:relative!important
+  }
+  /* 세 칸만 세웁니다. 남은 칸(No·글쓴이·조회수 등)이 하나라도 살아 있으면
+     칸이 넷이 되어 14/61/25 가 어긋납니다. 게시판 디자인 설정과 별개로,
+     좁은 화면에서 칸 수를 고정하기 위한 것입니다. */
+  .widget.board._list_wrap .li_board ul.li_body > li{display:none!important}
+  /* 줄 전체를 덮는 모바일 통째 링크. 칸으로 세지 않게 띄워 둡니다. */
+  .widget.board._list_wrap .li_board ul.li_body > li.link_area{
+    display:block!important;position:absolute!important;
+    top:0;left:0;right:0;bottom:0;width:auto!important;z-index:2
+  }
+  .widget.board._list_wrap .li_board ul.li_body > li.link_area > a{
+    display:block!important;width:100%!important;height:100%!important
+  }
+  .widget.board._list_wrap .li_board ul.li_body > li.category{
+    display:table-cell!important;width:14%!important;vertical-align:middle!important
+  }
+  .widget.board._list_wrap .li_board ul.li_body > li.tit{
+    display:table-cell!important;width:61%!important;vertical-align:middle!important
+  }
+  .widget.board._list_wrap .li_board ul.li_body > li.time{
+    display:table-cell!important;width:25%!important;vertical-align:middle!important;
+    text-align:right!important;white-space:nowrap!important
+  }
+  /* 제목 칸 안에 모바일용으로 한 번 더 나오는 카테고리 —
+     왼쪽 칸과 겹치므로 숨깁니다. */
+  .widget.board._list_wrap .li_board ul.li_body > li.tit > a:not(.list_text_title){
+    display:none!important
+  }
+}
 </style>
 
-<div id="act" aria-label="지자체 감시" data-act="local">
+<div id="act" aria-label="시민참여" data-act="civic">
 
   <!-- ───────── 맨 위 ─────────
        빵부스러기 → 감시 대상 → 제목 → 한 줄 → 숫자 셋이 한 덩이입니다.
@@ -363,18 +427,18 @@
        ⚠️ 제목과 한 줄은 초안입니다. 실제 표현으로 바꿔 주세요.
        ⚠️ 숫자는 확인된 값만 올립니다. 모르면 딱지를 붙이고 비워 두세요. -->
   <section class="top"><div class="wrap">
-    <nav class="crumb"><a href="/69?preview_mode=1">홈</a><span>&rsaquo;</span>활동<span>&rsaquo;</span>지자체 감시</nav>
+    <nav class="crumb"><a href="/69?preview_mode=1">홈</a><span>&rsaquo;</span>활동<span>&rsaquo;</span>시민참여</nav>
     <!-- 2026-09-01 사용자 지시로 감시 대상 알약(<span class="who">)을 뺐습니다.
          빵부스러기에 이미 활동 이름이 있고, 홈의 활동 다섯 줄에도 부제가 있습니다.
-         값 자체는 ALL 에 그대로 있습니다(지방정부 · 지방의회) — 다시 넣으려면 이 자리에 넣으세요. -->
-    <h1 id="act-head">지방의회, 지켜보고 있습니다</h1>
-    <p class="by" id="act-lede">우리 동네 예산과 조례가 어떻게 정해지는지, 의회가 제 역할을 하는지 기록합니다.</p>
+         값 자체는 ALL 에 그대로 있습니다(참여예산 · 시민 교육) — 다시 넣으려면 이 자리에 넣으세요. -->
+    <h1 id="act-head">예산을 정하는 자리에<br>시민이 앉아야 합니다</h1>
+    <p class="by" id="act-lede">주민참여예산 제도가 이름만 남지 않도록 따지고, 시민이 실제로 결정할 수 있게 바꿉니다.</p>
     <!-- ⚠️ 숫자 칸은 2026-09-01 사용자 지시로 **주석 처리**했습니다.
          "나중에 사용할 수 있음" — 지우지 마세요. 값은 PAGES 의 nums 에 그대로 있고,
          build_nums 도 그대로 돕니다. 아래 두 줄의 주석만 벗기면 되살아납니다.
     <div class="nums" id="act-nums">
-    <div class="num"><b><span class="tbd">확인 필요</span></b><span>감시한 지자체 수</span></div>
-    <div class="num"><b><span class="tbd">확인 필요</span></b><span>올해 낸 의견서</span></div>
+    <div class="num"><b><span class="tbd">확인 필요</span></b><span>올해 연 상담 · 교육</span></div>
+    <div class="num"><b><span class="tbd">확인 필요</span></b><span>제도 개선 의견서</span></div>
     </div>
     -->
   </div></section>
@@ -382,11 +446,36 @@
   <div class="wrap">
 
     <!-- ───────── 이 활동만의 칸 ───────── -->
-    <section class="sec sig sig-where"><div class="sh">
-      <h2>올해 들여다본 곳 <span class="tbd">채울 값 있음</span></h2>
-      <p>한 곳을 오래 보는 것보다, 여러 곳을 같은 잣대로 보는 것이 지자체 감시입니다.</p>
+    <section class="sec sig sig-way"><div class="sh">
+      <h2>시민이 들어오는 문 <span class="tbd">채울 값 있음</span></h2>
+      <p>예산은 전문가만 다루는 것이 아닙니다. 지금 열려 있는 문이 어디인지 알려 드립니다.</p>
     </div>
-      <div class="tagbox rv"><span class="tag is-hot">서울특별시<i>3건</i></span><span class="tag is-hot">전국 기초의회</span><span class="tag is-more">＋ 올해 들여다본 지자체를 여기에</span></div>
+      <div class="ways">
+        <a class="way rv" href="/80">
+          <span class="wt">참여예산 상담소</span>
+          <span class="wd">참여예산위원으로 활동하다 막히는 것을 물어보는 곳입니다.</span>
+          <span class="wm">
+            <span class="st st-open">지금 열림</span>
+            <span class="when">상시</span>
+          </span>
+        </a>
+        <a class="way rv" href="/79">
+          <span class="wt">10만원 예산편성</span>
+          <span class="wd">내 몫의 예산 10만원을 어디에 쓸지 직접 편성해 봅니다.</span>
+          <span class="wm">
+            <span class="st st-open">지금 열림</span>
+            <span class="when">기간 <span class="tbd">확인 필요</span></span>
+          </span>
+        </a>
+        <a class="way rv" href="/51">
+          <span class="wt">주민참여예산 게시판</span>
+          <span class="wd">제도가 어디까지 왔는지, 무엇을 요구하고 있는지 모아 둔 곳입니다.</span>
+          <span class="wm">
+            <span class="st st-open">지금 열림</span>
+            <span class="when">상시</span>
+          </span>
+        </a>
+      </div>
     </section>
 
     <!-- ───────── 지금 ───────── -->
@@ -395,14 +484,14 @@
       <p>끝나는 날짜가 붙은 일이 늘어나면 그건 '활동'이 아니라 '캠페인'으로 올립니다.</p>
     </div>
       <ul class="now" id="act-now">
-        <li><a href="#">
-          <span class="shot" data-mark="추경" aria-hidden="true"></span>
-          <span class="t">2026년 서울시 추가경정예산 심사 모니터링</span>
-          <span class="m"><span class="due">9월 심사</span><span class="tbd">확인 필요</span></span>
+        <li><a href="/51/?idx=172917373&amp;bmode=view">
+          <span class="shot" data-mark="3조" aria-hidden="true"></span>
+          <span class="t">주민참여예산 3조원 확대, 주민 권한 확보 요구</span>
+          <span class="m"><span class="due">정부안 발표 뒤</span><span class="tbd">확인 필요</span></span>
         </a></li>
-        <li><a href="#">
-          <span class="shot" data-mark="의정비" aria-hidden="true"></span>
-          <span class="t">기초의회 의정비 인상안 전수 조사</span>
+        <li><a href="/51/?idx=170491595&amp;bmode=view">
+          <span class="shot" data-mark="입법" aria-hidden="true"></span>
+          <span class="t">지방재정법 개정안 입법 대응</span>
           <span class="m"><span class="tbd">확인 필요</span></span>
         </a></li>
       </ul>
@@ -417,243 +506,23 @@
     </div>
       <div class="res" id="act-res">
         <article class="case rv">
-          <h3>한강버스 사업 경제성 검증</h3>
-          <p class="did">경제성 근거가 공개되지 않은 채 추진되던 사업을 짚고, 감사 결과가 나온 뒤 쟁점을 정리해 알렸습니다.</p>
-          <p class="got">감사원 감사에서 경제성 B/C 0.17이 확인됐습니다.</p>
-          <div class="src"><a href="/27/?idx=172916152&amp;bmode=view">감사 결과 정리 →</a><a href="/57/?idx=171787220&amp;bmode=view">보류된 한강 개발 사업 →</a></div>
-          <p class="when">2026.06 – 2026.08</p>
+          <h3>주민참여예산 제도 개선 입법 요구 <span class="tbd">확인 필요</span></h3>
+          <p class="did">주민참여예산제도를 활성화하는 지방재정법 개정안을 정리해 알렸습니다.</p>
+          <p class="got">무엇이 달라졌는지는 아직 정리되지 않았습니다.</p>
+          <div class="src"><a href="/51/?idx=170491595&amp;bmode=view">지방재정법 개정안 →</a></div>
+          <p class="when">2026.03</p>
         </article>
         <article class="case rv">
-          <h3>2026 지방선거 공약 검증 <span class="tbd">확인 필요</span></h3>
-          <p class="did">서울시장 후보자들이 내놓은 예산·재정 공약을 모아 비교할 수 있게 정리했습니다.</p>
+          <h3>주민결정권 강화 요구 <span class="tbd">확인 필요</span></h3>
+          <p class="did">주민참여예산의 주민결정권을 실질적으로 강화할 방안을 요구하는 논평을 냈습니다.</p>
           <p class="got">무엇이 달라졌는지는 아직 정리되지 않았습니다.</p>
-          <div class="src"><a href="/57/?idx=171511879&amp;bmode=view">후보자별 공약모음 →</a><a href="/57/?idx=171642696&amp;bmode=view">선거 결과와 그 이후 →</a></div>
-          <p class="when">2026.05 – 2026.06</p>
+          <div class="src"><a href="/27/?idx=170224688&amp;bmode=view">논평 전문 →</a></div>
+          <p class="when">2026.03</p>
         </article>
       </div>
     </section>
 
-    <!-- ───────── 글 ─────────
-         ★ 2026-09-01 사용자 결정: 이 칸이 **그 게시판의 글을 다 보여 주는 자리**입니다.
-           → 여기에 **캠페이너스 게시판 위젯**을 앉힙니다(페이지 나눔·검색까지 위젯이 합니다).
-             GPT 가 위젯을 넣을 자리는 아래 .rows 를 통째로 갈아 끼우는 곳입니다.
-           → 위젯이 들어오면 '글 전체보기' 링크는 필요 없어집니다. 그래서 미리 뺐습니다.
-         ⚠️ 아래 목록은 위젯이 들어오기 전까지 자리를 지키는 **씨앗**입니다.
-            코드에 박혀 있어 새 글이 자동으로 올라오지 않습니다. -->
-    <section class="sec"><div class="sh">
-      <h2>최근에 쓴 글</h2>
-      <p>⚠️ 아래 글은 실제 글이지만 예산 모니터링(/57)·일반 활동(/27) 게시판에 올라가 있습니다. 게시판이 정해지면 옮겨 주세요.</p>
-    </div>
-      <div class="rows" id="act-posts">
-        <a class="row" href="/57/?idx=172188605&amp;bmode=view">
-          <span class="t">그놈의 업무추진비, 축구협회와 양궁협회의 사정</span>
-          <span class="meta">2026.07.03</span>
-        </a>
-        <a class="row" href="/57/?idx=171787220&amp;bmode=view">
-          <span class="t">오세훈의 한강사랑, 보류 중인 한강 개발 사업</span>
-          <span class="meta">2026.06.12</span>
-        </a>
-        <a class="row" href="/57/?idx=171642696&amp;bmode=view">
-          <span class="t">6·3 지방선거 결과와 그 이후</span>
-          <span class="meta">2026.06.12</span>
-        </a>
-      </div>
-    </section>
-
-    <!-- 예전에 여기 '더 깊이 보려면'(발행물·뉴스룸·게시판 세 칸)이 있었습니다.
-         2026-09-01 사용자 지시로 삭제했습니다. -->
-
-
-    <!-- ───────── 현장 사진 ─────────
-         사진이 없으면 이 칸은 hidden 이라 화면에 안 나옵니다.
-         사진을 늘리려면 PAGES[...]['photos'] 에 (주소, 대체글, 제목, 설명) 을 더하세요.
-         게시판에서 받아 넣을 때는 AH_SCRIPT 가 hidden 을 뗍니다. -->
-    <section class="sec" hidden id="act-photos-h"><div class="sh">
-      <h2>현장에서는 이런 일이 있었습니다</h2>
-    </div></section>
-    <div class="shots" hidden><div class="shots-rail" id="act-photos">
-
-    </div></div>
-
-    <!-- ───────── 다른 활동 ───────── -->
-    <section class="sec"><div class="sh">
-      <h2>시민행동이 하는 다른 일</h2>
-    </div>
-      <div class="sibs">
-        <a class="sib" href="/27">예산감시<small>나라살림 · 지방재정</small></a>
-        <a class="sib" href="/51">시민참여<small>참여예산 · 시민 교육</small></a>
-        <a class="sib" href="/76">밑빠진 독상</a>
-      </div>
-    </section>
-
-    <!-- 예전에 여기 '알려 주실 것이 있나요' 칸이 있었습니다. 2026-08-31 사용자 지시로
-         삭제했습니다("의미 없음"). 연락처·후원은 이제 아홉 화면이 같이 쓰는
-         맨 아래 부품(tools/parts/footer.html)이 맡습니다. -->
-
+    <!-- 이 코드 바로 다음에 캠페이너스 기본 /51 게시판 위젯을 둡니다. -->
   </div>
 </div>
-
-<script>
-/* ═══════════════════════════════════════════════════════════════
-   내용 갈아 끼우는 자리 — window.AH_DATA          ← 자세한 것은 CONTENT.md
-
-   홈(index.html)·캠페인 목록(issue.html)에 낸 것과 같은 자리입니다.
-   이 화면이 읽는 것은 D.activity['<열쇠>'] 하나입니다.
-   열쇠는 #act 의 data-act 에 적혀 있습니다 (local · power · budget · civic).
-
-   ★ 값이 없으면 아무것도 하지 않습니다. 아래 HTML 에 적힌 글이 그대로 남습니다.
-     그래서 게시판이 끊겨도 화면이 비지 않습니다('켜는 것만 스크립트가 한다' 원칙).
-     단, HTML 에 남은 것은 씨앗이지 진짜 내용이 아닙니다. 낡을 수 있습니다.
-
-   ⚠ 이 스크립트는 아래 '스크롤로 올라오기' 스크립트보다 **먼저** 돌아야 합니다.
-     순서를 바꾸면 새로 그린 '결과' 칸이 화면에 안 나타납니다(.rv 가 안 잡힙니다).
-   ⚠ 여기서 만드는 조각은 이 파일의 build_nums / build_now / build_result /
-     build_posts / build_photos 가 만드는 것과 **모양이 같아야 합니다.**
-     한쪽을 고치면 다른 쪽도 고치세요. 안 그러면 게시판을 물리는 순간 화면이 달라집니다.
-   ⚠ 이 활동만의 칸(sig — 지역 태그 · 물음과 답 · 달력 · 문)은 여기 없습니다.
-     구조가 활동마다 달라 게시판 글 한 편으로 담기 어렵습니다(CONTENT.md).
-   ═══════════════════════════════════════════════════════════════ */
-(function () {
-  var D = window.AH_DATA;
-  if (!D || typeof D !== 'object' || !D.activity) return;
-
-  var box = document.getElementById('act');
-  if (!box) return;
-  var A = D.activity[box.getAttribute('data-act')];
-  if (!A || typeof A !== 'object') return;
-
-  // 게시판 글에 들어있는 꺾쇠가 화면을 깨뜨립니다. 반드시 거칩니다.
-  function esc(v) {
-    var d = document.createElement('div');
-    d.textContent = (v === null || v === undefined) ? '' : String(v);
-    return d.innerHTML;
-  }
-  function some(a) { return Object.prototype.toString.call(a) === '[object Array]' && a.length > 0; }
-  function put(id, html) {
-    var el = document.getElementById(id);
-    if (el) el.innerHTML = html;
-  }
-  function text(id, v) {
-    var el = document.getElementById(id);
-    if (el && v) el.textContent = v;
-  }
-
-  // ───── 제목 · 한 줄 ─────
-  text('act-head', A.headline);
-  text('act-lede', A.lede);
-
-  // ───── 숫자 셋 ─────
-  // 값이 없는 자리는 '확인 필요' 딱지입니다. 지어낸 값을 올리지 않기 위한 자리입니다.
-  if (some(A.nums)) {
-    var nh = '';
-    A.nums.slice(0, 3).forEach(function (r) {
-      var b = (r.n === null || r.n === undefined || r.n === '')
-        ? '<b><span class="tbd">확인 필요</span></b>'
-        : '<b>' + esc(r.n) + '<i>' + esc(r.unit) + '</i></b>';
-      nh += '<div class="num">' + b + '<span>' + esc(r.label) + '</span></div>';
-    });
-    put('act-nums', nh);
-  }
-
-  // ───── 지금 무엇을 보고 있나 ─────
-  if (some(A.now)) {
-    var wh = '';
-    A.now.forEach(function (r) {
-      // 사진이 있으면 data-mark 를 안 붙입니다 — 글자 무늬가 사진을 덮습니다.
-      var shot = r.img
-        ? '<span class="shot"><img src="' + esc(r.img) + '" alt="' + esc(r.alt) + '" loading="lazy"></span>'
-        : '<span class="shot" data-mark="' + esc(r.mark) + '" aria-hidden="true"></span>';
-      var m = (r.due ? '<span class="due">' + esc(r.due) + '</span>' : '')
-            + (r.tbd ? '<span class="tbd">확인 필요</span>' : '');
-      wh += '<li><a href="' + esc(r.href || '#') + '">' + shot
-          +   '<span class="t">' + esc(r.t) + '</span>'
-          +   '<span class="m">' + m + '</span>'
-          + '</a></li>';
-    });
-    put('act-now', wh);
-  }
-
-  // ───── 무엇이 달라졌나 ─────
-  // 글이 아니라 사건입니다. [무엇을 했나] + [무엇이 바뀌었나] 두 줄이 규칙입니다.
-  if (some(A.result)) {
-    var rh = '';
-    A.result.forEach(function (c) {
-      var src = '';
-      if (some(c.src)) {
-        var links = '';
-        c.src.forEach(function (s) {
-          links += '<a href="' + esc(s[1]) + '">' + esc(s[0]) + ' →</a>';
-        });
-        src = '<div class="src">' + links + '</div>';
-      }
-      rh += '<article class="case rv">'
-          +   '<h3>' + esc(c.t) + (c.tbd ? ' <span class="tbd">확인 필요</span>' : '') + '</h3>'
-          +   '<p class="did">' + esc(c.did) + '</p>'
-          +   '<p class="got">' + esc(c.got) + '</p>'
-          +   src
-          +   '<p class="when">' + esc(c.when) + '</p>'
-          + '</article>';
-    });
-    put('act-res', rh);
-  }
-
-  // ───── 최근에 쓴 글 ─────
-  if (some(A.posts)) {
-    var ph = '';
-    A.posts.forEach(function (r) {
-      ph += '<a class="row" href="' + esc(r.url || '#') + '">'
-          +   '<span class="t">' + esc(r.title) + '</span>'
-          +   '<span class="meta">' + esc(r.date) + '</span>'
-          + '</a>';
-    });
-    put('act-posts', ph);
-  }
-
-  // ───── 현장 사진 ─────
-  // 씨앗에서는 이 칸이 hidden 입니다(사진 0장이면 칸을 안 만든다는 규칙).
-  // 사진이 들어올 때만 hidden 을 떼어 켭니다 — 여기서도 켜는 것만 스크립트가 합니다.
-  if (some(A.photos)) {
-    var sh = '';
-    A.photos.forEach(function (p) {
-      sh += '<div class="shot"><figure>'
-          +   '<span class="ph"><img src="' + esc(p.src) + '" alt="' + esc(p.alt) + '" loading="lazy"></span>'
-          +   '<figcaption><b>' + esc(p.t) + '</b>' + esc(p.d) + '</figcaption>'
-          + '</figure></div>';
-    });
-    var rail = document.getElementById('act-photos');
-    var head = document.getElementById('act-photos-h');
-    if (rail) {
-      rail.innerHTML = sh;
-      rail.parentNode.hidden = false;
-      if (head) head.hidden = false;
-    }
-  }
-})();
-</script>
-
-<script>
-/* 스크롤로 들어올 때 살짝 올라오기.
-   숨기는 상태(.is-armed)를 스크립트가 직접 붙입니다. 그래서 스크립트가 막히면
-   아무것도 안 숨겨지고 내용이 그냥 다 보입니다.
-   ⚠️ 캠페이너스 코드 위젯이 <script> 를 실행하는지는 /69 에서 확인해야 합니다. */
-(function () {
-  var items = document.querySelectorAll('#act .rv');
-  if (!items.length || !('IntersectionObserver' in window)) return;
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  var io = new IntersectionObserver(function (es) {
-    es.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      e.target.classList.add('is-in');
-      io.unobserve(e.target);
-    });
-  }, { rootMargin: '0px 0px -10% 0px' });
-
-  Array.prototype.forEach.call(items, function (el, i) {
-    el.classList.add('is-armed');
-    el.style.transitionDelay = Math.min(i, 4) * 60 + 'ms';
-    io.observe(el);
-  });
-})();
-</script>
-<!-- CAMPAIGNERS:PAGE-CODE END -->
+<!-- CAMPAIGNERS:ACTIVITY-CIVIC-BEFORE-BOARD END -->
