@@ -830,11 +830,26 @@ html { scroll-behavior: smooth; }
         <div class="dok-stat-sub">2000년 8월 제1회부터</div>
       </div>
       <div class="dok-stat-item is-lead">
-        <!-- ⚠️ 이 숫자만 awards.json 에 없어 자동으로 못 맞춥니다(사업비 항목이 없음).
-             원본 사이트에 적힌 값을 그대로 옮겼습니다. 근거 확인이 필요합니다. -->
-        <div class="dok-stat-num"><span class="dok-count" data-to="1000">0</span><span class="dok-stat-unit">억 원</span></div>
-        <div class="dok-stat-label">밑빠진 독을 감시한 세금</div>
-        <div class="dok-stat-sub">역대 수상 사업의 사업비 합계</div>
+        <!-- ═══ 들여다본 예산 — 17조 5,824억 원 (2026-09-02) ═══
+             예전 '1,000억 원'은 근거를 못 찾던 값이라 갈아냈습니다. 지금 값은
+             아래 DOK_SUMMARY 의 금액 카드를 40회 전부 훑어 더한 것입니다.
+
+               · 사업비가 적힌 19회                        6조 2,210억 원
+               · 사업비가 없어 예산낭비액·낭비우려액을 쓴 15회   11조 3,614억 원
+               ───────────────────────────────────────────
+                 34개 사업 합계                          17,582,401,476,550원 → 175,824억
+
+             ⚠️ '사업비'라고 쓰지 않는 이유 — 34회 중 15회는 사업 전체 규모가 아니라
+                새어나간 액수(예산낭비액)이고, 30회는 아직 확정 아닌 '낭비우려액'입니다.
+             ⚠️ 나머지 6회(2·33·34·35·36·39회)는 공적자금 투입액·직급보조비 예산처럼
+                성격이 또 달라 넣지 않았습니다. 넣으면 30조 8,712억이 됩니다.
+             ⚠️ awards.json 에는 금액 항목이 없어 자동으로 못 맞춥니다.
+                41회가 더해지면 이 값도 손으로 다시 더해야 합니다.
+             ⚠️ 밑빠진 독상 사이트(dokseong/public/index.html)에도 같은 칸이 있습니다.
+                한쪽만 고치면 어긋납니다. -->
+        <div class="dok-stat-num"><span class="dok-count" data-to="175824">0</span><span class="dok-stat-unit">억 원</span></div>
+        <div class="dok-stat-label">들여다본 예산</div>
+        <div class="dok-stat-sub">34개 수상 사업의 사업비 · 예산낭비액 합계</div>
       </div>
       <div class="dok-stat-item">
         <div class="dok-stat-num"><span class="dok-count" id="dokh-years" data-to="0">0</span><span class="dok-stat-unit">년</span></div>
@@ -1828,7 +1843,9 @@ html { scroll-behavior: smooth; }
     var last = awards.reduce(function (m, a) { return Math.max(m, a.round || 0); }, 0);
 
     if (rounds && last) rounds.setAttribute('data-to', String(last));
-    if (years) years.setAttribute('data-to', String(new Date().getFullYear() - 2000));
+    // 시민행동 창립은 1999년 9월 9일입니다. 2000년(제1회 수상)이 아니라
+    // 창립 해를 기준으로 셉니다 — 2026년이면 27년째입니다.
+    if (years) years.setAttribute('data-to', String(new Date().getFullYear() - 1999));
     if (eyebrow && last) eyebrow.textContent = '2000년부터 ' + last + '회';
   }
 
@@ -2109,15 +2126,23 @@ html { scroll-behavior: smooth; }
     if (!nums.length) return;
 
     var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // data-dec="1" 을 붙이면 소수점 한 자리까지 셉니다(17.6조 처럼).
+    // 없으면 예전처럼 정수입니다.
     var run = function (el) {
       var to = Number(el.getAttribute('data-to')) || 0;
-      if (still || !('requestAnimationFrame' in window)) { el.textContent = to; return; }
+      var dec = Number(el.getAttribute('data-dec')) || 0;
+      // 여섯 자리(175,824억)가 들어오므로 쉼표를 찍습니다. 안 찍으면 자릿수를 세게 됩니다.
+      var show = function (v) {
+        return dec ? v.toFixed(dec) : Math.round(v).toLocaleString('ko-KR');
+      };
+      if (still || !('requestAnimationFrame' in window)) { el.textContent = show(to); return; }
       var t0 = null, dur = 900;
       var tick = function (t) {
         if (t0 === null) t0 = t;
         var p = Math.min(1, (t - t0) / dur);
-        el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+        el.textContent = show(to * (1 - Math.pow(1 - p, 3)));
         if (p < 1) requestAnimationFrame(tick);
+        else el.textContent = show(to);
       };
       requestAnimationFrame(tick);
     };

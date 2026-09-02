@@ -9,6 +9,10 @@
     activity-budget.html   활동 > 예산감시   (나라살림 · 지방재정)
     activity-civic.html    활동 > 시민참여   (참여예산 · 시민 교육)
 
+    기본 게시판과 나눠 붙이는 세 화면은 아래 조각도 함께 만듭니다.
+    activity-*-before-board.html  활동 소개부터 '무엇이 달라졌나'까지
+    activity-*-after-board.html   '시민행동이 하는 다른 일'
+
 왜 손으로 안 쓰고 찍어내나
     네 장이 "같은 단체가 만든 것"으로 보여야 합니다. 손으로 네 번 쓰면
     여백이나 글씨 크기가 조금씩 어긋나고, 한 장만 고치는 일이 반드시 생깁니다.
@@ -1169,12 +1173,12 @@ def build_sibs(me):
 #  기본 게시판과 나눠 붙이는 '앞 코드'
 #
 #  캠페이너스 기본 게시판 위젯은 코드 위젯 안에 넣을 수 없습니다. 그래서
-#  활동 소개부터 '무엇이 달라졌나'까지를 독립된 코드 조각으로 닫고,
-#  바로 다음에 기존 게시판 위젯을, 그 다음에 공통 하단을 둡니다.
+#  활동 소개부터 '무엇이 달라졌나'까지를 앞 코드로 닫고, 게시판 뒤에는
+#  '시민행동이 하는 다른 일'만 별도 조각으로 둡니다.
 #
-#  ✖ 뒤 코드(After)는 쓰지 않습니다. 코드로 만든 최근 글 목록과
-#    '시민행동이 하는 다른 일'은 앞 코드에도 넣지 않습니다
-#    (앞은 게시판이 대신하고, 뒤는 공통 상단 메뉴와 겹칩니다).
+#  ✔ 순서: 앞 코드 → 기본 게시판 → 뒤 코드 → 공통 하단.
+#  ✖ 코드로 만든 최근 글 목록과 현장 사진은 넣지 않습니다. 기본 게시판이
+#    글 목록·검색·페이지 나눔을 맡고, 관련 활동 링크만 게시판 뒤에 남깁니다.
 #  ✖ 밑빠진 독상(/76)은 이 구조에서 제외합니다.
 # ═════════════════════════════════════════════════════════════════
 
@@ -1254,6 +1258,48 @@ BOARD_CSS = u"""
 """
 
 
+# 게시판 뒤의 관련 활동 안내는 앞 코드의 #act 바깥에 놓입니다. #act 를 한 페이지에
+# 두 번 쓰지 않도록 독립된 클래스와 최소 CSS만 씁니다. 세 생성 파일은 이 원본 하나를
+# 공유하므로 모양을 고칠 때 파일마다 따로 손대지 않습니다.
+AFTER_BOARD_CSS = u"""<style>
+@font-face{font-family:'GmarketSans';src:url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');font-weight:700;font-display:swap}
+
+.ah-activity-other{
+  --brand:#00afec;--deep:#0079a6;--tint:#e2f5fd;--ink:#0b1e28;
+  --faint:#7d95a3;--line:#d5e4eb;
+  margin-left:calc(50% - 50vw + var(--ah-sb,0px)/2);
+  margin-right:calc(50% - 50vw + var(--ah-sb,0px)/2);
+  background:#fff;color:var(--ink);
+  font-family:'Pretendard Variable',Pretendard,'Noto Sans KR',-apple-system,sans-serif;
+  font-size:16px;line-height:1.7;word-break:keep-all;-webkit-font-smoothing:antialiased
+}
+.ah-activity-other *{box-sizing:border-box}
+.ah-activity-other .wrap{width:min(1120px,calc(100% - 44px));margin:0 auto}
+.ah-activity-other .sec{padding:clamp(38px,4.6vw,64px) 0;border-top:1px solid var(--line)}
+.ah-activity-other h2{
+  margin:0 0 clamp(20px,2.4vw,30px);font-family:GmarketSans,'Pretendard Variable',sans-serif;
+  font-size:clamp(20px,2.3vw,27px);font-weight:700;line-height:1.4;letter-spacing:-.022em
+}
+.ah-activity-other .sibs{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px
+}
+.ah-activity-other .sib{
+  border:1px solid var(--line);padding:14px 16px;color:inherit;text-decoration:none;
+  font-size:14.5px;font-weight:700;transition:.16s
+}
+.ah-activity-other .sib small{
+  display:block;margin-top:3px;font-size:11.5px;font-weight:600;color:var(--faint)
+}
+.ah-activity-other .sib:hover{border-color:var(--brand);background:var(--tint);color:var(--deep)}
+.ah-activity-other :focus-visible{outline:2.5px solid var(--brand);outline-offset:3px}
+
+@media(max-width:640px){
+  .ah-activity-other{font-size:15.5px}
+  .ah-activity-other .sec{padding:34px 0}
+}
+</style>"""
+
+
 def build_board_before(html, key, board):
     """활동 페이지 하나를 기본 게시판 위에 붙일 코드 조각으로 자릅니다.
 
@@ -1271,7 +1317,8 @@ def build_board_before(html, key, board):
     tag = key.upper()
     return u"""<!-- CAMPAIGNERS:ACTIVITY-%(tag)s-BEFORE-BOARD START -->
 <!-- %(board)s : 이 코드를 기본 게시판 위젯 바로 위의 코드 위젯에 붙입니다.
-     순서는 이 코드 → 기본 게시판 위젯 → 공통 하단 입니다. 뒤 코드는 쓰지 않습니다. -->
+     순서는 이 코드 → 기본 게시판 위젯 → activity-%(key)s-after-board.html
+     → 공통 하단 입니다. -->
 %(style)s
 
 %(body)s
@@ -1280,7 +1327,29 @@ def build_board_before(html, key, board):
   </div>
 </div>
 <!-- CAMPAIGNERS:ACTIVITY-%(tag)s-BEFORE-BOARD END -->
-""" % {'tag': tag, 'board': board, 'style': style, 'body': before_body}
+""" % {'tag': tag, 'key': key, 'board': board, 'style': style, 'body': before_body}
+
+
+def build_board_after(key, board):
+    """기본 게시판 아래에 붙일 관련 활동 안내 조각을 만듭니다."""
+    tag = key.upper()
+    return u"""<!-- CAMPAIGNERS:ACTIVITY-%(tag)s-AFTER-BOARD START -->
+<!-- %(board)s : 기본 게시판 바로 아래, 공통 하단 바로 위의 코드 위젯에 붙입니다.
+     이 페이지를 제외한 다른 활동으로 건너가는 링크만 들어 있습니다. -->
+%(style)s
+
+<div class="ah-activity-other" aria-label="시민행동이 하는 다른 일">
+  <div class="wrap">
+    <section class="sec">
+      <h2>시민행동이 하는 다른 일</h2>
+      <div class="sibs">
+%(sibs)s
+      </div>
+    </section>
+  </div>
+</div>
+<!-- CAMPAIGNERS:ACTIVITY-%(tag)s-AFTER-BOARD END -->
+""" % {'tag': tag, 'board': board, 'style': AFTER_BOARD_CSS, 'sibs': build_sibs(key)}
 
 
 def main():
@@ -1318,6 +1387,12 @@ def main():
             io.open(before_out, 'w', encoding='utf-8', newline='\n').write(before)
             print(u'  %-24s %6d 바이트' %
                   (os.path.basename(before_out), len(before.encode('utf-8'))))
+
+            after = build_board_after(key, href)
+            after_out = os.path.join(ROOT, 'activity-%s-after-board.html' % key)
+            io.open(after_out, 'w', encoding='utf-8', newline='\n').write(after)
+            print(u'  %-24s %6d 바이트' %
+                  (os.path.basename(after_out), len(after.encode('utf-8'))))
 
     # 페이지 코드에는 공통 상단·하단을 넣지 않습니다. 붙여넣기 범위만 정리합니다.
     print(u'\n  캠페이너스 붙여넣기 범위 정리 —')

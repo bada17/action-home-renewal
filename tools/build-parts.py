@@ -55,8 +55,9 @@ PNOTE = ('<!-- 이 파일 전체를 해당 페이지의 코드 위젯 하나에 
 PNOTES = dict(
     ('activity-%s.html' % key,
      '<!-- 미리보기용 전체 파일입니다. 캠페이너스 %s에는 이 파일 전체를 붙이지 말고 '
-     'activity-%s-before-board.html 다음에 기본 게시판 위젯을 두고, 그 다음에 '
-     '공통 하단을 둡니다. 뒤 코드(After)는 쓰지 않습니다. -->' % (board, key))
+     'activity-%s-before-board.html 다음에 기본 게시판 위젯, '
+     'activity-%s-after-board.html, 공통 하단을 차례로 둡니다. -->' %
+     (board, key, key))
     for key, board in (('local', '/49'), ('budget', '/27'), ('civic', '/51'))
 )
 

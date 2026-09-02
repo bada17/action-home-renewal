@@ -1,0 +1,54 @@
+<!-- CAMPAIGNERS:ACTIVITY-BUDGET-AFTER-BOARD START -->
+<!-- /27 : 기본 게시판 바로 아래, 공통 하단 바로 위의 코드 위젯에 붙입니다.
+     이 페이지를 제외한 다른 활동으로 건너가는 링크만 들어 있습니다. -->
+<style>
+@font-face{font-family:'GmarketSans';src:url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');font-weight:700;font-display:swap}
+
+.ah-activity-other{
+  --brand:#00afec;--deep:#0079a6;--tint:#e2f5fd;--ink:#0b1e28;
+  --faint:#7d95a3;--line:#d5e4eb;
+  margin-left:calc(50% - 50vw + var(--ah-sb,0px)/2);
+  margin-right:calc(50% - 50vw + var(--ah-sb,0px)/2);
+  background:#fff;color:var(--ink);
+  font-family:'Pretendard Variable',Pretendard,'Noto Sans KR',-apple-system,sans-serif;
+  font-size:16px;line-height:1.7;word-break:keep-all;-webkit-font-smoothing:antialiased
+}
+.ah-activity-other *{box-sizing:border-box}
+.ah-activity-other .wrap{width:min(1120px,calc(100% - 44px));margin:0 auto}
+.ah-activity-other .sec{padding:clamp(38px,4.6vw,64px) 0;border-top:1px solid var(--line)}
+.ah-activity-other h2{
+  margin:0 0 clamp(20px,2.4vw,30px);font-family:GmarketSans,'Pretendard Variable',sans-serif;
+  font-size:clamp(20px,2.3vw,27px);font-weight:700;line-height:1.4;letter-spacing:-.022em
+}
+.ah-activity-other .sibs{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px
+}
+.ah-activity-other .sib{
+  border:1px solid var(--line);padding:14px 16px;color:inherit;text-decoration:none;
+  font-size:14.5px;font-weight:700;transition:.16s
+}
+.ah-activity-other .sib small{
+  display:block;margin-top:3px;font-size:11.5px;font-weight:600;color:var(--faint)
+}
+.ah-activity-other .sib:hover{border-color:var(--brand);background:var(--tint);color:var(--deep)}
+.ah-activity-other :focus-visible{outline:2.5px solid var(--brand);outline-offset:3px}
+
+@media(max-width:640px){
+  .ah-activity-other{font-size:15.5px}
+  .ah-activity-other .sec{padding:34px 0}
+}
+</style>
+
+<div class="ah-activity-other" aria-label="시민행동이 하는 다른 일">
+  <div class="wrap">
+    <section class="sec">
+      <h2>시민행동이 하는 다른 일</h2>
+      <div class="sibs">
+        <a class="sib" href="/49">지자체 감시<small>지방정부 · 지방의회</small></a>
+        <a class="sib" href="/51">시민참여<small>참여예산 · 시민 교육</small></a>
+        <a class="sib" href="/76">밑빠진 독상</a>
+      </div>
+    </section>
+  </div>
+</div>
+<!-- CAMPAIGNERS:ACTIVITY-BUDGET-AFTER-BOARD END -->

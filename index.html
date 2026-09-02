@@ -323,6 +323,7 @@
   #action-home-v2 .litem .lm .d.is-todo{color:var(--ink-soft);font-weight:700}
   #action-home-v2 .litem:hover{background:var(--brand-tint)}
   #action-home-v2 .litem:hover .lt{color:var(--brand-deep)}
+  #action-home-v2 .new-window{font-size:.78em;margin-left:.28em;color:var(--brand-deep);vertical-align:.12em}
   /* 지금 큰 칸에 떠 있는 것 */
   #action-home-v2 .litem.is-on{background:var(--brand-tint)}
   #action-home-v2 .litem.is-on .lno{color:var(--brand)}
@@ -996,7 +997,9 @@
      /82  종료     → /77 종료 탭
 
    action.or.kr/rss 의 글 주소에 들어 있는 게시판 번호로 나눕니다.
-   제목을 `제목 — 한 줄 설명`으로 쓰면 긴 대시 뒤가 카드 설명이 됩니다.
+   제목을 `[링크:https://외부주소] 제목 — 한 줄 설명`으로 쓰면 카드가 그 주소를
+   새 탭으로 열고, [링크:...] 표시는 카드에서 숨깁니다. `[링크:/내부주소]`는 같은
+   탭에서 엽니다. 링크 표시가 없거나 주소가 안전하지 않으면 해당 게시글로 이동합니다.
    RSS가 끊기거나 게시판에 글이 아직 없으면 아래 HTML 씨앗을 그대로 둡니다.
    ═══════════════════════════════════════════════════════════════ */
 (function () {
@@ -1011,18 +1014,46 @@
     var bits = String(raw || '').split(/\s+—\s+/);
     return { title: bits.shift() || '', lead: bits.join(' — ') };
   }
+  function campaignTitle(raw, postUrl) {
+    var text = String(raw || '').trim();
+    var match = text.match(/^\[링크:([^\]]+)\]\s*/);
+    var url = postUrl;
+    var newTab = false;
+
+    if (match) {
+      text = text.slice(match[0].length);
+      try {
+        var wanted = String(match[1] || '').trim();
+        var parsed = new URL(wanted, window.location.origin);
+        var internal = wanted.charAt(0) === '/' && wanted.charAt(1) !== '/'
+          && parsed.origin === window.location.origin;
+        var secureExternal = /^https:\/\//i.test(wanted) && parsed.protocol === 'https:';
+        if (internal) url = parsed.pathname + parsed.search + parsed.hash;
+        if (!internal && secureExternal) {
+          url = parsed.href;
+          newTab = true;
+        }
+      } catch (e) { /* 잘못된 주소면 게시글 링크를 그대로 씁니다. */ }
+    }
+
+    var shown = splitTitle(text);
+    return { title: shown.title, lead: shown.lead, url: url, newTab: newTab };
+  }
   function boardPath(link) {
     try { return new URL(link, window.location.href).pathname.replace(/\/+$/, ''); }
     catch (e) { return ''; }
   }
   function post(item) {
-    var raw = splitTitle(nodeText(item, 'title'));
+    var postUrl = nodeText(item, 'link');
+    var raw = campaignTitle(nodeText(item, 'title'), postUrl);
     var media = item.getElementsByTagName('media:content')[0];
     return {
       kind: '캠페인',
       title: raw.title,
       lead: raw.lead,
-      url: nodeText(item, 'link'),
+      url: raw.url,
+      newTab: raw.newTab,
+      postUrl: postUrl,
       img: media ? (media.getAttribute('url') || '') : '',
       tile: '#0079a6'
     };
@@ -1040,7 +1071,8 @@
       var on = [], off = [];
       Array.prototype.forEach.call(xml.getElementsByTagName('item'), function (item) {
         var row = post(item);
-        var path = boardPath(row.url);
+        // 카드 목적지가 외부여도 어느 게시판 글인지는 원래 글 주소로 판별합니다.
+        var path = boardPath(row.postUrl);
         if (path === '/81') on.push(row);
         if (path === '/82') off.push(row);
       });
@@ -1081,6 +1113,14 @@
   }
   function some(a) { return Object.prototype.toString.call(a) === '[object Array]' && a.length > 0; }
   function two(t) { return String(t || '').replace(/[\s\[\]]/g, '').slice(0, 2); }
+  function linkAttrs(it) {
+    return it && it.newTab
+      ? ' target="_blank" rel="noopener noreferrer" aria-label="' + esc((it.title || '캠페인') + ' (새 창)') + '"'
+      : '';
+  }
+  function newWindowMark(it) {
+    return it && it.newTab ? '<span class="new-window" aria-hidden="true">↗</span>' : '';
+  }
 
   function render(D) {
     if (!D || typeof D !== 'object') return;
@@ -1103,24 +1143,24 @@
       var post  = kind !== '캠페인' ? ' is-post' : '';
 
       sHtml += '<article class="slide"' + due + ' style="--tile:' + esc(it.tile || '#0079a6') + '">'
-            +    '<a class="slide-link" href="' + esc(it.url || '#') + '">'
+            +    '<a class="slide-link" href="' + esc(it.url || '#') + '"' + linkAttrs(it) + '>'
             +      '<span class="slide-shot">' + shot + '</span>'
             +      '<span class="slide-in">'
             +        '<span class="pills">'
             +          '<span class="pill is-kind' + post + '">' + esc(kind) + '</span>'
             +          (it.cat ? '<span class="pill">' + esc(it.cat) + '</span>' : '')
             +        '</span>'
-            +        '<strong class="slide-t">' + esc(it.title) + '</strong>'
+            +        '<strong class="slide-t">' + esc(it.title) + newWindowMark(it) + '</strong>'
             +        (it.lead ? '<span class="slide-d">' + esc(it.lead) + '</span>' : '')
             +      '</span>'
             +    '</a>'
             +  '</article>';
 
-      lHtml += '<a class="litem' + (i === 0 ? ' is-on' : '') + '" href="' + esc(it.url || '#') + '"'
+      lHtml += '<a class="litem' + (i === 0 ? ' is-on' : '') + '" href="' + esc(it.url || '#') + '"' + linkAttrs(it)
             +    ' data-go="' + i + '"' + due + '>'
             +    '<span class="lno">0' + (i + 1) + '</span>'
             +    '<span class="lpill is-kind' + post + '">' + esc(kind) + '</span>'
-            +    '<span class="lt">' + esc(it.title) + '</span>'
+            +    '<span class="lt">' + esc(it.title) + newWindowMark(it) + '</span>'
             +    '<span class="lbar" aria-hidden="true"><i></i></span>'
             +  '</a>';
       });
@@ -1140,13 +1180,13 @@
           + '<img class="real" src="' + esc(it.img) + '" alt="" loading="lazy">'
         : '<span class="mark">' + esc(it.mark || two(it.title)) + '</span>';
 
-      nHtml += '<a class="pcard reveal" href="' + esc(it.url || '#') + '">'
+      nHtml += '<a class="pcard reveal" href="' + esc(it.url || '#') + '"' + linkAttrs(it) + '>'
             +    '<span class="pcard-media"' + (it.img ? '' : ' style="--tile:' + esc(it.tile || '#0079a6') + '"') + '>'
             +      media
             +    '</span>'
             +    '<span class="pcard-body">'
             +      (it.board ? '<span class="pbadge">' + esc(it.board) + '</span>' : '')
-            +      '<strong>' + esc(it.title) + '</strong>'
+            +      '<strong>' + esc(it.title) + newWindowMark(it) + '</strong>'
             +      '<time>' + esc(it.date) + '</time>'
             +    '</span>'
             +  '</a>';
