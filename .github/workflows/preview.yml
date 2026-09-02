@@ -1,0 +1,88 @@
+# 검토용 사이트 자동 갱신
+#
+#   이 저장소(main)에 push 하면 →  python tools/build-static.py 로 굽고
+#                              →  bada17/action-home-preview 에 통째로 밀어 넣습니다.
+#   결과: https://bada17.github.io/action-home-preview/
+#
+# 왜 저장소가 둘인가
+#   여기는 '소스', 저기는 '결과물'입니다. 깃허브 페이지스는 자기 저장소 안의 파일만
+#   내보내므로 둘을 이어 주는 것이 필요했고, 그 이음매가 이 파일입니다.
+#   예전에는 손으로 두 단계를 밟았습니다(2026-09-02 자동화).
+#
+# 어떻게 남의 저장소에 쓰나
+#   action-home-preview 에 '배포 키'(쓰기 가능)를 하나 달아 두고, 그 짝인 비밀키를
+#   이 저장소의 비밀값 PREVIEW_DEPLOY_KEY 에 넣어 두었습니다.
+#   ⚠️ 계정 전체 토큰이 아니라 그 저장소 하나에만 쓸 수 있는 열쇠입니다.
+#   ⚠️ 그만두려면 두 곳에서 지우면 끝입니다 —
+#      action-home-preview > Settings > Deploy keys,
+#      action-home-renewal > Settings > Secrets.
+#
+# ⚠️ action-home-preview 를 직접 고치지 마세요. 다음 push 에 통째로 날아갑니다.
+#    고칠 곳은 언제나 이 저장소입니다.
+
+name: 검토용 사이트 갱신
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:        # 손으로도 돌릴 수 있게 (Actions 탭 > Run workflow)
+
+# 연달아 push 해도 마지막 것 하나만 올라가게 합니다.
+concurrency:
+  group: preview
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 개편 저장소 받기
+        uses: actions/checkout@v4
+        with:
+          path: action-home-renewal
+
+      # build-static.py 는 밑빠진 독상 데이터를 '옆 폴더'에서 찾습니다
+      # (…/dokseong/public/data). 없으면 지도와 표가 빈 채로 나옵니다.
+      - name: 밑빠진 독상 데이터 받기
+        uses: actions/checkout@v4
+        with:
+          repository: bada17/dokseong
+          path: dokseong
+          sparse-checkout: public/data
+
+      - name: 파이썬
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 정적 사이트 굽기
+        working-directory: action-home-renewal
+        run: python tools/build-static.py --base action-home-preview
+
+      - name: 검토용 저장소에 올리기
+        env:
+          DEPLOY_KEY: ${{ secrets.PREVIEW_DEPLOY_KEY }}
+        run: |
+          set -e
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts 2>/dev/null
+
+          git clone --depth 1 git@github.com:bada17/action-home-preview.git out
+
+          # .git 과 README.md 만 남기고 나머지를 갈아 끼웁니다.
+          find out -mindepth 1 -maxdepth 1 ! -name .git ! -name README.md -exec rm -rf {} +
+          cp -r action-home-renewal/dist/. out/
+
+          cd out
+          git config user.name  'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo '바뀐 것이 없어 올리지 않습니다.'
+            exit 0
+          fi
+          git commit -m "검토용 사본 갱신 — 개편 저장소 ${GITHUB_SHA:0:7}"
+          git push
+          echo '올렸습니다 → https://bada17.github.io/action-home-preview/'
