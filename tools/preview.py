@@ -14,15 +14,15 @@
 
 이어 둔 주소
     /               홈                    index.html
-    /issue/         캠페인 목록             issue.html
+    /77             캠페인 목록             issue.html
     /49             활동 > 지자체 감시    activity-local.html
     /act-power      활동 > 권력감시       activity-power.html
     /27     활동 > 예산감시       activity-budget.html
     /51             활동 > 시민참여       activity-civic.html
-    /dok-history    활동 > 밑빠진 독상    dok-history.html
+    /76             활동 > 밑빠진 독상    dok-history.html
     /library        자료실                library.html
     /dok/           밑빠진 독상 원본      옆 저장소를 그 자리에서 읽습니다
-    /pb/            참여예산 상담소       pb.html
+    /80             참여예산 상담소       pb.html
     /pb-old/        상담소 옛 초안        옆 저장소를 그 자리에서 읽습니다
 
     /dok/ 과 /pb-old/ 는 **복사하지 않습니다.** 원본 저장소를 그대로 물려 주므로
@@ -47,7 +47,7 @@ SIBLINGS = {
         os.path.join(os.path.dirname(ROOT), 'dokseong', 'public'),
         r'C:\Users\dbqke\dokseong\public',
     ],
-    # 2026-08-27: /pb/ 는 이 저장소의 새 상담소(pb.html)가 씁니다.
+    # 2026-08-27: /80 은 이 저장소의 새 상담소(pb.html)가 씁니다.
     # 옛 초안은 견줘 보려고 /pb-old/ 로 옮겨 두었습니다.
     '/pb-old/': [
         r'C:\Users\dbqke\participatory-budget',
@@ -58,16 +58,17 @@ SIBLINGS = {
 ROUTES = {
     '/': 'index.html',
     '/69': 'index.html',
-    '/issue/': 'issue.html',
-    '/issue': 'issue.html',
+    '/77': 'issue.html',
+    '/77/': 'issue.html',
     '/49': 'activity-local.html',
     '/act-power': 'activity-power.html',
     '/27': 'activity-budget.html',
     '/27/': 'activity-budget.html',
     '/51': 'activity-civic.html',
-    '/dok-history': 'dok-history.html',
-    '/pb/': 'pb.html',
-    '/pb': 'pb.html',
+    '/76': 'dok-history.html',
+    '/76/': 'dok-history.html',
+    '/80': 'pb.html',
+    '/80/': 'pb.html',
     '/library': 'library.html',
     '/library/': 'library.html',
     '/sign': 'sign.html',
@@ -86,6 +87,10 @@ STUBS = {
     '/25': ('뉴스레터', '스티비 구독 페이지입니다.'),
     '/26': ('소식', '공지 게시판입니다.'),
     '/57': ('예산 모니터링', '게시판입니다. 활동 &gt; 예산감시의 글이 여기 올라가 있습니다.'),
+    '/78': ('2026 하반기 밑빠진 독상', '캠페이너스 내부 캠페인 페이지입니다.'),
+    '/78/': ('2026 하반기 밑빠진 독상', '캠페이너스 내부 캠페인 페이지입니다.'),
+    '/79': ('10만원 예산편성', '캠페이너스 내부 캠페인 페이지입니다.'),
+    '/79/': ('10만원 예산편성', '캠페이너스 내부 캠페인 페이지입니다.'),
 }
 
 SHELL = u'''<!doctype html>
@@ -115,15 +120,15 @@ SHELL = u'''<!doctype html>
 <nav id="pv">
   <b>미리보기</b>
   <a href="/"%(a_home)s>홈</a>
-  <a href="/issue/"%(a_issue)s>캠페인</a>
+  <a href="/77"%(a_issue)s>캠페인</a>
   <b>활동</b>
   <a href="/49"%(a_local)s>지자체 감시</a>
   <a href="/act-power"%(a_power)s>권력감시</a>
   <a href="/27"%(a_budget)s>예산감시</a>
   <a href="/51"%(a_pb51)s>참여예산</a>
-  <a href="/dok-history"%(a_dok)s>밑빠진 독상</a>
+  <a href="/76"%(a_dok)s>밑빠진 독상</a>
   <b>캠페인</b>
-  <a href="/pb/"%(a_pb)s>참여예산 상담소</a>
+  <a href="/80"%(a_pb)s>참여예산 상담소</a>
   <a href="/sign"%(a_sign)s>서명</a>
   <a href="/library"%(a_lib)s>자료실</a>
   <b>원본</b>
@@ -145,11 +150,11 @@ STUB_BODY = u'''<div style="max-width:640px;margin:14vh auto;padding:0 24px;
 </div>'''
 
 TITLES = {
-    '/': '홈', '/69': '홈', '/issue/': '캠페인', '/issue': '캠페인',
+    '/': '홈', '/69': '홈', '/77': '캠페인', '/77/': '캠페인',
     '/49': '활동 > 지자체 감시', '/act-power': '활동 > 권력감시',
     '/27': '활동 > 예산감시', '/51': '활동 > 시민참여',
-    '/dok-history': '활동 > 밑빠진 독상',
-    '/pb/': '캠페인 > 참여예산 상담소', '/pb': '캠페인 > 참여예산 상담소',
+    '/76': '활동 > 밑빠진 독상', '/76/': '활동 > 밑빠진 독상',
+    '/80': '캠페인 > 참여예산 상담소', '/80/': '캠페인 > 참여예산 상담소',
     '/library': '자료실', '/library/': '자료실',
     '/sign': '캠페인 > 서명', '/sign/': '캠페인 > 서명',
 }
@@ -231,15 +236,15 @@ def demo_data():
     issues = [
         {'title': '2026 하반기 밑빠진 독상',
          'lead': '세금이 새는 현장을 시민이 제보하고, 그중 최악의 사업을 함께 고릅니다.',
-         'url': 'https://dokseong-action.bada523082.chatgpt.site/', 'mark': '독상',
+         'url': '/78', 'mark': '독상',
          'tile': '#062330', 'cat': '밑빠진 독상', 'due': '2026-09-15'},
         {'title': '10만원 예산편성',
          'lead': '내 몫의 예산 10만원을 어디에 쓸지 직접 짜 봅니다.',
-         'url': 'https://vote.action.or.kr/', 'mark': '편성',
+         'url': '/79', 'mark': '편성',
          'tile': '#0d4f66', 'cat': '예산감시'},
         {'title': '참여예산 상담소',
          'lead': '참여예산위원들이 현장에서 부딪히는 고민을 모아 함께 풀어 봅니다.',
-         'url': '/pb/', 'mark': '상담', 'tile': '#0b4a5e', 'cat': '시민참여'},
+         'url': '/80', 'mark': '상담', 'tile': '#0b4a5e', 'cat': '시민참여'},
     ]
 
     for it in issues:
@@ -366,10 +371,10 @@ def wrap(path, body, title):
         'a_budget': '', 'a_pb51': '', 'a_dok': '', 'a_pb': '', 'a_dokorg': '',
         'a_lib': '', 'a_sign': '',
     }
-    key = {'/': 'a_home', '/69': 'a_home', '/issue/': 'a_issue', '/issue': 'a_issue',
+    key = {'/': 'a_home', '/69': 'a_home', '/77': 'a_issue', '/77/': 'a_issue',
            '/49': 'a_local', '/act-power': 'a_power', '/27': 'a_budget',
-           '/51': 'a_pb51', '/dok-history': 'a_dok',
-           '/pb/': 'a_pb', '/pb': 'a_pb',
+           '/51': 'a_pb51', '/76': 'a_dok', '/76/': 'a_dok',
+           '/80': 'a_pb', '/80/': 'a_pb',
            '/library': 'a_lib', '/library/': 'a_lib',
            '/sign': 'a_sign', '/sign/': 'a_sign'}.get(path)
     if key:

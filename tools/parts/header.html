@@ -452,9 +452,8 @@
       </div>
 
       <!-- 활동 = 끝나는 날짜가 없는 일. 마감이 있으면 '캠페인'로 갑니다.
-           ⚠️ /dok-history 는 아직 미리보기 전용 경로입니다(캠페이너스 번호 없음).
-                예산감시는 2026-09-01 에 /27 로 옮겼습니다.
-              캠페이너스 페이지를 만들면 그 번호로 바꾸세요. -->
+           밑빠진 독상은 2026-09-02 에 캠페이너스 /76 으로 연결했습니다.
+           예산감시는 2026-09-01 에 /27 로 옮겼습니다. -->
       <div class="gnb-item">
         <a href="/52" data-nav="act">활동</a>
         <div class="drop is-act"><ul>
@@ -475,7 +474,7 @@
             <a class="dmain" href="/51" data-nav="act-civic">시민참여<em>참여예산 · 시민 교육</em></a>
           </li>
           <li class="drow">
-            <a class="dmain" href="/dok-history" data-nav="act-dok">밑빠진 독상<em>예산 낭비 · 역대 수상</em></a>
+            <a class="dmain" href="/76" data-nav="act-dok">밑빠진 독상</a>
           </li>
         </ul></div>
       </div>
@@ -483,16 +482,14 @@
       <!-- 캠페인 = 끝나는 날짜가 있는 것. 마감이 지나면 내리고, 그 결과는 해당
            활동 페이지의 '결과' 칸으로 내려갑니다. -->
       <div class="gnb-item">
-        <a href="/issue/" data-nav="issue">캠페인</a>
+        <a href="/77" data-nav="issue">캠페인</a>
         <div class="drop is-iss"><ul>
-          <!-- 맨 위 '함께하기' — 진행 중과 종료된 캠페인을 탭으로 한자리에서 봅니다.
-               ⚠️ /issue/ 는 미리보기 전용 경로입니다. 캠페이너스 페이지 번호로 바꾸세요. -->
-          <li><a class="iall" href="/issue/" data-nav="issue">함께하기<span class="idue">진행 중 · 종료</span></a></li>
+          <!-- 맨 위 '함께하기' — 진행 중과 종료된 캠페인을 탭으로 한자리에서 봅니다. -->
+          <li><a class="iall" href="/77" data-nav="issue">함께하기<span class="idue">진행 중 · 종료</span></a></li>
           <li class="isep" aria-hidden="true"></li>
-          <li><a href="https://dokseong-action.bada523082.chatgpt.site/">2026 하반기 밑빠진 독상<!--<span class="idue">9/15 마감</span>--></a></li>
-          <li><a href="https://vote.action.or.kr/">10만원 예산편성<!--<span class="idue">기간 미정</span>--></a></li>
-          <!-- ⚠️ /pb/ 는 미리보기 전용 경로입니다. 캠페이너스 페이지 번호로 바꾸세요. -->
-          <li><a href="/pb/" data-nav="pb">참여예산 상담소<!--<span class="idue">상시</span>--></a></li>
+          <li><a href="/78" data-nav="issue-dok">2026 하반기 밑빠진 독상<!--<span class="idue">9/15 마감</span>--></a></li>
+          <li><a href="/79" data-nav="issue-vote">10만원 예산편성<!--<span class="idue">기간 미정</span>--></a></li>
+          <li><a href="/80" data-nav="pb">참여예산 상담소<!--<span class="idue">상시</span>--></a></li>
         </ul></div>
       </div>
 
@@ -589,16 +586,16 @@
         <li><a href="/27" data-nav="act-budget">예산감시</a></li>
         <li><a href="/57" data-nav="act-monitor">예산 모니터링</a></li>
         <li><a href="/51" data-nav="act-civic">시민참여</a></li>
-        <li><a href="/dok-history" data-nav="act-dok">밑빠진 독상</a></li>
+        <li><a href="/76" data-nav="act-dok">밑빠진 독상</a></li>
       </ul>
     </li>
     <li>
-      <a href="/issue/">캠페인</a>
+      <a href="/77">캠페인</a>
       <ul class="msub">
-        <li><a class="is-all" href="/issue/">함께하기 →</a></li>
-        <li><a href="https://dokseong-action.bada523082.chatgpt.site/">2026 하반기 밑빠진 독상</a></li>
-        <li><a href="https://vote.action.or.kr/">10만원 예산편성</a></li>
-        <li><a href="/pb/" data-nav="pb">참여예산 상담소</a></li>
+        <li><a class="is-all" href="/77" data-nav="issue">함께하기 →</a></li>
+        <li><a href="/78" data-nav="issue-dok">2026 하반기 밑빠진 독상</a></li>
+        <li><a href="/79" data-nav="issue-vote">10만원 예산편성</a></li>
+        <li><a href="/80" data-nav="pb">참여예산 상담소</a></li>
       </ul>
     </li>
     <li>
@@ -706,11 +703,13 @@
       ['/act-power', 'act-power'],
       ['/27', 'act-budget'],
       ['/57', 'act-monitor'],
-      ['/dok-history', 'act-dok'],
+      ['/76', 'act-dok'],
       ['/library', 'library'],
-      ['/issue', 'issue'],
+      ['/77', 'issue'],
+      ['/78', 'issue-dok'],
+      ['/79', 'issue-vote'],
       ['/sign', 'issue'],
-      ['/pb', 'pb'],
+      ['/80', 'pb'],
       ['/49', 'act-local'],
       ['/51', 'act-civic'],
       ['/69', 'home']
@@ -727,7 +726,7 @@
   if (here && here !== 'home') {
     var marks = [here];
     if (here.indexOf('act-') === 0) marks.push('act');   // 활동 밑이면 '활동'도
-    if (here === 'pb') marks.push('issue');              // 상담소는 캠페인 밑
+    if (here === 'pb' || here.indexOf('issue-') === 0) marks.push('issue'); // 캠페인 하위
     marks.forEach(function (key) {
       hd.querySelectorAll('[data-nav="' + key + '"]').forEach(function (el) {
         el.classList.add('is-here');

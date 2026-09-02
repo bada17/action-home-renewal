@@ -20,8 +20,7 @@
 
    색·글꼴·모양은 DESIGN.md 의 한 벌을 그대로 씁니다.
 
-   ⚠️ 이 페이지의 주소는 아직 없습니다. index.html 에서 /issue/ 로 걸어 두었는데
-      그건 미리보기 전용이라, 캠페이너스 페이지가 생기면 그 번호로 바꿔야 합니다.
+   캠페이너스 페이지 /77 에 붙이는 캠페인 목록입니다.
    ═══════════════════════════════════════════════════════════════ */
 
 @font-face{font-family:'GmarketSans';src:url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');font-weight:700;font-display:swap}
@@ -218,7 +217,7 @@
          ⚠️ 마감일을 손으로 D-day 로 적지 마세요 — data-due 를 스크립트가 셉니다. -->
     <div class="grid" id="list-on" role="tabpanel" aria-labelledby="tab-on">
 
-      <a class="card" href="https://dokseong-action.bada523082.chatgpt.site/" style="--tile:#062330" data-due="2026-09-15">
+      <a class="card" href="/78" style="--tile:#062330" data-due="2026-09-15">
         <span class="card-shot">
           <img src="https://cdn.imweb.me/thumbnail/20260825/c4b8e2d1b259d.png" alt="2026 하반기 밑빠진 독상">
         </span>
@@ -229,7 +228,7 @@
         </span>
       </a>
 
-      <a class="card" href="https://vote.action.or.kr/" style="--tile:#0d4f66">
+      <a class="card" href="/79" style="--tile:#0d4f66">
         <span class="card-shot">
           <img src="https://vote.action.or.kr/og-budget-vote-v1.png?v=2" alt="10만원 예산 편성">
         </span>
@@ -240,9 +239,8 @@
         </span>
       </a>
 
-      <!-- ⚠️ /pb/ 는 미리보기 전용 경로입니다. 캠페이너스 페이지 번호로 바꾸세요.
-           ⚠️ 끝나는 날짜가 없습니다. 캠페인에 두려면 마감일이 있어야 합니다. -->
-      <a class="card" href="/pb/" style="--tile:#062330">
+      <!-- ⚠️ 끝나는 날짜가 없습니다. 캠페인에 두려면 마감일이 있어야 합니다. -->
+      <a class="card" href="/80" style="--tile:#062330">
         <span class="card-shot">
           <span class="mark" aria-hidden="true">상담</span>
         </span>
@@ -275,10 +273,79 @@
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
+   캠페이너스 캠페인 게시판 자동 연결
+
+     /81  진행 중 → 홈 첫 화면 + 이 화면의 진행 중 탭
+     /82  종료     → 이 화면의 종료 탭
+
+   action.or.kr/rss 의 글 주소에 들어 있는 게시판 번호로 나눕니다.
+   제목을 `제목 — 한 줄 설명`으로 쓰면 긴 대시 뒤가 카드 설명이 됩니다.
+   RSS가 끊기거나 게시판에 글이 아직 없으면 아래 HTML 씨앗을 그대로 둡니다.
+   ═══════════════════════════════════════════════════════════════ */
+(function () {
+  // 미리보기나 다른 연결 코드가 이미 값을 넣었다면 그 값을 우선합니다.
+  if (window.AH_DATA && Object.prototype.toString.call(window.AH_DATA.issues) === '[object Array]') return;
+
+  function nodeText(node, tag) {
+    var el = node.getElementsByTagName(tag)[0];
+    return el ? String(el.textContent || '').trim() : '';
+  }
+  function splitTitle(raw) {
+    var bits = String(raw || '').split(/\s+—\s+/);
+    return { title: bits.shift() || '', lead: bits.join(' — ') };
+  }
+  function boardPath(link) {
+    try { return new URL(link, window.location.href).pathname.replace(/\/+$/, ''); }
+    catch (e) { return ''; }
+  }
+  function post(item) {
+    var raw = splitTitle(nodeText(item, 'title'));
+    var media = item.getElementsByTagName('media:content')[0];
+    return {
+      kind: '캠페인',
+      title: raw.title,
+      lead: raw.lead,
+      url: nodeText(item, 'link'),
+      img: media ? (media.getAttribute('url') || '') : '',
+      tile: '#0079a6'
+    };
+  }
+
+  fetch('/rss', { credentials: 'same-origin' })
+    .then(function (res) {
+      if (!res.ok) throw new Error('RSS ' + res.status);
+      return res.text();
+    })
+    .then(function (xmlText) {
+      var xml = new DOMParser().parseFromString(xmlText, 'application/xml');
+      if (xml.getElementsByTagName('parsererror').length) throw new Error('RSS XML');
+
+      var on = [], off = [];
+      Array.prototype.forEach.call(xml.getElementsByTagName('item'), function (item) {
+        var row = post(item);
+        var path = boardPath(row.url);
+        if (path === '/81') on.push(row);
+        if (path === '/82') off.push(row);
+      });
+
+      // 빈 새 게시판 때문에 지금 카드가 사라지지 않게, 글이 있을 때만 켭니다.
+      if (!on.length && !off.length) return;
+      var data = window.AH_DATA && typeof window.AH_DATA === 'object' ? window.AH_DATA : {};
+      if (on.length) data.issues = on;
+      if (off.length) data.issuesDone = off;
+      window.AH_DATA = data;
+      window.dispatchEvent(new CustomEvent('ah-campaigns-ready', { detail: data }));
+    })
+    .catch(function () { /* 연결 실패 때는 HTML 씨앗을 그대로 보여 줍니다. */ });
+})();
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
    내용 갈아 끼우는 자리 — window.AH_DATA          ← 자세한 것은 CONTENT.md
 
-   홈(index.html)에 낸 것과 같은 자리입니다. 캠페이너스 게시판에서 받은 값을
-   GPT 가 window.AH_DATA 에 담아 주면 이 스크립트가 목록을 다시 그립니다.
+   홈(index.html)에 낸 것과 같은 자리입니다. 위 자동 연결기가 캠페이너스 게시판
+   값을 window.AH_DATA 에 담으면 이 스크립트가 목록을 다시 그립니다.
 
      D.issues      진행 중 (홈 첫 화면에 올라가는 것과 같은 다섯)
      D.issuesDone  종료  ← 이 화면에만 있습니다. 홈 첫 화면에는 안 올라갑니다
@@ -293,9 +360,6 @@
      대신 data-due 만 붙여, 나중에 다시 펴더라도 날짜 세기가 그대로 돕니다.
    ═══════════════════════════════════════════════════════════════ */
 (function () {
-  var D = window.AH_DATA;
-  if (!D || typeof D !== 'object') return;
-
   // 게시판 글에 들어있는 꺾쇠가 화면을 깨뜨립니다. 반드시 거칩니다.
   function esc(v) {
     var d = document.createElement('div');
@@ -338,8 +402,16 @@
     if (n) n.textContent = rows.length;
   }
 
-  fill('list-on',  'tab-on',  D.issues,     false);
-  fill('list-off', 'tab-off', D.issuesDone, true);
+  function render(D) {
+    if (!D || typeof D !== 'object') return;
+    fill('list-on',  'tab-on',  D.issues,     false);
+    fill('list-off', 'tab-off', D.issuesDone, true);
+  }
+
+  render(window.AH_DATA);
+  window.addEventListener('ah-campaigns-ready', function (e) {
+    render((e && e.detail) || window.AH_DATA);
+  });
 })();
 </script>
 

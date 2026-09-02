@@ -592,7 +592,7 @@
         <!-- 왼쪽 큰 칸. 네 장이 겹쳐 있고 하나만 보입니다. -->
         <div class="stage" id="lead-stage">
         <article class="slide" data-due="2026-09-15" style="--tile:#062330">
-          <a class="slide-link" href="https://dokseong-action.bada523082.chatgpt.site/">
+          <a class="slide-link" href="/78">
             <span class="slide-shot">
               <img class="fill" src="https://cdn.imweb.me/thumbnail/20260825/c4b8e2d1b259d.png" alt="" aria-hidden="true">
               <img class="real" src="https://cdn.imweb.me/thumbnail/20260825/c4b8e2d1b259d.png" alt="2026 하반기 밑빠진 독상">
@@ -609,7 +609,7 @@
           </a>
         </article>
         <article class="slide" style="--tile:#0d4f66">
-          <a class="slide-link" href="https://vote.action.or.kr/">
+          <a class="slide-link" href="/79">
             <span class="slide-shot">
               <img class="fill" src="https://vote.action.or.kr/og-budget-vote-v1.png?v=2" alt="" aria-hidden="true">
               <img class="real" src="https://vote.action.or.kr/og-budget-vote-v1.png?v=2" alt="10만원 예산 편성">
@@ -626,7 +626,7 @@
           </a>
         </article>
         <article class="slide" style="--tile:#062330">
-          <a class="slide-link" href="/pb/">
+          <a class="slide-link" href="/80">
             <span class="slide-shot">
               <span class="mark" aria-hidden="true">상담</span>
             </span>
@@ -674,21 +674,21 @@
              커서를 올리면 왼쪽 큰 칸이 그것으로 바뀌고, 누르면 그리로 갑니다.
              2026-09-01: 제목 위에 알약을 붙였습니다(큰 칸의 종류 알약과 같은 뜻). -->
         <div class="lead-list" id="lead-list">
-        <a class="litem is-on" href="https://dokseong-action.bada523082.chatgpt.site/" data-go="0" data-due="2026-09-15">
+        <a class="litem is-on" href="/78" data-go="0" data-due="2026-09-15">
           <span class="lno">01</span>
           <span class="lpill is-kind">캠페인</span>
           <span class="lt">2026 하반기 밑빠진 독상</span>
           <!--<span class="lm"><b class="d" data-dday>9/15</b><span>9월 15일 제보 마감</span></span>-->
           <span class="lbar" aria-hidden="true"><i></i></span>
         </a>
-        <a class="litem" href="https://vote.action.or.kr/" data-go="1">
+        <a class="litem" href="/79" data-go="1">
           <span class="lno">02</span>
           <span class="lpill is-kind">캠페인</span>
           <span class="lt">10만원 예산편성</span>
           <!--<span class="lm"><b class="d is-todo" data-dday>기간 미정</b><span>마감일 확인 필요</span></span>-->
           <span class="lbar" aria-hidden="true"><i></i></span>
         </a>
-        <a class="litem" href="/pb/" data-go="2">
+        <a class="litem" href="/80" data-go="2">
           <span class="lno">03</span>
           <span class="lpill is-kind">캠페인</span>
           <span class="lt">참여예산 상담소</span>
@@ -862,7 +862,7 @@
       </div>
 
       <div class="wrow reveal">
-        <span><h3><a href="/dok-history">밑빠진 독상</a></h3><span class="who">예산 낭비 · 역대 수상</span></span>
+        <span><h3><a href="/76">밑빠진 독상</a></h3></span>
         <span class="go" aria-hidden="true">→</span>
       </div>
 
@@ -990,10 +990,79 @@
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
+   캠페이너스 캠페인 게시판 자동 연결
+
+     /81  진행 중 → 홈 첫 화면 + /77 진행 중 탭
+     /82  종료     → /77 종료 탭
+
+   action.or.kr/rss 의 글 주소에 들어 있는 게시판 번호로 나눕니다.
+   제목을 `제목 — 한 줄 설명`으로 쓰면 긴 대시 뒤가 카드 설명이 됩니다.
+   RSS가 끊기거나 게시판에 글이 아직 없으면 아래 HTML 씨앗을 그대로 둡니다.
+   ═══════════════════════════════════════════════════════════════ */
+(function () {
+  // 미리보기나 다른 연결 코드가 이미 값을 넣었다면 그 값을 우선합니다.
+  if (window.AH_DATA && Object.prototype.toString.call(window.AH_DATA.issues) === '[object Array]') return;
+
+  function nodeText(node, tag) {
+    var el = node.getElementsByTagName(tag)[0];
+    return el ? String(el.textContent || '').trim() : '';
+  }
+  function splitTitle(raw) {
+    var bits = String(raw || '').split(/\s+—\s+/);
+    return { title: bits.shift() || '', lead: bits.join(' — ') };
+  }
+  function boardPath(link) {
+    try { return new URL(link, window.location.href).pathname.replace(/\/+$/, ''); }
+    catch (e) { return ''; }
+  }
+  function post(item) {
+    var raw = splitTitle(nodeText(item, 'title'));
+    var media = item.getElementsByTagName('media:content')[0];
+    return {
+      kind: '캠페인',
+      title: raw.title,
+      lead: raw.lead,
+      url: nodeText(item, 'link'),
+      img: media ? (media.getAttribute('url') || '') : '',
+      tile: '#0079a6'
+    };
+  }
+
+  fetch('/rss', { credentials: 'same-origin' })
+    .then(function (res) {
+      if (!res.ok) throw new Error('RSS ' + res.status);
+      return res.text();
+    })
+    .then(function (xmlText) {
+      var xml = new DOMParser().parseFromString(xmlText, 'application/xml');
+      if (xml.getElementsByTagName('parsererror').length) throw new Error('RSS XML');
+
+      var on = [], off = [];
+      Array.prototype.forEach.call(xml.getElementsByTagName('item'), function (item) {
+        var row = post(item);
+        var path = boardPath(row.url);
+        if (path === '/81') on.push(row);
+        if (path === '/82') off.push(row);
+      });
+
+      // 빈 새 게시판 때문에 지금 카드가 사라지지 않게, 글이 있을 때만 켭니다.
+      if (!on.length && !off.length) return;
+      var data = window.AH_DATA && typeof window.AH_DATA === 'object' ? window.AH_DATA : {};
+      if (on.length) data.issues = on;
+      if (off.length) data.issuesDone = off;
+      window.AH_DATA = data;
+      window.dispatchEvent(new CustomEvent('ah-campaigns-ready', { detail: data }));
+    })
+    .catch(function () { /* 연결 실패 때는 HTML 씨앗을 그대로 보여 줍니다. */ });
+})();
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
    내용 갈아 끼우는 자리 — window.AH_DATA          ← 자세한 것은 CONTENT.md
 
    2026-08-31 사용자 결정: 여러 사람이 손대는 내용은 코드 안에 두지 않는다.
-   캠페이너스 게시판에서 받은 값을 GPT 가 window.AH_DATA 에 담아 주면,
+   위 자동 연결기가 캠페이너스 게시판 값을 window.AH_DATA 에 담으면
    이 스크립트가 그 값으로 화면을 다시 그립니다.
 
    ★ 값이 없으면 아무것도 하지 않습니다. 아래 HTML 에 적힌 글·사진이 그대로 남습니다.
@@ -1004,9 +1073,6 @@
      순서를 바꾸면 새로 그린 카드에 동작이 안 붙습니다.
    ═══════════════════════════════════════════════════════════════ */
 (function () {
-  var D = window.AH_DATA;
-  if (!D || typeof D !== 'object') return;
-
   // 글을 그대로 넣으면 게시판 글에 들어있는 꺾쇠가 화면을 깨뜨립니다. 반드시 거칩니다.
   function esc(v) {
     var d = document.createElement('div');
@@ -1016,12 +1082,15 @@
   function some(a) { return Object.prototype.toString.call(a) === '[object Array]' && a.length > 0; }
   function two(t) { return String(t || '').replace(/[\s\[\]]/g, '').slice(0, 2); }
 
-  // ───── 첫 화면 캠페인 (왼쪽 큰 칸 + 오른쪽 목록) ─────
-  var stage = document.getElementById('lead-stage');
-  var list  = document.getElementById('lead-list');
-  if (some(D.issues) && stage && list) {
-    var sHtml = '', lHtml = '';
-    D.issues.slice(0, 5).forEach(function (it, i) {
+  function render(D) {
+    if (!D || typeof D !== 'object') return;
+
+    // ───── 첫 화면 캠페인 (왼쪽 큰 칸 + 오른쪽 목록) ─────
+    var stage = document.getElementById('lead-stage');
+    var list  = document.getElementById('lead-list');
+    if (some(D.issues) && stage && list) {
+      var sHtml = '', lHtml = '';
+      D.issues.slice(0, 5).forEach(function (it, i) {
       var due  = it.due ? ' data-due="' + esc(it.due) + '"' : '';
       var shot = it.img
         ? '<img class="fill" src="' + esc(it.img) + '" alt="" aria-hidden="true">'
@@ -1054,16 +1123,16 @@
             +    '<span class="lt">' + esc(it.title) + '</span>'
             +    '<span class="lbar" aria-hidden="true"><i></i></span>'
             +  '</a>';
-    });
-    stage.innerHTML = sHtml;
-    list.innerHTML  = lHtml;
-  }
+      });
+      stage.innerHTML = sHtml;
+      list.innerHTML  = lHtml;
+    }
 
-  // ───── 소식 사진 카드 ─────
-  var grid = document.getElementById('news-grid');
-  if (some(D.news) && grid) {
-    var nHtml = '';
-    D.news.slice(0, 8).forEach(function (it) {
+    // ───── 소식 사진 카드 ─────
+    var grid = document.getElementById('news-grid');
+    if (some(D.news) && grid) {
+      var nHtml = '';
+      D.news.slice(0, 8).forEach(function (it) {
       // 사진이 없으면 색 타일 + 큰 글자. 점선 빈 칸은 쓰지 않습니다(DESIGN.md).
       // 사진은 잘리지 않게 앞에 contain 으로 얹고, 뒤에 같은 사진을 흐리게 깔아 액자를 채웁니다.
       var media = it.img
@@ -1081,9 +1150,15 @@
             +      '<time>' + esc(it.date) + '</time>'
             +    '</span>'
             +  '</a>';
-    });
-    grid.innerHTML = nHtml;
+      });
+      grid.innerHTML = nHtml;
+    }
   }
+
+  render(window.AH_DATA);
+  window.addEventListener('ah-campaigns-ready', function (e) {
+    render((e && e.detail) || window.AH_DATA);
+  });
 })();
 </script>
 
