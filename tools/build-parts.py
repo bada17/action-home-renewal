@@ -40,11 +40,22 @@ HBEGIN = '<!-- PART:header -->'
 HEND = '<!-- /PART:header -->'
 PBEGIN_RE = re.compile(r'<!-- CAMPAIGNERS:PAGE-CODE START .*?-->\s*')
 PEND_RE = re.compile(r'\s*<!-- CAMPAIGNERS:PAGE-CODE END -->')
+# 파일 맨 위 안내문. 다시 돌려도 쌓이지 않도록, 아래 두 머리말 중 하나로 시작하는
+# 주석은 지우고 다시 답니다. 새 안내문을 만들면 이 정규식에도 머리말을 더하세요.
 PNOTE_RE = re.compile(
-    r'<!-- 이 파일 전체를 해당 페이지의 코드 위젯 하나에 붙입니다\..*?-->\s*', re.S)
+    r'<!-- (?:이 파일 전체를 해당 페이지의 코드 위젯 하나에 붙입니다'
+    r'|미리보기용 전체 파일입니다)\..*?-->\s*', re.S)
 PNOTE = ('<!-- 이 파일 전체를 해당 페이지의 코드 위젯 하나에 붙입니다. '
          '공통 상단은 tools/parts/header.html, 공통 하단은 tools/parts/footer.html이 '
          '각각 따로 맡습니다. -->')
+# 파일마다 다른 안내문. 2026-09-02 지자체 감시(/49)는 기본 게시판 위젯을 살리려고
+# 앞 코드(activity-local-before-board.html)와 게시판을 따로 두기 때문에,
+# 미리보기용 전체 파일을 그대로 붙이면 안 됩니다.
+PNOTES = {
+    'activity-local.html':
+        '<!-- 미리보기용 전체 파일입니다. 캠페이너스 /49에는 이 파일 전체를 붙이지 말고 '
+        'activity-local-before-board.html 다음에 기본 게시판 위젯을 배치합니다. -->',
+}
 
 # 2026-09-01 사용자 결정:
 # 공통 상단·하단은 각 페이지 파일에 복사하지 않습니다. 아래 표시는 예전에
@@ -91,7 +102,7 @@ def mark_page_code(text, name):
     text = PNOTE_RE.sub('', text, count=1)
     begin = '<!-- CAMPAIGNERS:PAGE-CODE START file=%s -->' % name
     return '%s\n%s\n%s\n<!-- CAMPAIGNERS:PAGE-CODE END -->\n' % (
-        begin, PNOTE, text.strip())
+        begin, PNOTES.get(name, PNOTE), text.strip())
 
 
 def main():

@@ -1165,6 +1165,66 @@ def build_sibs(me):
     return u'\n'.join(out)
 
 
+def build_local_board_before(html):
+    """지자체 감시 /49의 기본 게시판 위에 붙일 코드 조각을 만듭니다.
+
+    캠페이너스 기본 게시판 위젯은 코드 위젯 안에 넣을 수 없습니다. 그래서 활동 소개와
+    결과까지를 독립된 코드 조각으로 닫고, 그 바로 다음에 기존 /49 게시판 위젯을 둡니다.
+    '다른 활동'은 공통 상단 메뉴와 겹치므로 별도 뒤 코드로 만들지 않습니다.
+    """
+    style_start = html.index(u'<style>')
+    style_end = html.index(u'</style>', style_start) + len(u'</style>')
+    style = html[style_start:style_end]
+    # 앞·뒤 조각이 각각 독립된 id를 쓰지만, :is()로 기존 ID급 CSS 우선순위를
+    # 유지합니다. class로 낮추면 캠페이너스 기본 위젯 스타일이 덮을 수 있습니다.
+    style = style.replace(u'#act', u':is(#act,#act-tail)')
+    style = style.replace(
+        u'</style>',
+        u'''\n/* /49 기본 게시판: 게시글 제목을 굵게 표시하고 표의 세 열 너비를 맞춥니다.
+   No·글쓴이 등 열 표시는 캠페이너스 게시판의 디자인 설정에서 관리합니다. */
+.widget.board._list_wrap .li_body .tit .list_text_title{
+  font-weight:700!important
+}
+/* 넓은 화면: 카테고리를 줄인 만큼 제목 칸을 넓힙니다. */
+@media (min-width:768px){
+  .widget.board._list_wrap .li_header > .category,
+  .widget.board._list_wrap .li_body > .category{width:10%!important}
+  .widget.board._list_wrap .li_header > .tit,
+  .widget.board._list_wrap .li_body > .tit{width:75%!important}
+  .widget.board._list_wrap .li_header > .date,
+  .widget.board._list_wrap .li_body > .time{width:15%!important}
+}
+/* 좁은 화면: 날짜가 줄바꿈되지 않게 별도 비율을 씁니다. */
+@media (max-width:767px){
+  .widget.board._list_wrap .li_header > .category,
+  .widget.board._list_wrap .li_body > .category{width:14%!important}
+  .widget.board._list_wrap .li_header > .tit,
+  .widget.board._list_wrap .li_body > .tit{width:61%!important}
+  .widget.board._list_wrap .li_header > .date,
+  .widget.board._list_wrap .li_body > .time{width:25%!important}
+}
+</style>''',
+        1)
+
+    body_start = html.index(u'<div id="act"')
+    board_cut = html.index(u'    <!-- ───────── 글 ─────────', body_start)
+    before_body = html[body_start:board_cut].rstrip()
+
+    before = u'''<!-- CAMPAIGNERS:ACTIVITY-LOCAL-BEFORE-BOARD START -->
+<!-- /49 지자체 감시: 이 코드를 기본 게시판 위젯 바로 위의 코드 위젯에 붙입니다. -->
+{style}
+
+{body}
+
+    <!-- 이 코드 바로 다음에 캠페이너스 기본 /49 게시판 위젯을 둡니다. -->
+  </div>
+</div>
+<!-- CAMPAIGNERS:ACTIVITY-LOCAL-BEFORE-BOARD END -->
+'''.format(style=style, body=before_body)
+
+    return before
+
+
 def main():
     for key, name, who, href in ALL:
         if key not in PAGES:
@@ -1187,9 +1247,19 @@ def main():
             sibs=build_sibs(key),
             signature=build_sig(d),
         )
+        # /49 는 '이 파일 전체를 붙이지 말라'는 다른 안내문을 씁니다.
+        # 그 안내문은 build-parts.py 의 PNOTES 가 붙입니다 — 여기서 바꾸면
+        # build-parts.py 가 나중에 다시 덮어써 효과가 없습니다.
         out = os.path.join(ROOT, 'activity-%s.html' % key)
         io.open(out, 'w', encoding='utf-8', newline='\n').write(html)
         print(u'  %-24s %6d 바이트' % (os.path.basename(out), len(html.encode('utf-8'))))
+
+        if key == 'local':
+            before = build_local_board_before(html)
+            before_out = os.path.join(ROOT, 'activity-local-before-board.html')
+            io.open(before_out, 'w', encoding='utf-8', newline='\n').write(before)
+            print(u'  %-24s %6d 바이트' %
+                  (os.path.basename(before_out), len(before.encode('utf-8'))))
 
     # 페이지 코드에는 공통 상단·하단을 넣지 않습니다. 붙여넣기 범위만 정리합니다.
     print(u'\n  캠페이너스 붙여넣기 범위 정리 —')
