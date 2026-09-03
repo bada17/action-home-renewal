@@ -236,6 +236,17 @@ def main():
     css, n2 = re.subn(pat, rep, css)
     imgs = n1 + n2
 
+    # 스티비 폼이 준 코드에는 모달 바탕 두 개의 id 가 **똑같습니다**
+    # (개인정보 모달·광고성 모달 둘 다 stb_form_modal_bg). 한 화면에 같은 id 가
+    # 둘이면 안 되고, 홈(index.html)에서는 이미 고쳐 두었습니다.
+    # 스티비 스크립트는 getElementById 로 먼저 나오는 하나만 잡으므로 하는 일은
+    # 달라지지 않습니다 — 광고성 모달은 원래도 바탕을 눌러 닫히지 않았습니다.
+    body, n3 = re.subn(r'(class="stb_form_ad_modal_bg"\s+id=")stb_form_modal_bg(")',
+                       r'\1stb_form_ad_modal_bg\2', body)
+    if n3:
+        dropped.append(u'겹치던 id 하나를 갈았습니다 — '
+                       u'광고성 모달 바탕 stb_form_modal_bg → stb_form_ad_modal_bg')
+
     note = u'\n'.join(u'       · %s' % d for d in dropped)
     remap = u', '.join(sorted(set(remapped))) or u'없음'
 
