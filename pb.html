@@ -483,12 +483,21 @@
            · 사진이 하나씩 들어갈 예정입니다. 얼굴이 아니라 **상반신**이 들어갈
              크기로 잡았습니다(세로 4:5). 그래서 카드가 한 줄에 하나입니다.
 
-         ★ 사진 넣는 법 — <div class="pho" aria-hidden="true">김<em>사진 자리</em></div> 를
-           <img class="pho" src="…" alt="김민철"> 로 통째로 바꾸면 끝입니다.
-           크기·비율·잘림은 .pho 규칙이 둘 다 맡습니다(위쪽 기준으로 자릅니다).
-           ⚠️ 주소는 **절대 주소(https://…)** 로 넣으세요. 이 파일은 개편 저장소
-              미리보기와 pb.action.or.kr 두 곳에서 함께 쓰이는데, 상대경로를 쓰면
-              한쪽에서 깨집니다(하단의 센터 로고들이 절대 주소인 것도 같은 이유입니다).
+         ★ 사진 넣는 법 (2026-09-03 오지은 위원부터 이렇게 합니다)
+           1. 배경을 지운 PNG 를 받습니다(remove.bg 등). 이 저장소는 배경을 못 지웁니다.
+           2. participatory-budget/make-photo.py 로 다듬습니다 —
+                python make-photo.py <원본> ohjieun
+              얼굴 크기와 머리 위 여백을 넷이 같게 맞추고 4:5 · webp 로 내보냅니다.
+              손으로 자르면 사람마다 달라지는데, 넷을 나란히 놓는 칸이라 바로 보입니다.
+           3. <div class="pho" …>김<em>사진 자리</em></div> 를
+              <img class="pho" src="img/이름.webp" alt="김민철" loading="lazy" decoding="async">
+              로 통째로 바꿉니다. 크기·비율·잘림은 .pho 규칙이 둘 다 맡습니다.
+
+           주소가 상대경로(img/…)인 이유 — 사진은 participatory-budget 저장소 안에
+           있고, 구운 index.html 과 나란히 배포됩니다. 그래서 pb.action.or.kr 에서는
+           맞고, **개편 저장소 미리보기에서만 깨집니다.** 그쪽은 지금 쓰지 않는
+           경로라 그렇게 뒀습니다(2026-09-03 결정). 바깥 주소에 올리기로 바뀌면
+           절대 주소로 바꾸면 됩니다 — 하단 센터 로고들이 그렇게 돼 있습니다.
 
          ⚠️ 오지은 위원은 이력을 아직 못 받았습니다. 지어내지 않고 비워 뒀습니다. -->
     <section class="sec"><div class="sh">
@@ -541,7 +550,7 @@
         </article>
 
         <article class="person">
-          <div class="pho" aria-hidden="true">오<em>사진 자리</em></div>
+          <img class="pho" src="img/ohjieun.webp" alt="오지은" loading="lazy" decoding="async">
           <div>
             <b class="nm">오지은</b>
             <div class="tags"><span>주민자치회</span></div>
