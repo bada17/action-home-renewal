@@ -118,6 +118,8 @@ SHELL = u'''<!doctype html>
   #pv a.on{background:#00afec;color:#04222e}
   #pv b{color:#5b7f92;padding:6px 8px;white-space:nowrap;font-weight:700}
   body{padding-top:34px}
+  /* 붙박이 머리띠가 표시줄 밑으로 들어가지 않게 내려 둡니다 (미리보기 전용) */
+  #ah-nav{top:34px !important}
 </style>
 </head><body>
 <nav id="pv">
