@@ -1044,12 +1044,20 @@
       if (next) next.disabled = i >= slides.length - 1;
     }
 
+    /* ⚠️ go() 는 **밀기만 하고 표시는 건드리지 않습니다.**
+       점·숫자·is-on 은 아래 follow() 가 스크롤 위치를 보고 혼자 정합니다.
+       여기서도 paint 를 부르면 둘이 어긋납니다 — 실제로 그렇게 만들었다가
+       화면에는 김민철이 서 있는데 숫자만 '3 / 4' 인 상태를 봤습니다.
+       (부드럽게 미는 중에는 scrollLeft 가 아직 목적지가 아니기 때문입니다.) */
     function go(i) {
       i = Math.max(0, Math.min(slides.length - 1, i));
       /* scrollTo 대신 scrollLeft 를 쓰는 이유 — 첫 칸을 기준으로 재면
          .pv 의 안쪽 여백(padding)과 칸 사이 간격을 따로 계산하지 않아도 됩니다. */
       pv.scrollLeft = slides[i].offsetLeft - slides[0].offsetLeft;
-      paint(i);
+      /* 밀기가 아예 안 먹은 경우(창이 아직 안 그려졌을 때 등)에도 표시가
+         멈춰 있지 않도록 한 번 더 맞춰 봅니다. 실제로 움직였으면
+         follow 가 이미 같은 값을 넣어 둔 뒤라 아무 일도 하지 않습니다. */
+      setTimeout(follow, 700);
     }
 
     /* 지금 어느 칸을 보고 있나 — 창 한가운데에 제일 가까운 칸입니다.
@@ -1106,12 +1114,61 @@
       });
     }
 
+    /* ── 5초마다 저절로 넘어갑니다 (2026-09-03 사용자 결정) ──
+       읽는 도중에 화면이 사라지면 안 되므로 다음 경우에는 멈춥니다.
+         · 마우스를 올렸을 때 · 그 안에 초점이 있을 때 · 손으로 넘긴 직후
+         · 다른 탭에 가 있을 때 · 카루셀이 화면 밖으로 나갔을 때
+         · 움직임을 끈 사람(prefers-reduced-motion)에게는 아예 돌지 않습니다
+       마지막에서 첫 번째로 돌아옵니다 — 화살표는 끝에서 멈추게 두었지만,
+       저절로 도는 쪽은 넷을 계속 보여 주는 것이 목적입니다. */
+    var timer = null, held = 0, onScreen = true;
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+    function start() {
+      stop();
+      if (calm || held || !onScreen || document.hidden) return;
+      timer = setInterval(function () { go(cur >= slides.length - 1 ? 0 : cur + 1); }, 5000);
+    }
+    /* 사람이 건드리면 잠시 손을 뗍니다(hold). 뗀 뒤 8초가 지나면 다시 돕니다. */
+    var wake;
+    function hold() {
+      held++;
+      clearTimeout(wake);
+      stop();
+      wake = setTimeout(function () { held = 0; start(); }, 8000);
+    }
+    ['mousedown', 'touchstart', 'keydown', 'wheel'].forEach(function (ev) {
+      pv.addEventListener(ev, hold, { passive: true });
+    });
+    if (prev) prev.addEventListener('click', hold);
+    if (next) next.addEventListener('click', hold);
+    dots.forEach(function (d) { d.addEventListener('click', hold); });
+
+    var box = root.querySelector('.people');
+    if (box) {
+      box.addEventListener('mouseenter', stop);
+      box.addEventListener('mouseleave', function () { if (!held) start(); });
+      box.addEventListener('focusin', stop);
+      box.addEventListener('focusout', function () { if (!held) start(); });
+    }
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) stop(); else if (!held) start();
+    });
+    /* 화면 밖에서는 돌지 않습니다 — 안 보는 동안 넘어가 있으면
+       다시 내려왔을 때 엉뚱한 사람이 서 있습니다. */
+    if ('IntersectionObserver' in window && box) {
+      new IntersectionObserver(function (es) {
+        onScreen = es[0].isIntersecting;
+        if (onScreen) { if (!held) start(); } else stop();
+      }, { threshold: .35 }).observe(box);
+    }
+
     paint(0);
+    start();
     /* 창 크기가 바뀌면 스냅 위치가 어긋납니다. 보던 사람에게 다시 맞춥니다. */
     var rt;
     window.addEventListener('resize', function () {
       clearTimeout(rt);
-      rt = setTimeout(function () { var i = cur; cur = -1; go(i); }, 160);
+      rt = setTimeout(function () { go(cur); }, 160);
     });
   })();
 
