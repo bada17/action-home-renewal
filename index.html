@@ -45,6 +45,9 @@
   #action-home-v2 a{color:inherit;text-decoration:none}
   #action-home-v2 img{display:block;width:100%}
   #action-home-v2 ul{list-style:none;margin:0;padding:0}
+  /* 키보드로 옮겨 다닐 때 지금 어디인지 보이게 합니다.
+     나머지 여섯 화면(캠페인·자료실·서명·활동 넷)과 같은 규칙입니다. */
+  #action-home-v2 :focus-visible{outline:2.5px solid var(--brand); outline-offset:3px}
   #action-home-v2 h1,#action-home-v2 h2,#action-home-v2 h3,#action-home-v2 p{margin:0}
   #action-home-v2 .wrap{width:min(1120px,calc(100% - 48px));margin:0 auto}
 
@@ -134,7 +137,7 @@
     font-size:clamp(28px,4.1vw,54px);line-height:1.25
   }
   #action-home-v2 .band-d{
-    margin-top:14px;font-size:clamp(16px,1.5vw,22px);color:rgba(255,255,255,.92)
+    margin-top:14px;font-size:clamp(16px,1.5vw,22px);color:#fff
   }
   /* 알약 둘 — 채운 것이 '정기후원하기', 테두리형이 '후원 안내'입니다.
      둘 다 흰색으로 채우면 무엇을 먼저 누를지가 안 보입니다. */
@@ -435,14 +438,18 @@
      화면에서만 감췄습니다 — 화면 읽기 프로그램에는 그대로 읽힙니다. */
   #action-home-v2 .nl{border-top:1px solid var(--line)}
   #action-home-v2 .nl-in{display:grid;grid-template-columns:1fr 1fr;align-items:stretch}
-  #action-home-v2 .nl-copy{background:var(--brand);color:#fff;
+  /* ★ 2026-09-03 — 바탕을 --brand 에서 --brand-deep 으로 내렸습니다.
+     이 칸 위에는 CTA 하늘색 칸이, 아래에는 푸터 후원 띠가 붙습니다. 셋 다
+     --brand 라 왼칸이 세로로 이어진 한 덩이처럼 보였습니다(가른 것은 1px 선뿐).
+     진한 쪽으로 내리니 셋이 갈리고, 흰 글씨 대비도 2.5:1 에서 4.1:1 로 올라갑니다. */
+  #action-home-v2 .nl-copy{background:var(--brand-deep);color:#fff;
     display:flex;flex-direction:column;justify-content:space-between;gap:28px;
     padding:clamp(30px,3.6vw,54px) clamp(26px,3vw,48px)}
   #action-home-v2 .nl-tag{align-self:flex-start;border:1.5px solid rgba(255,255,255,.85);border-radius:999px;
     padding:6px 15px;font-size:13px;font-weight:800}
   #action-home-v2 .nl h2{font-family:GmarketSans,sans-serif;font-weight:700;line-height:1.35;
     font-size:clamp(21px,2.3vw,32px);letter-spacing:-.025em}
-  #action-home-v2 .nl-copy p{font-size:14.5px;line-height:1.65;color:rgba(255,255,255,.9)}
+  #action-home-v2 .nl-copy p{font-size:14.5px;line-height:1.65;color:#fff}
   /* 지난 호 보기 — 구독을 망설이는 사람에게 "무엇을 보내는지" 먼저 보여 주는 길입니다. */
   #action-home-v2 .nl-past{display:inline-block;margin-top:16px;
     border-bottom:1.5px solid rgba(255,255,255,.55);padding-bottom:3px;
@@ -941,13 +948,13 @@
       <form action="https://stibee.com/api/v1.0/lists/EST3etdzzIoaxOorm4dT1dmlXqA=/public/subscribers" method="POST" target="_blank" accept-charset="utf-8" class="stb_form" name="stb_subscribe_form" id="stb_subscribe_form" data-lang="" novalidate>
         <fieldset class="stb_form_set">
           <label for="stb_email" class="stb_form_set_label">이메일 주소<span class="stb_asterisk">*</span></label>
-          <input type="text" class="stb_form_set_input" id="stb_email" name="email" required="required">
+          <input type="text" class="stb_form_set_input" id="stb_email" name="email" placeholder="이메일 주소" required="required">
           <div class="stb_form_msg_error" id="stb_email_error"></div>
         </fieldset>
 
         <fieldset class="stb_form_set">
           <label for="stb_name" class="stb_form_set_label">이름<span class="stb_asterisk">*</span></label>
-          <input type="text" class="stb_form_set_input" id="stb_name" name="name" required="required">
+          <input type="text" class="stb_form_set_input" id="stb_name" name="name" placeholder="이름" required="required">
           <div class="stb_form_msg_error" id="stb_name_error"></div>
         </fieldset>
 
@@ -960,14 +967,14 @@
           <div class="stb_form_msg_error" id="stb_policy_error"></div>
           <div class="stb_form_modal stb_form_policy_text blind" id="stb_form_policy_modal">
             <div class="stb_form_modal_body">
-              <h1 class="stb_form_modal_title">개인정보 수집 및 이용</h1>
+              <h2 class="stb_form_modal_title">개인정보 수집 및 이용</h2>
               <div class="stb_form_modal_text">뉴스레터 발송을 위한 최소한의 개인정보를 수집하고 이용합니다.
 수집된 정보는 발송 외 다른 목적으로 이용되지 않으며, 서비스가 종료되거나 구독을 해지할 경우 즉시 파기됩니다.</div>
               <div class="stb_form_modal_btn">
                 <button id="stb_form_modal_close" class="stb_form_modal_close_btn" data-modal="stb_form_policy_modal" type="button">닫기</button>
               </div>
             </div>
-            <div class="stb_form_modal_bg" id="stb_form_modal_bg"></div>
+            <div class="stb_form_modal_bg" id="stb_form_modal_bg" data-modal="stb_form_policy_modal"></div>
           </div>
         </div>
 
@@ -981,7 +988,7 @@
           <div class="stb_form_msg_error" id="stb_ad_agreement_error"></div>
           <div class="stb_form_modal stb_form_policy_text blind" id="stb_form_ad_agreemnet_modal">
             <div class="stb_form_modal_body">
-              <h1 class="stb_form_modal_title">광고성 정보 수신</h1>
+              <h2 class="stb_form_modal_title">광고성 정보 수신</h2>
               <div class="stb_form_modal_text">제휴 콘텐츠, 프로모션, 이벤트 정보 등의 광고성 정보를 수신합니다.</div>
               <div class="stb_form_modal_btn">
                 <button id="stb_form_ad_modal_close" class="stb_form_modal_close_btn" data-modal="stb_form_ad_agreemnet_modal" type="button">닫기</button>
@@ -994,7 +1001,7 @@
                  하나만** 잡으므로 하는 일은 달라지지 않습니다 — 원래도 이 광고성 모달은
                  바탕을 눌러서 닫히지 않았고, 지금도 '닫기' 단추로 닫습니다.
                  ⚠️ 스티비에서 폼 코드를 새로 받아 붙이면 이 줄이 되돌아옵니다. -->
-            <div class="stb_form_ad_modal_bg" id="stb_form_ad_modal_bg"></div>
+            <div class="stb_form_ad_modal_bg" id="stb_form_ad_modal_bg" data-modal="stb_form_ad_agreemnet_modal"></div>
           </div>
         </div>
 
@@ -1007,6 +1014,23 @@
     </div>
   </div></section>
   <script type="text/javascript" src="https://resource.stibee.com/subscribe/stb_subscribe_form.js"></script>
+  <script>
+  /* 모달 바탕을 눌러 닫기 — 스티비 스크립트가 못 하는 것을 여기서 채웁니다.
+     스티비의 closeModal 은 눌린 곳의 data-modal 을 읽는데, 스티비가 준 바탕
+     <div> 에는 그 값이 없어 눌러도 오류만 났습니다. 게다가 바탕에 손잡이를
+     거는 곳이 id 하나(먼저 나오는 개인정보 모달)뿐이라 광고성 모달은 아예
+     빠져 있었습니다. 위 두 <div> 에 data-modal 을 적어 두고 여기서 둘 다 겁니다.
+     ⚠️ 스티비에서 폼 코드를 새로 받아 붙이면 이 두 가지가 함께 사라집니다. */
+  (function () {
+    var bgs = document.querySelectorAll('#stb_subscribe .stb_form_modal_bg[data-modal], #stb_subscribe .stb_form_ad_modal_bg[data-modal]');
+    Array.prototype.forEach.call(bgs, function (bg) {
+      bg.addEventListener('click', function () {
+        var m = document.getElementById(bg.dataset.modal);
+        if (m) { m.classList.add('blind'); }
+      });
+    });
+  })();
+  </script>
 
 </div>
 
