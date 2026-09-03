@@ -346,8 +346,13 @@
       <div class="two">
         <div><label class="sr-only" for="pb-name" hidden>이름</label>
           <input type="text" id="pb-name" placeholder="이름" autocomplete="name"></div>
-        <div><label class="sr-only" for="pb-phone" hidden>휴대전화</label>
-          <input type="tel" id="pb-phone" placeholder="휴대전화" autocomplete="tel"
+        <!-- 휴대전화는 원래도 필수가 아니었는데 화면에 표시가 없어서, 방문자는
+             다 필수인 줄 알고 적었습니다. 2026-09-03 에 '(선택)'을 붙였습니다.
+             개인정보보호법의 최소수집 때문입니다 — 이 폼의 목적은 '답을 알려
+             드리기'고 거기에는 이메일이면 됩니다. 휴대전화를 받는 실제 이유는
+             회원 확대인데, 그것은 다른 목적이라 강제할 근거가 없습니다. -->
+        <div><label class="sr-only" for="pb-phone" hidden>휴대전화 (선택)</label>
+          <input type="tel" id="pb-phone" placeholder="휴대전화 (선택)" autocomplete="tel"
                  inputmode="numeric" pattern="[0-9\-]*"></div>
       </div>
       <label class="sr-only" for="pb-mail" hidden>답이 올라오면 알려 드릴 이메일</label>
