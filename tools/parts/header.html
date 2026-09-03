@@ -71,6 +71,9 @@
     border:1.5px solid var(--line);font-size:15px;font-weight:700;transition:.15s;white-space:nowrap
   }
   #ah-nav .gnb-item>a:hover{border-color:var(--brand);color:var(--brand-deep)}
+  /* '활동' 알약은 href 가 없습니다 — 가는 곳이 아니라 여는 손잡이입니다(아래 주석 참고).
+     href 가 없는 <a> 는 브라우저가 손가락 커서를 안 줘서 여기서 직접 줍니다. */
+  #ah-nav .gnb-item>a[role="button"]{cursor:pointer}
 
   /* ───────── 지금 보고 있는 곳 표시 (2026-08-27) ─────────
      '목차를 눌러 들어가면 어디에 있는지 모르겠다'는 문제를 푸는 곳입니다.
@@ -276,7 +279,9 @@
   #ah-nav .mnav.open{display:block}
   #ah-nav .mnav>div>ul{padding:10px 0 18px}
   #ah-nav .mnav>div>ul>li+li{border-top:1px solid var(--line)}
-  #ah-nav .mnav>div>ul>li>a{display:flex;align-items:center;justify-content:space-between;padding:15px 4px 8px;font-size:16px;font-weight:700}
+  /* .mtitle 은 링크가 아닌 이름표입니다 — '활동'이 그렇습니다(가는 곳이 없습니다). */
+  #ah-nav .mnav>div>ul>li>a,
+  #ah-nav .mnav>div>ul>li>.mtitle{display:flex;align-items:center;justify-content:space-between;padding:15px 4px 8px;font-size:16px;font-weight:700}
   #ah-nav .mnav a:hover{color:var(--brand-deep)}
   #ah-nav .mnav a.is-cta{color:var(--brand-deep);padding-bottom:15px}
   #ah-nav .msub{display:flex;flex-wrap:wrap;gap:6px;padding:0 4px 14px}
@@ -454,8 +459,14 @@
       <!-- 활동 = 끝나는 날짜가 없는 일. 마감이 있으면 '캠페인'로 갑니다.
            밑빠진 독상은 2026-09-02 에 캠페이너스 /76 으로 연결했습니다.
            예산감시는 2026-09-01 에 /27 로 옮겼습니다. -->
+      <!-- ⚠️ '활동'에는 href 가 없습니다 (2026-09-03 사용자 결정).
+           /52 는 만들지 않기로 했습니다 — 이 알약은 '가는 곳'이 아니라 하위 목차를
+           여는 손잡이입니다. 예전에는 href="/52" 였는데, 스크립트가 눌린 것을 가로채
+           판을 열어 주는 동안에도 ① 가운데 단추·Ctrl+누르기로 열면 없는 화면이 뜨고
+           ② 스크립트가 막히면 그리로 가 버렸습니다.
+           되살리려면 /52 화면을 먼저 만들고 그다음에 href 를 붙이세요. -->
       <div class="gnb-item">
-        <a href="/52" data-nav="act">활동</a>
+        <a data-nav="act" role="button" tabindex="0">활동</a>
         <div class="drop is-act"><ul>
           <li class="drow">
             <a class="dmain" href="/49" data-nav="act-local">지자체 감시<em>지방정부 · 지방의회</em></a>
@@ -578,7 +589,9 @@
       </ul>
     </li>
     <li>
-      <a href="/52">활동</a>
+      <!-- 여기서는 하위 목차가 이미 펼쳐져 있어 '활동'은 이름표일 뿐입니다.
+           링크로 두면 /52(없는 화면)로 갑니다 — 그래서 <a> 가 아닙니다. -->
+      <span class="mtitle">활동</span>
       <ul class="msub">
         <li><a href="/49" data-nav="act-local">지자체 감시</a></li>
         <!-- 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 확정되면 주석만 벗기세요.
@@ -883,6 +896,17 @@
       e.preventDefault();
       openDrop(item);
     });
+    /* href 가 없는 알약('활동')은 엔터·스페이스로도 열려야 합니다.
+       주소가 있는 <a> 는 브라우저가 엔터를 알아서 누름으로 바꿔 주지만,
+       href 가 없으면 그 일이 일어나지 않습니다. */
+    if (!a.getAttribute('href')) {
+      a.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+          e.preventDefault();
+          openDrop(item);
+        }
+      });
+    }
   });
 
   // 판 밖을 누르면 닫습니다. 판 안의 링크를 누르면 어차피 화면이 바뀌므로 같이 닫습니다.
