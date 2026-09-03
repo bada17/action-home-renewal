@@ -346,6 +346,110 @@
 #pb .pcount{font-size:12.5px; font-weight:700; color:var(--faint); font-variant-numeric:tabular-nums}
 #pb .pcount b{color:var(--deep)}
 #pb .phint{margin-top:9px; text-align:center; font-size:12.5px; color:var(--faint)}
+
+/* 카루셀에서는 '이력 보기' 딱지를 감춥니다 — 그 화면에는 이력이 이미 다 있습니다.
+   ⚠️ 아래 미디어쿼리보다 **먼저** 와야 합니다. 뒤에 두면 같은 우선순위라
+      나중 규칙이 이겨서 넓은 화면에서도 딱지가 안 보입니다(2026-09-03 실수). */
+#pb .person .more{display:none}
+
+/* ═══ 넓은 화면에서는 넷을 한 번에 (2026-09-03) ═══
+   사용자: "웹에서는 4명이 처음부터 다 보였으면 좋겠어."
+   ★ 좁은 화면은 그대로 카루셀입니다 — 모바일은 아직 정하지 않았습니다.
+     그래서 이 짜임은 전부 이 미디어쿼리 안에만 있습니다. 여기를 지우면
+     예전 카루셀로 그대로 돌아갑니다.
+   ★ 넷을 나란히 놓으면 이력까지 담을 자리가 없습니다. 카드에는 얼굴·이름·분야만
+     두고, 이력은 카드를 눌렀을 때 뜨는 창(.pmodal)에서 다 보여 줍니다. */
+@media(min-width:900px){
+  #pb .pv{
+    display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px;
+    overflow:visible; scroll-snap-type:none; padding:10px 2px 4px
+  }
+  #pb .person{
+    flex:none; opacity:1; --s:1; cursor:pointer;
+    padding:24px 18px 22px;
+    transition:transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s ease
+  }
+  #pb .person:hover,#pb .person:focus-visible{
+    transform:translateY(-7px);
+    box-shadow:0 26px 52px -26px rgba(0,121,166,.55), 0 2px 10px rgba(6,35,48,.05)
+  }
+  /* 넷이 나란한 화면에서는 한 장만 도드라지면 안 됩니다.
+     '지금 보는 한 명'이라는 개념 자체가 없어지기 때문입니다. */
+  #pb .person.is-on{box-shadow:0 2px 10px rgba(6,35,48,.05)}
+  #pb .person .phw::before{opacity:1}              /* 바닥 그림자는 넷 다 */
+  #pb .person.is-on .phw .spk{opacity:0}           /* 반짝임·빛 스침은 창에서만 */
+  #pb .person.is-on .phw .shine::after{animation:none}
+  #pb .person .career{display:none}
+  #pb .person .more{
+    display:inline-flex; align-items:center; gap:4px; margin-top:16px;
+    border-radius:999px; padding:5px 12px; font-size:12.5px; font-weight:700;
+    background:var(--tint); color:var(--deep); transition:background .2s, color .2s
+  }
+  #pb .person:hover .more{background:var(--brand); color:#fff}
+  #pb .phw{width:min(180px,86%)}
+  #pb .person .nm{font-size:20px}
+  #pb .person .tags span{font-size:11.5px; padding:2px 9px}
+  /* 넘기는 장치는 넘길 것이 없으므로 감춥니다(스크립트도 함께 멈춥니다). */
+  #pb .pbar,#pb .phint{display:none}
+}
+/* ═══ 전문위원 창 ═══
+   카드를 누르면 슝 하고 떠오릅니다. 안에 들어가는 내용은 카드에서 그대로
+   옮겨 담습니다 — 이름·분야·이력이 마크업 한 곳에만 있게 하려는 것입니다.
+   ⚠️ <dialog> 라서 Esc 닫기·바깥 어둡게·초점 가두기를 브라우저가 맡습니다. */
+#pb .pmodal{
+  width:min(920px,calc(100% - 40px)); max-height:calc(100% - 40px);
+  padding:0; border:0; border-radius:20px; overflow:hidden;
+  background:#fff; color:var(--ink);
+  box-shadow:0 40px 90px -40px rgba(6,35,48,.6)
+}
+#pb .pmodal::backdrop{background:rgba(6,35,48,.62)}
+@keyframes pb-zoom{
+  from{opacity:0; transform:scale(.88) translateY(26px)}
+  to  {opacity:1; transform:none}
+}
+@keyframes pb-fade{from{opacity:0} to{opacity:1}}
+#pb .pmodal[open]{animation:pb-zoom .36s cubic-bezier(.22,1,.36,1)}
+#pb .pmodal[open]::backdrop{animation:pb-fade .36s ease}
+#pb .pmodal-bar{
+  position:absolute; top:14px; left:14px; right:14px; z-index:2;
+  display:flex; justify-content:flex-end; gap:8px; pointer-events:none
+}
+#pb .pmodal-bar button{
+  pointer-events:auto; width:40px; height:40px; padding:0;
+  border:1px solid var(--line); border-radius:999px;
+  background:rgba(255,255,255,.94); color:var(--deep);
+  font-size:19px; line-height:1; cursor:pointer;
+  transition:background .18s, color .18s, transform .18s, border-color .18s
+}
+#pb .pmodal-bar button:hover:not([disabled]){
+  background:var(--brand); border-color:var(--brand); color:#fff; transform:scale(1.08)
+}
+#pb .pmodal-bar button[disabled]{opacity:.3; cursor:default}
+#pb .pmodal-bar .pmodal-prev{margin-right:auto}   /* ‹ 만 왼쪽 끝으로 */
+#pb .pmodal-in{padding:38px; overflow:auto; max-height:calc(100vh - 40px)}
+/* 창 안에서는 사진을 왼쪽에 크게 두고 오른쪽에 이력을 폅니다 —
+   카드(사진 위·글 아래)와 달리, 여기서는 가로가 넉넉합니다. */
+#pb .pmodal .person{
+  display:grid; grid-template-columns:260px minmax(0,1fr); gap:32px;
+  align-items:start; justify-items:start; text-align:left;
+  background:transparent; border:0; padding:0; cursor:default;
+  opacity:1; --s:1; transform:none
+}
+#pb .pmodal .person.is-on{box-shadow:none; transform:none}
+#pb .pmodal .person .phw{width:100%}
+#pb .pmodal .person > div:last-child{max-width:none}
+#pb .pmodal .person .nm{font-size:clamp(24px,2.6vw,32px)}
+#pb .pmodal .person .tags{justify-content:flex-start}
+#pb .pmodal .person .career{display:block; margin-top:20px}
+#pb .pmodal .person .more{display:none}
+@media(max-width:700px){
+  /* 좁은 화면에서는 화면을 꽉 채웁니다 — 가운데 뜬 작은 창은 읽기 나쁩니다. */
+  #pb .pmodal{width:100%; max-width:100%; height:100%; max-height:100%; border-radius:0}
+  #pb .pmodal-in{padding:64px 20px 34px; max-height:100vh}
+  #pb .pmodal .person{grid-template-columns:1fr; justify-items:center; text-align:center}
+  #pb .pmodal .person .tags{justify-content:center}
+  #pb .pmodal .person .phw{width:min(240px,72%)}
+}
 /* 사진 아래 — 이름 · 분야 · 이력.
    이름과 분야는 가운데, 이력만 왼쪽으로 맞춥니다. 이력까지 가운데로 두면
    '현/전' 배지가 줄마다 다른 자리에 서서 훑을 수가 없습니다. */
@@ -554,7 +658,12 @@
   #pb .two{grid-template-columns:1fr}
   #pb .ask .two{grid-template-columns:1fr}
   #pb .qa summary{flex-wrap:wrap}
-  #pb .qa summary .tail{margin-left:35px; width:100%}
+  /* 좁은 화면에서는 '시민 · 참여예산위원' 딱지가 아랫줄로 내려가고, 질문 글자에
+     맞춰 35px 들여씁니다.
+     ⚠️ width:100% 로 두지 마세요 — 왼쪽 여백 35px 이 그 위에 더해져 화면이
+        딱 그만큼 가로로 넘쳤습니다(2026-09-03, 390px·768px 둘 다에서 15px).
+        아홉 화면 가운데 가로 스크롤이 생기는 곳은 여기뿐이었습니다. */
+  #pb .qa summary .tail{margin-left:35px; width:calc(100% - 35px)}
 }
 /* 움직임을 끈 사람에게는 전부 멈춥니다.
    ⚠️ 애니메이션만 끄면 안 됩니다 — 떠오르기 전 상태가 opacity:0 이라,
@@ -820,6 +929,8 @@
               <li><i>전</i>서울시 자치구 주민참여예산 운영 평가위원</li>
               <li><i>전</i>서울시 동(洞) 지역회의 시범사업 운영 컨설턴트</li>
             </ul>
+            <!-- 넓은 화면(카드 넷)에서만 보입니다. 누르면 창이 열립니다. -->
+            <span class="more" aria-hidden="true">이력 보기 →</span>
           </div>
         </article>
 
@@ -838,6 +949,8 @@
               <li><i>전</i>서울시 서대문구 참여예산 지원단</li>
               <li><i>전</i>서울시 청년자율예산 자치구 청년정책 거버넌스 활성화 TF</li>
             </ul>
+            <!-- 넓은 화면(카드 넷)에서만 보입니다. 누르면 창이 열립니다. -->
+            <span class="more" aria-hidden="true">이력 보기 →</span>
           </div>
         </article>
 
@@ -856,6 +969,8 @@
               <li><i>전</i>행정안전부 주민참여예산제 컨설턴트</li>
               <li><i>전</i>좋은예산센터 사무국장</li>
             </ul>
+            <!-- 넓은 화면(카드 넷)에서만 보입니다. 누르면 창이 열립니다. -->
+            <span class="more" aria-hidden="true">이력 보기 →</span>
           </div>
         </article>
 
@@ -871,6 +986,11 @@
             <ul class="career">
               <li class="none">이력을 받는 대로 채웁니다.</li>
             </ul>
+            <!-- 넓은 화면(카드 넷)에서만 보입니다. 누르면 창이 열립니다.
+                 ⚠️ 오지은 위원은 이력을 아직 못 받아서 '이력 보기'라고 적지 않습니다 —
+                    눌렀는데 "받는 대로 채웁니다" 한 줄만 나오면 속은 기분이 듭니다.
+                    이력이 채워지면 다른 셋과 같은 '이력 보기 →' 로 바꾸세요. -->
+            <span class="more" aria-hidden="true">크게 보기 →</span>
           </div>
         </article>
 
@@ -886,6 +1006,20 @@
          <button type="button" class="pnav next" aria-label="다음 전문위원">›</button>
        </div>
       </div>
+
+      <!-- ── 전문위원 창 ──
+           2026-09-03. 넓은 화면에서 카드를 누르면 열립니다.
+           ⚠️ 안은 비어 있습니다 — 스크립트가 눌린 카드의 속을 그대로 옮겨 담습니다.
+              이름·분야·이력을 여기에 또 적지 마세요. 두 벌이 되면 갈라집니다. -->
+      <dialog class="pmodal" id="pb-pmodal" aria-label="전문위원 소개">
+        <div class="pmodal-bar">
+          <button type="button" class="pmodal-prev" aria-label="이전 전문위원">‹</button>
+          <button type="button" class="pmodal-next" aria-label="다음 전문위원">›</button>
+          <button type="button" class="pmodal-x" aria-label="닫기">✕</button>
+        </div>
+        <div class="pmodal-in" id="pb-pmodal-in"></div>
+      </dialog>
+
       <p class="phint">좌우로 넘겨 보세요 — 화살표 · 점 · 방향키 · 손가락 밀기</p>
     </section>
 
@@ -1054,6 +1188,11 @@
     var next = root.querySelector('.pnav.next');
     var cur = -1;
 
+    /* 넓은 화면에서는 넷이 한 번에 보입니다(카루셀이 아닙니다).
+       ⚠️ 이 값은 CSS 의 @media(min-width:900px) 와 같아야 합니다.
+          한쪽만 바꾸면 화살표는 사라졌는데 5초마다 스크롤이 튀는 상태가 됩니다. */
+    var wideMq = window.matchMedia('(min-width: 900px)');
+
     /* 점. 이름을 넣어 두면 화면 낭독기에서 "김민철 보기"로 읽힙니다. */
     var dots = slides.map(function (s, i) {
       var nm = s.querySelector('.nm');
@@ -1127,6 +1266,8 @@
     var fine = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
     if (fine && !calm) {
       pv.addEventListener('mousemove', function (e) {
+        // 넷이 나란한 화면에서는 한 장만 눕는 것이 이상합니다(카드마다 hover 가 있습니다).
+        if (wideMq.matches) return;
         var s = slides[cur];
         if (!s) return;
         var r = s.getBoundingClientRect();
@@ -1157,6 +1298,8 @@
     function stop() { if (timer) { clearInterval(timer); timer = null; } }
     function start() {
       stop();
+      // 넷이 다 보이는 화면에서는 넘길 것이 없습니다.
+      if (wideMq.matches) return;
       if (calm || held || !onScreen || document.hidden) return;
       timer = setInterval(function () { go(cur >= slides.length - 1 ? 0 : cur + 1); }, 5000);
     }
@@ -1194,7 +1337,86 @@
       }, { threshold: .35 }).observe(box);
     }
 
+    /* ── 전문위원 창 (2026-09-03) ──
+       사용자: "그 사람을 클릭하면 그 창이 슝하고 나와서 전체 화면으로 볼 수 있게."
+       ⚠️ 좁은 화면(카루셀)에서는 열지 않습니다 — 거기서는 카드 안에 이력이
+          이미 다 펼쳐져 있어, 창을 띄우면 같은 글을 두 번 보게 됩니다. */
+    var modal = document.getElementById('pb-pmodal');
+    var mBody = document.getElementById('pb-pmodal-in');
+    var mAt = -1, mLast = null;
+
+    function fillModal(i) {
+      if (!mBody || !slides[i]) return;
+      mAt = i;
+      // 카드 속을 그대로 옮겨 담습니다 — 글이 마크업 한 곳에만 있게.
+      mBody.innerHTML = '<article class="person is-on">' + slides[i].innerHTML + '</article>';
+      mBody.scrollTop = 0;
+      var mp = modal.querySelector('.pmodal-prev');
+      var mn = modal.querySelector('.pmodal-next');
+      if (mp) mp.disabled = i <= 0;
+      if (mn) mn.disabled = i >= slides.length - 1;
+    }
+
+    function openPerson(i) {
+      // showModal 이 없는 옛 브라우저에서는 그냥 열리지 않습니다.
+      // 그 사람에게도 카드의 이름·분야는 그대로 보입니다.
+      if (!modal || !modal.showModal || !slides[i]) return;
+      mLast = document.activeElement;
+      fillModal(i);
+      modal.showModal();
+      document.body.style.overflow = 'hidden';
+      var x = modal.querySelector('.pmodal-x');
+      if (x) x.focus();
+    }
+    function closePerson() { if (modal && modal.open) modal.close(); }
+
+    if (modal) {
+      modal.addEventListener('close', function () {
+        document.body.style.overflow = '';
+        if (mLast && mLast.focus) mLast.focus();
+      });
+      // 어두운 바탕을 누르면 닫습니다(그 클릭은 dialog 자신에게 옵니다).
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) { closePerson(); return; }
+        var b = e.target.closest && e.target.closest('.pmodal-x, .pmodal-prev, .pmodal-next');
+        if (!b) return;
+        if (b.className.indexOf('pmodal-x') >= 0) closePerson();
+        else fillModal(b.className.indexOf('pmodal-prev') >= 0 ? mAt - 1 : mAt + 1);
+      });
+      // 창 안에서도 방향키로 사람을 넘깁니다.
+      modal.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight' && mAt < slides.length - 1) { e.preventDefault(); fillModal(mAt + 1); }
+        if (e.key === 'ArrowLeft'  && mAt > 0)                 { e.preventDefault(); fillModal(mAt - 1); }
+      });
+    }
+
+    slides.forEach(function (s, i) {
+      s.addEventListener('click', function () { if (wideMq.matches) openPerson(i); });
+      s.addEventListener('keydown', function (e) {
+        if (!wideMq.matches) return;
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPerson(i); }
+      });
+    });
+
+    /* 넓은 화면에서는 카드가 '누르는 것'이 되므로 키보드로도 닿아야 합니다.
+       좁은 화면으로 돌아가면 도로 떼어 냅니다 — 거기서는 누를 것이 아닙니다. */
+    function syncWide() {
+      slides.forEach(function (s) {
+        if (wideMq.matches) {
+          s.setAttribute('tabindex', '0');
+          s.setAttribute('role', 'button');
+        } else {
+          s.removeAttribute('tabindex');
+          s.removeAttribute('role');
+        }
+      });
+      if (wideMq.matches) { stop(); closePerson(); } else { start(); }
+    }
+    if (wideMq.addEventListener) wideMq.addEventListener('change', syncWide);
+    else if (wideMq.addListener) wideMq.addListener(syncWide);
+
     paint(0);
+    syncWide();
     start();
     /* 창 크기가 바뀌면 스냅 위치가 어긋납니다. 보던 사람에게 다시 맞춥니다. */
     var rt;
