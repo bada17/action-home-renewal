@@ -84,7 +84,11 @@ TEMPLATE = u'''<style>
 #act a{{color:inherit; text-decoration:none}}
 #act :focus-visible{{outline:2.5px solid var(--brand); outline-offset:3px}}
 
-#act .wrap{{width:min(1120px,calc(100% - 44px)); margin:0 auto}}
+/* 좌우 여백은 머리띠·바닥과 같은 값을 씁니다 — 48 / 36(820) / 28(430).
+   어긋나면 좁은 화면에서 로고와 페이지 제목의 왼쪽 끝이 안 맞습니다. */
+#act .wrap{{width:min(1120px,calc(100% - 48px)); margin:0 auto}}
+@media(max-width:820px){{ #act .wrap{{width:min(100% - 36px,1120px)}} }}
+@media(max-width:430px){{ #act .wrap{{width:min(100% - 28px,1120px)}} }}
 #act .sec{{padding:clamp(38px,4.6vw,64px) 0; border-top:1px solid var(--line)}}
 #act .sec:first-of-type{{border-top:none}}
 
@@ -1274,7 +1278,9 @@ AFTER_BOARD_CSS = u"""<style>
   font-size:16px;line-height:1.7;word-break:keep-all;-webkit-font-smoothing:antialiased
 }
 .ah-activity-other *{box-sizing:border-box}
-.ah-activity-other .wrap{width:min(1120px,calc(100% - 44px));margin:0 auto}
+.ah-activity-other .wrap{width:min(1120px,calc(100% - 48px));margin:0 auto}
+@media(max-width:820px){.ah-activity-other .wrap{width:min(100% - 36px,1120px)}}
+@media(max-width:430px){.ah-activity-other .wrap{width:min(100% - 28px,1120px)}}
 .ah-activity-other .sec{padding:clamp(38px,4.6vw,64px) 0;border-top:1px solid var(--line)}
 .ah-activity-other h2{
   margin:0 0 clamp(20px,2.4vw,30px);font-family:GmarketSans,'Pretendard Variable',sans-serif;
