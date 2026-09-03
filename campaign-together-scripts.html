@@ -208,6 +208,29 @@
   });
 })();
 
+/* 사진이 안 열릴 때 — 액자에 깨진 그림 표시와 alt 글자가 그대로 차서
+   그 카드만 망가져 보입니다(2026-09-03 에 vote.action.or.kr 이 통째로 404 가
+   되면서 실제로 그렇게 됐습니다). 사진을 걷어내고, 사진이 원래 없는 카드에
+   쓰는 색 타일(.mark)을 대신 깝니다 — 카드 셋의 무게가 같아집니다.
+
+   error 는 위로 안 올라오므로 내려가는 쪽(capture)에서 받습니다. 그래야
+   게시판에서 받아 나중에 만들어 넣는 카드도 함께 걸립니다. */
+document.addEventListener('error', function (e) {
+  var img = e.target;
+  if (!img || img.tagName !== 'IMG') return;
+  var shot = img.parentNode;
+  if (!shot || !shot.classList || !shot.classList.contains('card-shot')) return;
+  if (shot.querySelector('.mark')) { img.remove(); return; }
+
+  var mark = document.createElement('span');
+  mark.className = 'mark';
+  mark.setAttribute('aria-hidden', 'true');
+  /* 읽으라고 두는 글자가 아니라 무늬입니다. 제목 앞 두 글자만 씁니다. */
+  mark.textContent = (img.getAttribute('alt') || '').replace(/\s+/g, '').slice(0, 2);
+  shot.appendChild(mark);
+  img.remove();
+}, true);
+
 /* 남은 날짜 세기 — 홈과 같은 방식입니다.
    카드의 data-due="2026-08-31" 을 읽어 data-dday 자리 글자를 'D-5' 로 바꿉니다.
    HTML 에는 '8/31' 이 그대로 적혀 있어, 이 스크립트가 막혀도 틀린 값이 뜨지 않습니다.

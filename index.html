@@ -1497,5 +1497,46 @@
     io.observe(el);
   });
 })();
+
+/* 사진이 안 열릴 때 — 액자에 깨진 그림 표시와 alt 글자가 그대로 차서 그 칸만
+   망가져 보입니다(2026-09-03 에 vote.action.or.kr 이 통째로 404 가 되면서 첫
+   화면 슬라이드와 캠페인 카드가 실제로 그렇게 됐습니다). 사진을 걷어내고,
+   사진이 원래 없는 칸에 쓰는 색 타일(.mark)을 대신 깝니다.
+
+   error 는 위로 안 올라오므로 내려가는 쪽(capture)에서 받습니다. 그래야
+   게시판에서 받아 나중에 만들어 넣는 카드도 함께 걸립니다.
+   액자 하나에 사진이 둘(.fill 흐린 바탕 + .real 본 그림)이라 한 번에 치웁니다. */
+(function () {
+  document.addEventListener('error', function (e) {
+    var img = e.target;
+    if (!img || img.tagName !== 'IMG') return;
+
+    var shot = img.parentNode;
+    if (!shot || !shot.classList) return;
+    if (!shot.classList.contains('slide-shot') &&
+        !shot.classList.contains('pcard-media')) return;
+    if (shot.querySelector('.mark')) { img.remove(); return; }
+
+    /* 무늬로 쓸 두 글자. 흐린 바탕(.fill)은 alt 가 비어 있으므로 본 그림에서
+       가져오고, 그것도 없으면 카드 제목에서 가져옵니다. */
+    var real = shot.querySelector('img.real');
+    var t = (real && real.getAttribute('alt')) || img.getAttribute('alt') || '';
+    if (!t) {
+      var card = shot.closest ? shot.closest('.slide, .pcard') : null;
+      var h = card && card.querySelector('.slide-t, strong');
+      if (h) t = h.textContent || '';
+    }
+
+    var mark = document.createElement('span');
+    mark.className = 'mark';
+    mark.setAttribute('aria-hidden', 'true');
+    mark.textContent = t.replace(/[\s\[\]]/g, '').slice(0, 2);
+
+    Array.prototype.forEach.call(shot.querySelectorAll('img'), function (el) {
+      el.remove();
+    });
+    shot.appendChild(mark);
+  }, true);
+})();
 </script>
 <!-- CAMPAIGNERS:PAGE-CODE END -->
