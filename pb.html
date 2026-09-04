@@ -212,13 +212,10 @@
 #pb .word span{font-size:12.5px; line-height:1.6; word-break:keep-all}
 /* 뒤집기 전 — 뜻은 숨어 있습니다 */
 #pb .word span{display:none}
-#pb .word b::after{content:"?"; margin-left:4px; color:var(--brand); font-weight:800}
 /* 뒤집은 뒤 */
 #pb .word[aria-pressed="true"]{background:var(--navy); border-color:var(--navy); color:#dbeef8}
 #pb .word[aria-pressed="true"] b{font-size:12px; color:#7fb7ce; font-weight:700}
-#pb .word[aria-pressed="true"] b::after{content:""}
 #pb .word[aria-pressed="true"] span{display:block}
-#pb .words-fine{margin-top:13px; font-size:12.5px; color:var(--faint); line-height:1.6}
 
 /* ───── 답하는 사람 ───── */
 /* ───── 시민참여정책위원회 ─────
@@ -795,19 +792,12 @@
 #pb .qa .item:hover{background:linear-gradient(90deg,rgba(226,245,253,.55),transparent 72%)}
 #pb .row .meta{font-variant-numeric:tabular-nums; letter-spacing:.02em}
 
-/* 용어 카드는 물음표 장식을 빼고 작은 안내 문구로 기능을 분명히 합니다. */
 #pb .word{
   align-items:center; text-align:center; border:1px solid var(--line);
   border-top:3px solid rgba(0,121,166,.58); border-radius:8px; background:#fff;
   box-shadow:0 10px 24px -24px rgba(6,35,48,.6)
 }
-#pb .word b::after{
-  content:"정의 보기"; display:block; margin:8px 0 0;
-  color:var(--faint); font-family:'Pretendard Variable',Pretendard,sans-serif;
-  font-size:11.5px; font-weight:700; letter-spacing:.02em
-}
 #pb .word[aria-pressed="true"]{background:var(--navy); border-color:var(--navy)}
-#pb .word[aria-pressed="true"] b::after{content:""; margin:0}
 #pb .word:hover{transform:translateY(-2px); box-shadow:0 16px 28px -20px rgba(6,35,48,.38)}
 
 /* 위원회는 화면을 꽉 쓰되, 격자와 느린 궤도로 '데이터·제도' 인상을 줍니다. */
@@ -871,7 +861,6 @@
   #pb .word b{font-size:19px}
   #pb .word span{font-size:16px; line-height:1.65}
   #pb .word[aria-pressed="true"] b{font-size:14px}
-  #pb .words-fine{font-size:15px}
 
   #pb .pho em{font-size:14px}
   #pb .phint{font-size:15px}
@@ -1137,7 +1126,6 @@
         <button type="button" class="word" aria-pressed="false"><b>제안사업 반영률</b><span>주민이 제안한 사업 가운데 최종적으로 예산에 반영된 사업의 비율</span></button>
         <button type="button" class="word" aria-pressed="false"><b>주민의견서</b><span>참여예산제도 운영결과 및 일반예산에 관한 주민의견을 담은 자료로, 지자체 예산안 제출 시 의무적으로 첨부해야 함</span></button>
       </div>
-      <p class="words-fine">낱말을 더하려면 위 카드 하나를 복사해 앞면·뒷면 글자만 바꾸면 됩니다.</p>
     </section>
 
     <!-- ───────── 시민참여정책위원회 ─────────
@@ -1493,7 +1481,7 @@
      저절로 따라옵니다. IntersectionObserver 가 없는 옛 브라우저에서는
      'in' 을 바로 붙여 그냥 다 보이게 둡니다. */
   var reveal = root.querySelectorAll(
-    '.sec > .sh, .qtools, .qa .item, .words, .word, .words-fine,' +
+    '.sec > .sh, .qtools, .qa .item, .words, .word,' +
     ' .cintro, .people, .phint, .rows .row, .rows-fine, .form');
   if (!('IntersectionObserver' in window) || calm) {
     reveal.forEach(function (el) { el.classList.add('rv', 'in'); });
