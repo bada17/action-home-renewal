@@ -145,7 +145,7 @@
 }
 #pb .qfilter button:hover{border-color:var(--brand); color:var(--deep); transform:translateY(-1px)}
 #pb .qfilter button[aria-pressed="true"]{background:var(--deep); border-color:var(--deep); color:#fff}
-/* 문답에 붙는 주제 딱지. 묻는 사람 딱지(.whotag)와 나란히 섭니다. */
+/* 문답에 붙는 주제 딱지. 묻는 사람 딱지(시민·참여예산위원)는 2026-09-04 에 걷었습니다. */
 #pb .qtag{
   flex:none; padding:3px 9px; border-radius:999px; font-size:11.5px; font-weight:700;
   border:1px solid rgba(0,121,166,.3); background:var(--tint); color:var(--deep)
@@ -173,10 +173,6 @@
 #pb .mark.a{background:var(--brand); color:#fff}
 #pb .qa summary .tail{margin-left:auto; display:flex; align-items:center; gap:7px; flex:none}
 /* 갈래 표시 — 이 질문이 누구 것인지 */
-#pb .whotag{
-  border-radius:999px; padding:2px 9px; font-size:11.5px; font-weight:700;
-  background:var(--band); color:var(--soft); white-space:nowrap
-}
 #pb .qa .ans{display:flex; gap:11px; padding:0 2px 20px}
 #pb .qa .ans .body{font-size:15px; line-height:1.8; color:var(--ink)}
 /* 답변 서명(.sign)은 2026-09-03 에 뗐습니다 — 아래 '오간 질문' 주석 참고.
@@ -788,7 +784,6 @@
 #pb .qa,#pb .rows{border-top:3px solid var(--navy)}
 #pb .qa .item,#pb .row{border-bottom-color:var(--line)}
 #pb .mark{border-radius:7px}
-#pb .whotag{border:1px solid var(--line); background:#f7fafb; color:var(--soft)}
 #pb .qa .item:hover{background:linear-gradient(90deg,rgba(226,245,253,.55),transparent 72%)}
 #pb .row .meta{font-variant-numeric:tabular-nums; letter-spacing:.02em}
 
@@ -854,7 +849,6 @@
 
   #pb .qa summary{font-size:19px}
   #pb .mark{width:30px; height:30px; font-size:14px}
-  #pb .whotag{font-size:14px}
   #pb .qa .ans .body{font-size:18px}
 
   #pb .word{min-height:150px; padding:20px 18px}
@@ -1054,13 +1048,12 @@
 
       <div class="qa" id="pb-qa">
 
-        <details class="item" data-topic="budget" data-who="citizen" data-q="town">
+        <details class="item" data-topic="budget" data-q="town">
           <summary>
             <span class="mark q" aria-hidden="true">Q</span>
             <span>우리 동네도 참여예산을 하나요?</span>
             <span class="tail">
-              <span class="qtag">참여예산</span>
-              <span class="whotag">시민</span>            </span>
+              <span class="qtag">참여예산</span>            </span>
           </summary>
           <div class="ans">
             <span class="mark a" aria-hidden="true">A</span>
@@ -1070,13 +1063,12 @@
           </div>
         </details>
 
-        <details class="item" data-topic="budget" data-who="member" data-q="first">
+        <details class="item" data-topic="budget" data-q="first">
           <summary>
             <span class="mark q" aria-hidden="true">Q</span>
             <span>위원이 됐는데 첫 회의에서 뭘 봐야 하나요?</span>
             <span class="tail">
-              <span class="qtag">참여예산</span>
-              <span class="whotag">참여예산위원</span>            </span>
+              <span class="qtag">참여예산</span>            </span>
           </summary>
           <div class="ans">
             <span class="mark a" aria-hidden="true">A</span>
@@ -1086,13 +1078,12 @@
           </div>
         </details>
 
-        <details class="item" data-topic="budget" data-who="citizen" data-q="reject">
+        <details class="item" data-topic="budget" data-q="reject">
           <summary>
             <span class="mark q" aria-hidden="true">Q</span>
             <span>제안이 '부적합'으로 반려됐는데 끝인가요?</span>
             <span class="tail">
-              <span class="qtag">참여예산</span>
-              <span class="whotag">시민</span>            </span>
+              <span class="qtag">참여예산</span>            </span>
           </summary>
           <div class="ans">
             <span class="mark a" aria-hidden="true">A</span>
