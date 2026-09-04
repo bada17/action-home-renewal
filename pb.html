@@ -388,13 +388,6 @@
 #pb .pnav.prev{left:-8px}
 #pb .pnav.next{right:-8px}
 #pb .pbar{display:flex; align-items:center; justify-content:center; gap:14px; margin-top:2px}
-#pb .pdots{display:flex; flex-wrap:wrap; justify-content:center; gap:8px}
-#pb .pdots button{
-  width:auto; min-height:36px; padding:7px 14px; border:1px solid var(--line);
-  border-radius:999px; cursor:pointer; background:#fff; color:var(--soft);
-  font:700 13px/1 Pretendard,sans-serif; transition:background .2s,color .2s,border-color .2s
-}
-#pb .pdots button[aria-selected="true"]{background:var(--brand); border-color:var(--brand); color:#fff}
 #pb .pcount{display:none}
 #pb .pcount b{color:var(--deep)}
 #pb .phint{margin-top:9px; text-align:center; font-size:12.5px; color:var(--faint)}
@@ -765,7 +758,6 @@
 #pb .person.is-on .phw .shine::after{animation-duration:9s}
 #pb .person.is-on .phw .spk{opacity:.48}
 #pb .phw .spk i{width:9px; height:9px; margin:-4.5px 0 0 -4.5px; animation-duration:7.2s}
-#pb .pdots button{border-radius:7px}
 #pb .pnav{border-radius:10px; box-shadow:0 10px 24px -12px rgba(6,35,48,.45)}
 #pb .career li{border-bottom:1px solid rgba(207,222,229,.72)}
 #pb .career li:last-child{border-bottom:0}
@@ -804,7 +796,6 @@
 
   #pb .pho em{font-size:14px}
   #pb .phint{font-size:15px}
-  #pb .pdots button{min-height:42px; padding:9px 17px; font-size:15px}
   #pb .pv .person .nm{font-size:clamp(40px,4vw,54px)}
   #pb .pv .person > div:last-child{min-height:560px}
   #pb .pv .tags::before{
@@ -1187,7 +1178,6 @@
             버튼으로 남습니다(가로 스크롤은 그때도 됩니다). -->
        <div class="pbar">
          <button type="button" class="pnav prev" aria-label="이전 전문위원">‹</button>
-         <div class="pdots" id="pb-dots" role="tablist" aria-label="전문위원 고르기"></div>
          <span class="pcount" id="pb-pcount"></span>
          <button type="button" class="pnav next" aria-label="다음 전문위원">›</button>
        </div>
@@ -1206,7 +1196,7 @@
         <div class="pmodal-in" id="pb-pmodal-in"></div>
       </dialog>
 
-      <p class="phint">전문위원이 3초마다 순서대로 바뀝니다. 아래 이름을 눌러 직접 고를 수도 있습니다.</p>
+      <p class="phint">전문위원이 3초마다 순서대로 바뀝니다. 화살표로 직접 넘길 수도 있습니다.</p>
     </section>
 
     <!-- ───────── 전문위원의 글 ─────────
@@ -1368,7 +1358,6 @@
     var slides = Array.prototype.slice.call(pv.querySelectorAll('.person'));
     if (!slides.length) return;
 
-    var dotBox = document.getElementById('pb-dots');
     var countEl = document.getElementById('pb-pcount');
     var prev = root.querySelector('.pnav.prev');
     var next = root.querySelector('.pnav.next');
@@ -1379,18 +1368,10 @@
           한쪽만 바꾸면 화살표는 사라졌는데 5초마다 스크롤이 튀는 상태가 됩니다. */
     var wideMq = window.matchMedia('(min-width: 900px)');
 
-    /* 점. 이름을 넣어 두면 화면 낭독기에서 "김민철 보기"로 읽힙니다. */
-    var dots = slides.map(function (s, i) {
-      var nm = s.querySelector('.nm');
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.setAttribute('role', 'tab');
-      b.setAttribute('aria-label', (nm ? nm.textContent : (i + 1) + '번째') + ' 보기');
-      b.textContent = nm ? nm.textContent : (i + 1) + '번째';
-      b.addEventListener('click', function () { go(i); });
-      if (dotBox) dotBox.appendChild(b);
-      return b;
-    });
+    /* 이름 버튼은 2026-09-04 에 걷었습니다(사용자: "그거 필요없는 거 같아").
+       넘기는 것은 화살표와 3초 자동 넘김뿐입니다. dots 는 빈 배열로 두어
+       아래 paint() 를 고치지 않고 그대로 씁니다. */
+    var dots = [];
 
     function paint(i) {
       if (i === cur) return;
@@ -1401,13 +1382,17 @@
       });
       dots.forEach(function (d, n) { d.setAttribute('aria-selected', n === i ? 'true' : 'false'); });
       if (countEl) countEl.innerHTML = '<b>' + (i + 1) + '</b> / ' + slides.length;
-      if (prev) prev.disabled = i <= 0;
-      if (next) next.disabled = i >= slides.length - 1;
+      /* 끝에서 끝으로 이어집니다 — 화살표를 끄지 않습니다. */
+      if (prev) prev.disabled = false;
+      if (next) next.disabled = false;
     }
 
+    /* 고리처럼 돕니다. 마지막에서 › 를 누르면 처음으로,
+       처음에서 ‹ 를 누르면 마지막으로 갑니다
+       (2026-09-04 사용자: "오지은에서 옆으로 가면 김민철 나오게"). */
     function go(i) {
-      i = Math.max(0, Math.min(slides.length - 1, i));
-      paint(i);
+      var n = slides.length;
+      paint(((i % n) + n) % n);
     }
 
     /* 지금 어느 칸을 보고 있나 — 창 한가운데에 제일 가까운 칸입니다.
