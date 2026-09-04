@@ -571,6 +571,19 @@
   color:var(--deep); border:1px solid var(--brand); background:var(--tint);
   border-radius:999px; padding:1px 7px
 }
+/* 참고 자료 첨부. 브라우저가 그리는 '파일 선택' 단추는 손댈 수 없어서,
+   테두리만 다른 칸과 맞추고 안쪽 여백으로 높이를 맞춥니다. */
+#pb .f.files input[type=file]{
+  border:1.5px dashed var(--line); border-radius:9px; padding:10px 12px;
+  font-family:inherit; font-size:13.5px; background:#fff; color:var(--soft); cursor:pointer
+}
+#pb .f.files input[type=file]:focus{outline:none; border-color:var(--brand)}
+#pb .f.files input[type=file]::file-selector-button{
+  font-family:inherit; font-size:13px; font-weight:700; color:var(--deep);
+  border:1px solid var(--brand); background:var(--tint); border-radius:7px;
+  padding:6px 12px; margin-right:10px; cursor:pointer
+}
+#pb .f.files .filehint{margin-top:2px}
 /* 연락처 택일 묶음. 머리 한 줄이 두 칸을 함께 이고 있습니다 —
    칸마다 '둘 중 하나' 딱지를 붙이면 서로 무관한 필수 칸 둘로 읽힙니다. */
 #pb .pair{margin-bottom:12px}
@@ -1457,9 +1470,25 @@
 
         <div class="f"><label for="pb-o5">상세 문의 내용 <i class="req">필수</i></label>
           <textarea id="pb-o5" required placeholder="어떤 자리인지, 언제쯤인지, 몇 분이 오시는지 적어 주시면 협의가 빠릅니다."></textarea></div>
-        <!-- ⚠️ 파일 첨부는 두지 않았습니다. 정적 페이지라 올릴 곳이 없습니다.
-             참고 자료는 메일로 받습니다. -->
-        <p class="fine">참고할 자료가 있으면
+        <!-- 참고 자료 첨부 (2026-09-04).
+             ⚠️ 하루 전의 '정적 페이지라 올릴 곳이 없다'는 메모는 틀렸습니다 —
+                이 사이트 서버에 못 올린다는 뜻이었는데, 접수처가 구글 Apps Script 라
+                거기서 받아 드라이브에 넣으면 됩니다.
+
+             막는 것 셋(브라우저에서 한 번, 받는 쪽에서 또 한 번):
+               1. 개수  — 3개까지
+               2. 크기  — 한 개 8MB, 모두 합쳐 10MB
+               3. 확장자 — 아래 PB_OK_EXT 에 적힌 것만
+             ⚠️ 접수 주소가 페이지에 박혀 있어 화면 검사는 우회할 수 있습니다.
+                **받는 쪽 Code.gs 의 검사가 진짜입니다** — 거기 값을 함께 고치세요. -->
+        <div class="f files">
+          <label for="pb-ofile">참고 자료</label>
+          <input type="file" id="pb-ofile" multiple
+                 accept=".hwp,.hwpx,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.gif">
+          <p class="fine filehint">한글 · 워드 · 엑셀 · PPT · PDF · 사진을 올릴 수 있습니다.
+            <b>3개까지, 한 개 8MB, 모두 합쳐 10MB.</b></p>
+        </div>
+        <p class="fine">더 크거나 다른 형식이면
           <a href="mailto:action@action.or.kr">action@action.or.kr</a> 로 보내 주세요.</p>
         <!-- 2026-09-03 — 동의 칸과 개인정보 고지를 이 폼에도 넣었습니다.
              기관 의뢰라도 '담당자 이름 · 이메일'은 개인의 정보입니다. 질문 폼과 같은
@@ -1481,9 +1510,11 @@
             <b>5년</b> 뒤 지웁니다. 동의하지 않아도 되지만, 그러면 연락을 드릴 길이
             없습니다.<span class="more"></span></summary>
           <div class="legal-rest">
-            <b>수집 항목</b> 단체명 · 담당자 이름 · 휴대폰 · 행정번호 · 이메일 &nbsp;
+            <b>수집 항목</b> 단체명 · 담당자 이름 · 휴대폰 · 행정번호 · 이메일 ·
+            올려 주신 참고 자료 &nbsp;
             <b>보유기간</b> 수집일로부터 5년<br>
-            <b>보관</b> 받은 내용은 구글 스프레드시트(Google LLC)에 저장합니다.
+            <b>보관</b> 받은 내용은 구글 스프레드시트에, 올려 주신 자료는
+            구글 드라이브(Google LLC)에 저장합니다.
             처리 주체는 <b>함께하는 시민행동</b>, 개인정보관리책임자는 정남진 사무처장입니다.
             자세한 것은 <a href="/8" target="_blank" rel="noopener">개인정보처리방침</a>에 있습니다.</div>
         </details>
@@ -1874,7 +1905,63 @@
     }
     a.addEventListener('input', sync);
     b.addEventListener('input', sync);
+    /* 보낸 뒤 form.reset() 이 칸을 비웁니다. 그때 다시 재지 않으면 '괜찮다'고
+       해 둔 판정이 남아, 빈 연락처로 한 번 더 보낼 수 있습니다.
+       reset 이 실제로 칸을 비우는 것은 이 이벤트가 끝난 뒤라 한 박자 미룹니다. */
+    if (a.form) a.form.addEventListener('reset', function () { setTimeout(sync, 0); });
     sync();
+  })();
+
+  /* ── 참고 자료 첨부 검사 (2026-09-04) ──
+     개수 · 크기 · 확장자를 여기서 한 번 봅니다. 연락처 택일과 같은 수법으로
+     setCustomValidity 를 쓰므로, 걸리면 브라우저가 알아서 막고 말풍선을 띄웁니다.
+
+     ⚠️ 이것은 **친절**이지 방어가 아닙니다. 접수 주소가 페이지에 박혀 있어
+        화면을 거치지 않고 보낼 수 있습니다. 진짜로 막는 것은 받는 쪽
+        intake/Code.gs 의 같은 이름 값들입니다 — 한쪽만 고치면 어긋납니다.
+     ⚠️ 이 자리를 옮기지 마세요 — 아래 fakeSubmit 정의와 그 호출 두 줄은
+        build.py 가 통째로 바꿔치는 구간입니다. */
+  window.PB_FILES = {
+    MAX_N: 3,
+    MAX_ONE: 8 * 1024 * 1024,
+    MAX_ALL: 10 * 1024 * 1024,
+    OK_EXT: ['hwp', 'hwpx', 'pdf', 'doc', 'docx', 'xls', 'xlsx',
+             'ppt', 'pptx', 'jpg', 'jpeg', 'png', 'gif']
+  };
+  (function () {
+    var F = window.PB_FILES;
+    var el = document.getElementById('pb-ofile');
+    if (!el) return;
+    function mb(n) { return (n / 1024 / 1024).toFixed(1).replace(/\.0$/, '') + 'MB'; }
+    function why(files) {
+      if (files.length > F.MAX_N) return F.MAX_N + '개까지 올릴 수 있습니다.';
+      var all = 0;
+      for (var i = 0; i < files.length; i++) {
+        var f = files[i];
+        var dot = f.name.lastIndexOf('.');
+        var ext = dot < 0 ? '' : f.name.slice(dot + 1).toLowerCase();
+        if (F.OK_EXT.indexOf(ext) < 0) {
+          return '‘' + f.name + '’ 은 올릴 수 없는 형식입니다. ' +
+                 '한글·워드·엑셀·PPT·PDF·사진만 됩니다.';
+        }
+        if (f.size > F.MAX_ONE) {
+          return '‘' + f.name + '’ 이 너무 큽니다(' + mb(f.size) + '). ' +
+                 '한 개 ' + mb(F.MAX_ONE) + ' 까지입니다.';
+        }
+        all += f.size;
+      }
+      if (all > F.MAX_ALL) {
+        return '모두 합쳐 ' + mb(all) + ' 입니다. ' + mb(F.MAX_ALL) + ' 까지입니다.';
+      }
+      return '';
+    }
+    el.addEventListener('change', function () {
+      el.setCustomValidity(why(el.files || []));
+    });
+    /* 보낸 뒤 reset 으로 고른 파일이 사라지면 판정도 함께 풀어야 합니다. */
+    if (el.form) el.form.addEventListener('reset', function () {
+      setTimeout(function () { el.setCustomValidity(''); }, 0);
+    });
   })();
 
   function fakeSubmit(formId, msgId, text) {
