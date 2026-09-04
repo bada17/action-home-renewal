@@ -541,6 +541,30 @@
   font-family:inherit; font-size:14.5px; background:#fff; color:var(--ink)
 }
 #pb .f textarea{min-height:88px; resize:vertical}
+/* 꼭 적어야 하는 칸 딱지. 동의 칸의 i.must 와 같은 모양입니다(2026-09-04). */
+#pb .f label .req{
+  font-style:normal; font-size:11px; font-weight:700; margin-left:5px;
+  color:var(--deep); border:1px solid var(--brand); background:var(--tint);
+  border-radius:999px; padding:1px 7px
+}
+/* 의뢰 유형 — 여러 개 고르는 묶음 */
+#pb .kinds{
+  border:1px solid var(--line); border-radius:10px; background:#fff;
+  padding:14px 16px 16px; margin:0 0 12px
+}
+#pb .kinds legend{
+  padding:0 6px; font-size:12.5px; font-weight:700; color:var(--ink)
+}
+#pb .kinds legend .hint{margin-left:6px; font-weight:400; color:var(--faint)}
+#pb .form .kinds .opt{margin-top:9px}
+#pb .form .kinds .opt:first-of-type{margin-top:4px}
+/* '기타' 줄만 직접 입력 칸을 옆에 답니다 */
+#pb .form .kinds .opt.etc{align-items:center; flex-wrap:wrap}
+#pb .form .kinds .opt.etc input[type=text]{
+  flex:1 1 180px; min-width:0; border:1px solid var(--line); border-radius:8px;
+  padding:8px 11px; font-family:inherit; font-size:14px; background:#fff; color:var(--ink)
+}
+#pb .form .kinds .opt.etc input[type=text]:focus{outline:none; border-color:var(--brand)}
 #pb .f input:focus,#pb .f textarea:focus{outline:none; border-color:var(--brand)}
 #pb .form .go{
   width:100%; border:none; border-radius:9px; background:var(--ink); color:#fff;
@@ -877,6 +901,9 @@
   #pb .row .t{font-size:19px}
   #pb .row .meta,#pb .rows-fine{font-size:15px}
   #pb .f label{font-size:15px}
+  #pb .f label .req{font-size:13px}
+  #pb .kinds legend{font-size:15px}
+  #pb .form .kinds .opt.etc input[type=text]{font-size:16px; padding:10px 13px}
   #pb .f input,#pb .f textarea{padding:14px 16px; font-size:17px}
   #pb .draft{font-size:15px}
 }
@@ -951,21 +978,14 @@
       <input type="hidden" id="pb-topic" value="budget">
       <label class="sr-only" for="pb-q" hidden>궁금한 것</label>
       <textarea id="pb-q" placeholder="궁금한 것을 편하게 적어 주세요. 짧아도 괜찮습니다."></textarea>
-      <!-- 이름 · 휴대전화 · 이메일 셋 다 받습니다(2026-09-03 사용자 지시).
-           회원 확대가 이 페이지의 목적 중 하나라, 답장 주소만 받던 것을 바꿨습니다.
-           ⚠️ 그만큼 개인정보 수집 항목이 늘었습니다. 아래 동의 칸이 그래서 있습니다. -->
-      <div class="two">
-        <div><label class="sr-only" for="pb-name" hidden>이름</label>
-          <input type="text" id="pb-name" placeholder="이름" autocomplete="name"></div>
-        <!-- 휴대전화는 원래도 필수가 아니었는데 화면에 표시가 없어서, 방문자는
-             다 필수인 줄 알고 적었습니다. 2026-09-03 에 '(선택)'을 붙였습니다.
-             개인정보보호법의 최소수집 때문입니다 — 이 폼의 목적은 '답을 알려
-             드리기'고 거기에는 이메일이면 됩니다. 휴대전화를 받는 실제 이유는
-             회원 확대인데, 그것은 다른 목적이라 강제할 근거가 없습니다. -->
-        <div><label class="sr-only" for="pb-phone" hidden>휴대전화 (선택)</label>
-          <input type="tel" id="pb-phone" placeholder="휴대전화 (선택)" autocomplete="tel"
-                 inputmode="numeric" pattern="[0-9\-]*"></div>
-      </div>
+      <!-- 2026-09-04 — **휴대전화를 걷었습니다**(사용자 지시).
+           남는 것은 이름과 이메일 둘입니다. 답을 알려 드리는 데는 이메일이면 되고,
+           휴대전화를 받던 실제 이유(회원 확대)는 이 폼의 목적이 아니었습니다.
+           휴대전화는 교육·컨설팅 의뢰 폼으로 옮겼습니다 — 거기는 기관 담당자라
+           전화로 협의할 일이 실제로 생깁니다.
+           ⚠️ 되살리려면 아래 개인정보 고지의 '수집 항목'도 함께 고쳐야 합니다. -->
+      <div><label class="sr-only" for="pb-name" hidden>이름</label>
+        <input type="text" id="pb-name" placeholder="이름" autocomplete="name"></div>
       <label class="sr-only" for="pb-mail" hidden>답이 올라오면 알려 드릴 이메일</label>
       <input type="email" id="pb-mail" placeholder="답 올라오면 알려 드릴 이메일" autocomplete="email">
       <!-- 동의는 둘로 나눕니다(2026-09-03).
@@ -991,12 +1011,12 @@
       <input class="hp" type="text" id="pb-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <button type="submit" class="go">질문 보내기</button>
       <!-- 2026-09-04 — 받는 곳을 잔글씨에서 끌어올렸습니다.
-           이름·휴대전화·이메일을 내주는 자리라, 누가 받는지가 보여야 합니다. -->
+           이름·이메일을 내주는 자리라, 누가 받는지가 보여야 합니다. -->
       <p class="owner"><b>함께하는 시민행동</b> 시민참여정책위원회 전문위원이 읽고 답합니다.</p>
       <p class="fine"><b>답은 이 페이지 아래 '오간 질문'에 올라갑니다</b> — 보통 5일 안입니다.
         올라오면 알려 드립니다. 질문 내용만 올라가고 <b>이름·연락처는 화면에 올리지 않습니다.</b></p>
       <p class="fine legal">
-        <b>수집 항목</b> 이름 · 휴대전화 · 이메일 &nbsp;
+        <b>수집 항목</b> 이름 · 이메일 &nbsp;
         <b>이용 목적</b> 질문에 답하고, 답이 올라온 것을 알려 드리기 위해 &nbsp;
         <b>보유기간</b> 수집일로부터 5년
         (소식 받기에 동의하신 경우, 수신을 그만두실 때까지)<br>
@@ -1331,15 +1351,48 @@
            의뢰를 받은 뒤 따로 협의할 일이라, 화면에는 올리지 않습니다. -->
     </div>
       <form class="form" id="pb-order">
+        <!-- 2026-09-04 — 사용자가 준 기존 문의 폼 구성으로 다시 지었습니다.
+             단체명 · 담당자 성함 · 휴대폰 · 행정번호 · 의뢰 유형 · 상세 내용.
+             ⚠️ id 는 옛 이름(pb-o1…)을 그대로 씁니다 — Code.gs 가 이 id 로 읽습니다.
+                이름을 바꾸려면 양쪽을 같이 고쳐야 합니다.
+             ⚠️ '시기·인원' 칸은 없앴습니다(기존 폼에 없습니다). 상세 내용에 적힙니다. -->
         <div class="two">
-          <div class="f"><label for="pb-o1">기관</label><input type="text" id="pb-o1"></div>
-          <div class="f"><label for="pb-o2">담당자</label><input type="text" id="pb-o2"></div>
+          <div class="f"><label for="pb-o1">단체명 <i class="req">필수</i></label>
+            <input type="text" id="pb-o1" required></div>
+          <div class="f"><label for="pb-o2">담당자 성함 <i class="req">필수</i></label>
+            <input type="text" id="pb-o2" required></div>
         </div>
         <div class="two">
-          <div class="f"><label for="pb-o3">이메일</label><input type="email" id="pb-o3"></div>
-          <div class="f"><label for="pb-o4">시기 · 인원</label><input type="text" id="pb-o4"></div>
+          <div class="f"><label for="pb-o6">연락처 (휴대폰) <i class="req">필수</i></label>
+            <input type="tel" id="pb-o6" required autocomplete="tel"
+                   inputmode="numeric" pattern="[0-9\-]*" placeholder="010-0000-0000"></div>
+          <div class="f"><label for="pb-o7">연락처 (행정번호)</label>
+            <input type="tel" id="pb-o7" inputmode="numeric" pattern="[0-9\-]*"
+                   placeholder="02-000-0000"></div>
         </div>
-        <div class="f"><label for="pb-o5">필요한 것</label><textarea id="pb-o5"></textarea></div>
+        <div class="f"><label for="pb-o3">이메일</label>
+          <input type="email" id="pb-o3" autocomplete="email"></div>
+
+        <!-- 의뢰 유형. 여러 개 고를 수 있습니다.
+             ⚠️ 체크박스는 값이 아니라 켜짐/꺼짐으로 넘어갑니다 — 사람이 읽는 말로
+                바꾸는 것은 Code.gs 의 KINDS 가 합니다. 여기 문구를 고치면 거기도 고치세요. -->
+        <fieldset class="kinds">
+          <legend>어떤 것이 필요하신가요 <span class="hint">여러 개 고를 수 있습니다</span></legend>
+          <label class="opt"><input type="checkbox" id="pb-k1"><span>단기 강의·교육 진행</span></label>
+          <label class="opt"><input type="checkbox" id="pb-k2"><span>교육 프로그램 운영</span></label>
+          <label class="opt"><input type="checkbox" id="pb-k3"><span>사업 기획 및 운영 지원</span></label>
+          <label class="opt"><input type="checkbox" id="pb-k4"><span>제도 및 운영 컨설팅</span></label>
+          <label class="opt"><input type="checkbox" id="pb-k5"><span>연구 및 성과 분석</span></label>
+          <label class="opt etc"><input type="checkbox" id="pb-k6"><span>기타</span>
+            <input type="text" id="pb-ketc" placeholder="직접 입력" aria-label="기타 — 직접 입력"></label>
+        </fieldset>
+
+        <div class="f"><label for="pb-o5">상세 문의 내용 <i class="req">필수</i></label>
+          <textarea id="pb-o5" required placeholder="어떤 자리인지, 언제쯤인지, 몇 분이 오시는지 적어 주시면 협의가 빠릅니다."></textarea></div>
+        <!-- ⚠️ 파일 첨부는 두지 않았습니다. 정적 페이지라 올릴 곳이 없습니다.
+             참고 자료는 메일로 받습니다. -->
+        <p class="fine">참고할 자료가 있으면
+          <a href="mailto:action@action.or.kr">action@action.or.kr</a> 로 보내 주세요.</p>
         <!-- 2026-09-03 — 동의 칸과 개인정보 고지를 이 폼에도 넣었습니다.
              기관 의뢰라도 '담당자 이름 · 이메일'은 개인의 정보입니다. 질문 폼과 같은
              근거(개인정보처리방침 1항)로 받는 것이라 절차도 같아야 합니다.
@@ -1356,7 +1409,7 @@
         <p class="owner">지자체·중간지원조직 담당자를 위한 칸입니다.
           <b>함께하는 시민행동</b> 시민참여정책위원회가 맡습니다.</p>
         <p class="fine legal">
-          <b>수집 항목</b> 기관 · 담당자 이름 · 이메일 &nbsp;
+          <b>수집 항목</b> 단체명 · 담당자 이름 · 휴대폰 · 행정번호 · 이메일 &nbsp;
           <b>이용 목적</b> 의뢰 내용을 확인하고 진행을 협의하기 위해 &nbsp;
           <b>보유기간</b> 수집일로부터 5년<br>
           <b>보관</b> 받은 내용은 구글 스프레드시트(Google LLC)에 저장합니다.
