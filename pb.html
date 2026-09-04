@@ -701,6 +701,27 @@
 }
 #pb .sh h2{color:var(--navy)}
 #pb .sh p{color:var(--soft)}
+
+/* ── 소속을 밝히는 세 자리 (2026-09-04) ──
+   첫 화면에는 안 쓰고, 여기서부터 밝힙니다. 순서가 '사람 → 단체' 라야
+   단체 이름이 정체가 아니라 보증으로 읽힙니다. */
+/* 눈꼬리 — 제목 위, 파란 선 아래. 제목을 길게 붙이지 않으려고 갈라 둔 줄입니다. */
+#pb .sh .eyebrow{margin:0 0 5px; font-size:13px; font-weight:700; color:var(--deep)}
+/* 위원회 소개 — 얼굴 넷 바로 위. 소속과 하는 일만 적습니다.
+   ⚠️ 위원회 칸은 바탕에 도는 그림이 깔려 있어서 z-index 를 줘야 묻히지 않습니다. */
+#pb .cintro{
+  position:relative; z-index:1;
+  max-width:64ch; margin:0 0 clamp(6px,1vw,14px);
+  padding:clamp(16px,1.8vw,22px) clamp(18px,2vw,26px);
+  border:1px solid var(--line); border-left:4px solid var(--brand);
+  border-radius:10px; background:rgba(255,255,255,.74)
+}
+#pb .cintro p{margin:0; font-size:14.5px; line-height:1.75; color:var(--soft)}
+#pb .cintro p + p{margin-top:9px}
+#pb .cintro b{color:var(--navy)}
+/* 폼 아래 '누가 받나' 한 줄. 법적 잔글씨(.fine)보다 한 단 진합니다. */
+#pb .ask .who,#pb .form .who{margin-top:11px; font-size:13.5px; line-height:1.6; color:var(--soft)}
+#pb .ask .who b,#pb .form .who b{color:var(--navy)}
 #pb .tbd{
   color:#765213; background:#fbf5e9; border-color:#d8c49e;
   font-family:'Pretendard Variable',Pretendard,sans-serif; font-weight:700
@@ -769,6 +790,10 @@
   #pb .sec{padding-top:82px; padding-bottom:82px}
   #pb .sh h2{font-size:clamp(32px,3vw,42px)}
   #pb .sh p{font-size:18px; max-width:72ch}
+  #pb .sh .eyebrow{font-size:15px}
+  #pb .cintro p{font-size:17px}
+  #pb .cintro{max-width:70ch}
+  #pb .ask .who,#pb .form .who{font-size:15.5px}
   #pb .hero h1{font-size:clamp(54px,5.8vw,74px)}
   #pb .hero .by{font-size:21px; max-width:60ch}
 
@@ -868,7 +893,7 @@
          다루는 것도 참여예산 하나가 아니라 주민자치회까지 넓어졌습니다. -->
     <h1>시민참여, 물어보세요!</h1>
     <p class="by">참여예산도, 주민자치회도, 뭘 물어야 할지 모르겠는 것도.
-      시민행동 <b>시민참여정책위원회</b> 전문위원이 답합니다.</p>
+      제도와 현장을 오래 다뤄 온 <b>전문위원이 직접 답합니다</b>.</p>
 
     <form class="ask" id="pb-ask">
       <!-- 무엇에 대해 묻나요 — 고르는 줄은 이것 하나입니다.
@@ -928,6 +953,9 @@
       <!-- 허니팟. 사람에게는 안 보이고 자동 프로그램만 채웁니다(#pb .hp 규칙). -->
       <input class="hp" type="text" id="pb-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <button type="submit" class="go">질문 보내기</button>
+      <!-- 2026-09-04 — 받는 곳을 잔글씨에서 끌어올렸습니다.
+           이름·휴대전화·이메일을 내주는 자리라, 누가 받는지가 보여야 합니다. -->
+      <p class="who"><b>함께하는 시민행동</b> 시민참여정책위원회 전문위원이 읽고 답합니다.</p>
       <p class="fine"><b>답은 이 페이지 아래 '오간 질문'에 올라갑니다</b> — 보통 5일 안입니다.
         올라오면 알려 드립니다. 질문 내용만 올라가고 <b>이름·연락처는 화면에 올리지 않습니다.</b></p>
       <p class="fine legal">
@@ -1076,10 +1104,28 @@
            절대 주소로 바꾸면 됩니다 — 하단 센터 로고들이 그렇게 돼 있습니다.
 
          ⚠️ 오지은 위원은 이력을 아직 못 받았습니다. 지어내지 않고 비워 뒀습니다. -->
+    <!-- 2026-09-04 — 소속을 여기서 처음 밝힙니다.
+         첫 화면에서 단체 이름을 앞세우면 "이게 뭐하는 곳이야?" 가 먼저 나옵니다.
+         얼굴 넷 바로 위에서 밝히면 추상적인 단체가 아니라 이 사람들의 소속으로
+         읽혀서 거부감이 덜합니다. h2 를 '함께하는 시민행동 시민참여정책위원회'
+         한 줄로 붙이지 않은 것도 같은 이유입니다 — 18자라 좁은 화면에서 두 줄로
+         꺾이고, 조직 이름 둘이 겹쳐 무거워집니다. 눈꼬리로 갈라 둡니다. -->
     <section class="sec people-sec" id="committee"><div class="sh">
+      <p class="eyebrow">함께하는 시민행동</p>
       <h2>시민참여정책위원회</h2>
       <p>제도와 현장, 교육을 오래 오간 전문위원이 직접 답합니다.</p>
     </div>
+
+      <!-- 위원회 소개.
+           ⚠️ 여기 적은 것은 모두 확인된 사실만입니다 — 시민행동 창립 1999년,
+              위원회가 상담과 교육·컨설팅을 맡는다는 것. 위원회의 설립 시기·정원·
+              활동 내역은 못 받아서 적지 않았습니다. 지어내지 마세요. -->
+      <div class="cintro">
+        <p><b>시민참여정책위원회</b>는 <b>함께하는 시민행동</b> 안에 있는 기구입니다.
+          시민행동은 1999년부터 정부와 공공기관의 예산을 감시해 온 시민단체입니다.</p>
+        <p>위원회는 참여예산·주민자치회·시민참여정책에 관한 질문에 답하고,
+          지자체와 시민단체의 교육·컨설팅을 맡습니다.</p>
+      </div>
       <!-- 카루셀. 넘기는 일은 .pv 의 가로 스크롤 + 스냅이 하고,
            화살표·점·기울임만 스크립트가 얹습니다(스크립트가 막혀도 넘어갑니다). -->
       <div class="people">
