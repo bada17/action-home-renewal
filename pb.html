@@ -11,7 +11,7 @@
    그래서 질문·답 말고 넷을 더 넣었습니다. 각 칸 앞 주석에 이유를 적었습니다.
      1. 세 갈래 입구       — 묻는 사람이 셋인데 궁금한 게 전혀 다릅니다
      2. 나도 궁금해요      — 읽기만 하던 사람이 한 번은 누르게 됩니다
-     3. 참여예산 말 뜻     — 못 묻는 이유 1위가 "용어를 몰라서"입니다
+     3. 시민참여 개념 정의 — 못 묻는 이유 1위가 "용어를 몰라서"입니다
      4. 답을 기다리는 질문 — 살아 있는 창구라는 증거입니다
 
    ⚠️ 이 화면은 캠페이너스 코드 위젯입니다. 모든 규칙을 #pb 안에 가둡니다.
@@ -134,7 +134,27 @@
 /* 2026-09-03 에 이 줄의 버튼 둘(전체 · 궁금해요 많은 순)이 다 빠져서
    지금은 문답 개수만 남았습니다. 버튼 규칙도 같이 지웠습니다. */
 #pb .qtools{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:14px}
-#pb .qtools .count{font-size:13px; color:var(--faint); margin-right:auto}
+/* 세는 글씨는 오른쪽 끝으로 밀고, 거르는 버튼이 왼쪽을 씁니다(2026-09-04). */
+#pb .qtools .count{font-size:13px; color:var(--faint); margin-left:auto}
+#pb .qfilter{display:flex; flex-wrap:wrap; gap:7px}
+#pb .qfilter button{
+  padding:8px 15px; border:1px solid var(--line); border-radius:999px;
+  background:#fff; color:var(--soft); cursor:pointer;
+  font:700 13px/1 Pretendard,sans-serif;
+  transition:background .18s, border-color .18s, color .18s, transform .18s
+}
+#pb .qfilter button:hover{border-color:var(--brand); color:var(--deep); transform:translateY(-1px)}
+#pb .qfilter button[aria-pressed="true"]{background:var(--deep); border-color:var(--deep); color:#fff}
+/* 문답에 붙는 주제 딱지. 묻는 사람 딱지(.whotag)와 나란히 섭니다. */
+#pb .qtag{
+  flex:none; padding:3px 9px; border-radius:999px; font-size:11.5px; font-weight:700;
+  border:1px solid rgba(0,121,166,.3); background:var(--tint); color:var(--deep)
+}
+#pb .qempty{
+  margin:18px 0 0; padding:22px 20px; text-align:center; line-height:1.7;
+  border:1px dashed var(--line); border-radius:10px;
+  background:var(--paper); font-size:13.5px; color:var(--faint)
+}
 
 #pb .qa{border-top:2px solid var(--ink)}
 #pb .qa .item{border-bottom:1px solid var(--line)}
@@ -171,7 +191,7 @@
 
 /* '답을 기다리는 질문'(.waiting) 규칙은 2026-09-03 에 지웠습니다 — 칸 자체를 뺐습니다. */
 
-/* ═════ 더한 것 3 — 참여예산 말 뜻 ═════
+/* ═════ 더한 것 3 — 시민참여 개념 정의 ═════
    시민이 못 묻는 가장 큰 이유가 "용어를 몰라서"입니다.
    '제안사업'·'숙의'·'운영조례'가 뭔지 모르면 질문 자체를 못 만듭니다.
    카드를 누르면 뒤집힙니다 — 훑고 지나가도 남는 게 있게. */
@@ -747,8 +767,8 @@
 #pb .cin-a{font-size:13.5px; color:var(--faint); line-height:1.7}
 #pb .cin-a .tbd{margin-right:7px}
 /* 폼 아래 '누가 받나' 한 줄. 법적 잔글씨(.fine)보다 한 단 진합니다. */
-#pb .ask .who,#pb .form .who{margin-top:11px; font-size:13.5px; line-height:1.6; color:var(--soft)}
-#pb .ask .who b,#pb .form .who b{color:var(--navy)}
+#pb .ask .owner,#pb .form .owner{margin-top:11px; font-size:13.5px; line-height:1.6; color:var(--soft)}
+#pb .ask .owner b,#pb .form .owner b{color:var(--navy)}
 #pb .tbd{
   color:#765213; background:#fbf5e9; border-color:#d8c49e;
   font-family:'Pretendard Variable',Pretendard,sans-serif; font-weight:700
@@ -777,7 +797,7 @@
 
 /* 용어 카드는 물음표 장식을 빼고 작은 안내 문구로 기능을 분명히 합니다. */
 #pb .word{
-  align-items:flex-start; text-align:left; border:1px solid var(--line);
+  align-items:center; text-align:center; border:1px solid var(--line);
   border-top:3px solid rgba(0,121,166,.58); border-radius:8px; background:#fff;
   box-shadow:0 10px 24px -24px rgba(6,35,48,.6)
 }
@@ -824,7 +844,7 @@
     margin-top:15px; padding-top:15px}
   #pb .cin-q,#pb .cin-a{font-size:15.5px}
   #pb .cintro{max-width:70ch}
-  #pb .ask .who,#pb .form .who{font-size:15.5px}
+  #pb .ask .owner,#pb .form .owner{font-size:15.5px}
   #pb .hero h1{font-size:clamp(54px,5.8vw,74px)}
   #pb .hero .by{font-size:21px; max-width:60ch}
 
@@ -838,6 +858,9 @@
   #pb .ask .legal,#pb .form .legal{font-size:14px}
   #pb .ask .msg,#pb .form .msg{font-size:16px}
   #pb .qtools .count{font-size:15px}
+  #pb .qfilter button{padding:10px 18px; font-size:15px}
+  #pb .qtag{font-size:13px; padding:4px 11px}
+  #pb .qempty{font-size:16px; padding:28px 24px}
 
   #pb .qa summary{font-size:19px}
   #pb .mark{width:30px; height:30px; font-size:14px}
@@ -986,7 +1009,7 @@
       <button type="submit" class="go">질문 보내기</button>
       <!-- 2026-09-04 — 받는 곳을 잔글씨에서 끌어올렸습니다.
            이름·휴대전화·이메일을 내주는 자리라, 누가 받는지가 보여야 합니다. -->
-      <p class="who"><b>함께하는 시민행동</b> 시민참여정책위원회 전문위원이 읽고 답합니다.</p>
+      <p class="owner"><b>함께하는 시민행동</b> 시민참여정책위원회 전문위원이 읽고 답합니다.</p>
       <p class="fine"><b>답은 이 페이지 아래 '오간 질문'에 올라갑니다</b> — 보통 5일 안입니다.
         올라오면 알려 드립니다. 질문 내용만 올라가고 <b>이름·연락처는 화면에 올리지 않습니다.</b></p>
       <p class="fine legal">
@@ -1023,23 +1046,31 @@
             정렬 버튼과 함께 되살리세요. -->
     <section class="sec"><div class="sh">
       <h2>오간 질문</h2>
-      <p>같은 걸 궁금해한 사람이 이미 있었습니다.</p>
     </div>
 
-      <!-- 이 줄에 버튼이 둘 있었는데 2026-09-03 에 다 뺐습니다.
-           '전체'는 갈래 거르기를 되돌리는 버튼이라 거르기와 함께 사라졌고,
-           '궁금해요 많은 순'은 셀 수 있는 숫자가 없어서 뺐습니다. -->
+      <!-- 2026-09-04 — 주제로 거르는 줄을 놓았습니다.
+           ⚠️ data-filter 값은 히어로 폼의 주제 버튼(data-topic)과 **같은 말**을
+              써야 합니다 — budget · jachi · policy. 한쪽만 바꾸면 거르기가
+              아무것도 못 찾고 늘 '없습니다'만 나옵니다.
+           ('궁금해요 많은 순'은 셀 숫자가 없어 2026-09-03 에 뺐습니다.) -->
       <div class="qtools">
+        <div class="qfilter" role="group" aria-label="주제로 거르기">
+          <button type="button" data-filter="all" aria-pressed="true">전체</button>
+          <button type="button" data-filter="budget" aria-pressed="false">참여예산</button>
+          <button type="button" data-filter="jachi" aria-pressed="false">주민자치회</button>
+          <button type="button" data-filter="policy" aria-pressed="false">시민참여정책</button>
+        </div>
         <span class="count" id="pb-count"></span>
       </div>
 
       <div class="qa" id="pb-qa">
 
-        <details class="item" data-who="citizen" data-q="town">
+        <details class="item" data-topic="budget" data-who="citizen" data-q="town">
           <summary>
             <span class="mark q" aria-hidden="true">Q</span>
             <span>우리 동네도 참여예산을 하나요?</span>
             <span class="tail">
+              <span class="qtag">참여예산</span>
               <span class="whotag">시민</span>            </span>
           </summary>
           <div class="ans">
@@ -1050,11 +1081,12 @@
           </div>
         </details>
 
-        <details class="item" data-who="member" data-q="first">
+        <details class="item" data-topic="budget" data-who="member" data-q="first">
           <summary>
             <span class="mark q" aria-hidden="true">Q</span>
             <span>위원이 됐는데 첫 회의에서 뭘 봐야 하나요?</span>
             <span class="tail">
+              <span class="qtag">참여예산</span>
               <span class="whotag">참여예산위원</span>            </span>
           </summary>
           <div class="ans">
@@ -1065,11 +1097,12 @@
           </div>
         </details>
 
-        <details class="item" data-who="citizen" data-q="reject">
+        <details class="item" data-topic="budget" data-who="citizen" data-q="reject">
           <summary>
             <span class="mark q" aria-hidden="true">Q</span>
             <span>제안이 '부적합'으로 반려됐는데 끝인가요?</span>
             <span class="tail">
+              <span class="qtag">참여예산</span>
               <span class="whotag">시민</span>            </span>
           </summary>
           <div class="ans">
@@ -1081,16 +1114,18 @@
         </details>
 
       </div>
+      <!-- 고른 주제에 문답이 하나도 없을 때. 스크립트가 켜고 끕니다. -->
+      <p class="qempty" id="pb-qempty" hidden>고른 주제로 오간 질문이 아직 없습니다.
+        맨 위 칸에서 물어봐 주세요 — 답이 여기 올라옵니다.</p>
 
       <!-- '답을 기다리는 질문' 칸은 2026-09-03 에 뺐습니다(사용자 결정).
            접수가 잠긴 동안에는 실제 대기 질문이 있을 수 없어 예시밖에 못 놓습니다.
            폼이 열리면 되살릴 만한 칸입니다 — 그때는 예시가 아니라 진짜가 들어갑니다. -->
     </section>
 
-    <!-- ───────── 더한 것 3 — 참여예산 말 뜻 ───────── -->
+    <!-- ───────── 더한 것 3 — 시민참여 개념 정의 ───────── -->
     <section class="sec"><div class="sh">
-      <h2>참여예산 말 뜻</h2>
-      <p>못 묻는 가장 큰 이유는 몰라서가 아니라 <b>용어를 몰라서</b>입니다. 눌러서 뒤집어 보세요.</p>
+      <h2>시민참여 개념 정의</h2>
     </div>
       <div class="words">
         <button type="button" class="word" aria-pressed="false"><b>시민참여</b><span>시민이 권리 및 공공의 이익 실현, 사회적 가치 증진 등을 위하여 다양한 영역에서 자율적으로 참여하는 행위</span></button>
@@ -1144,7 +1179,6 @@
     <section class="sec people-sec" id="committee"><div class="sh">
       <p class="eyebrow">함께하는 시민행동</p>
       <h2>시민참여정책위원회</h2>
-      <p>제도와 현장, 교육을 오래 오간 전문위원이 직접 답합니다.</p>
     </div>
 
       <!-- 위원회 소개 — 2026-09-04. **자리만 잡아 둔 칸입니다.**
@@ -1301,7 +1335,6 @@
             되돌리세요. -->
     <section class="sec"><div class="sh">
       <h2>전문위원의 글 <span class="tbd">전부 예시</span></h2>
-      <p>문답으로 다 못 담는 것은 글로 풉니다.</p>
     </div>
       <div class="rows">
         <div class="row is-tbd"><span class="t">참여예산 총액은 누가 정하나</span><span class="meta">ㅇㅇㅇ · 00.00</span></div>
@@ -1317,8 +1350,6 @@
       <h2>교육 · 컨설팅 의뢰</h2>
       <!-- 비용은 여기서 밝히지 않습니다(2026-09-03 사용자 결정).
            의뢰를 받은 뒤 따로 협의할 일이라, 화면에는 올리지 않습니다. -->
-      <p>지자체·중간지원조직 담당자를 위한 칸입니다.
-        시민행동 시민참여정책위원회가 맡습니다.</p>
     </div>
       <form class="form" id="pb-order">
         <div class="two">
@@ -1339,6 +1370,12 @@
         <!-- 허니팟. 질문 폼과 같습니다(#pb .hp 규칙). -->
         <input class="hp" type="text" id="pb-ohp" tabindex="-1" autocomplete="off" aria-hidden="true">
         <button type="submit" class="go">의뢰 보내기</button>
+        <!-- 2026-09-04 — 칸 머리의 부제를 걷으면서, 거기 있던 '누가 맡나'를
+             여기로 내렸습니다. 질문 폼의 .owner 와 같은 자리입니다.
+             ⚠️ 이름을 .who 로 지으면 안 됩니다 — 주제 고르는 줄이
+                <div class="who topic"> 라서 그 줄까지 같이 걸립니다. -->
+        <p class="owner">지자체·중간지원조직 담당자를 위한 칸입니다.
+          <b>함께하는 시민행동</b> 시민참여정책위원회가 맡습니다.</p>
         <p class="fine legal">
           <b>수집 항목</b> 기관 · 담당자 이름 · 이메일 &nbsp;
           <b>이용 목적</b> 의뢰 내용을 확인하고 진행을 협의하기 위해 &nbsp;
@@ -1377,10 +1414,45 @@
 
   var items = Array.prototype.slice.call(root.querySelectorAll('#pb-qa .item'));
 
-  /* ── 문답이 몇 개인지 ──
-     예전에는 거르기가 이 숫자를 고쳐 썼습니다. 거르기가 없어져서 한 번만 적습니다. */
+  /* ── 문답이 몇 개인지 · 주제로 거르기 (거르기는 2026-09-04 에 되살렸습니다) ──
+     ⚠️ 여기 쓰는 주제 값은 히어로 폼의 data-topic 과 같아야 합니다
+        (budget · jachi · policy). 한쪽만 바꾸면 늘 '없습니다'만 나옵니다. */
   var count = document.getElementById('pb-count');
-  if (count) count.textContent = '문답 ' + items.length + '개';
+  var qempty = document.getElementById('pb-qempty');
+  var qfilter = root.querySelector('.qfilter');
+
+  function drawCount(n) {
+    if (count) count.textContent = '문답 ' + n + '개';
+  }
+
+  function filterQa(topic) {
+    var on = 0;
+    items.forEach(function (it) {
+      var show = topic === 'all' || it.dataset.topic === topic;
+      it.hidden = !show;
+      if (!show) { it.open = false; return; }
+      on++;
+      /* 걸러서 다시 나타난 칸이 투명한 채 남지 않게 합니다 — 스크롤 등장이
+         한 번도 안 걸린 칸이 있을 수 있습니다. */
+      it.classList.add('in');
+    });
+    drawCount(on);
+    if (qempty) qempty.hidden = on > 0;
+  }
+
+  drawCount(items.length);
+
+  if (qfilter) {
+    var fbtns = Array.prototype.slice.call(qfilter.querySelectorAll('button'));
+    fbtns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        fbtns.forEach(function (x) {
+          x.setAttribute('aria-pressed', x === b ? 'true' : 'false');
+        });
+        filterQa(b.dataset.filter);
+      });
+    });
+  }
 
   /* ── 2. 말 뜻 카드 뒤집기 ── */
   root.querySelectorAll('.word').forEach(function (b) {
