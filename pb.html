@@ -717,8 +717,15 @@
   border-radius:10px; background:rgba(255,255,255,.74)
 }
 #pb .cintro p{margin:0; font-size:14.5px; line-height:1.75; color:var(--soft)}
-#pb .cintro p + p{margin-top:9px}
+#pb .cintro p + p{margin-top:12px}
 #pb .cintro b{color:var(--navy)}
+#pb .cintro-lead{font-size:16px; font-weight:600; color:var(--navy)}
+/* 아직 안 채운 자리. 점선과 딱지로 '비어 있는 게 아니라 기다리는 중'임을 보입니다. */
+#pb .cintro-slot{
+  padding:14px 16px; border:1px dashed var(--line); border-radius:8px;
+  background:rgba(226,245,253,.5); font-size:13.5px; color:var(--faint)
+}
+#pb .cintro-slot .tbd{margin-right:7px}
 /* 폼 아래 '누가 받나' 한 줄. 법적 잔글씨(.fine)보다 한 단 진합니다. */
 #pb .ask .who,#pb .form .who{margin-top:11px; font-size:13.5px; line-height:1.6; color:var(--soft)}
 #pb .ask .who b,#pb .form .who b{color:var(--navy)}
@@ -792,6 +799,8 @@
   #pb .sh p{font-size:18px; max-width:72ch}
   #pb .sh .eyebrow{font-size:15px}
   #pb .cintro p{font-size:17px}
+  #pb .cintro-lead{font-size:19px}
+  #pb .cintro-slot{font-size:15px}
   #pb .cintro{max-width:70ch}
   #pb .ask .who,#pb .form .who{font-size:15.5px}
   #pb .hero h1{font-size:clamp(54px,5.8vw,74px)}
@@ -1116,15 +1125,16 @@
       <p>제도와 현장, 교육을 오래 오간 전문위원이 직접 답합니다.</p>
     </div>
 
-      <!-- 위원회 소개.
-           ⚠️ 여기 적은 것은 모두 확인된 사실만입니다 — 시민행동 창립 1999년,
-              위원회가 상담과 교육·컨설팅을 맡는다는 것. 위원회의 설립 시기·정원·
-              활동 내역은 못 받아서 적지 않았습니다. 지어내지 마세요. -->
+      <!-- 위원회 소개 — 2026-09-04. **자리만 잡아 둔 칸입니다.**
+           사용자: "소개 글은 아직 없어. 자리만 만들어놔. 나중에 내용줄게".
+           ⚠️ 첫 줄만 확인된 사실입니다(위원회가 시민행동 안에 있다는 것).
+              나머지는 지어내지 말고, 글을 받으면 .cintro-slot 을 통째로
+              <p> 서너 줄로 갈아 끼우세요. 그때 '소개 글 준비 중' 딱지도 걷습니다. -->
       <div class="cintro">
-        <p><b>시민참여정책위원회</b>는 <b>함께하는 시민행동</b> 안에 있는 기구입니다.
-          시민행동은 1999년부터 정부와 공공기관의 예산을 감시해 온 시민단체입니다.</p>
-        <p>위원회는 참여예산·주민자치회·시민참여정책에 관한 질문에 답하고,
-          지자체와 시민단체의 교육·컨설팅을 맡습니다.</p>
+        <p class="cintro-lead"><b>시민참여정책위원회</b>는
+          <b>함께하는 시민행동</b> 안에 있는 기구입니다.</p>
+        <p class="cintro-slot"><span class="tbd">소개 글 준비 중</span>
+          위원회가 무엇을 하는 곳인지 서너 줄이 여기 들어갑니다.</p>
       </div>
       <!-- 카루셀. 넘기는 일은 .pv 의 가로 스크롤 + 스냅이 하고,
            화살표·점·기울임만 스크립트가 얹습니다(스크립트가 막혀도 넘어갑니다). -->
@@ -1374,7 +1384,7 @@
      'in' 을 바로 붙여 그냥 다 보이게 둡니다. */
   var reveal = root.querySelectorAll(
     '.sec > .sh, .qtools, .qa .item, .words, .word, .words-fine,' +
-    ' .people, .phint, .rows .row, .rows-fine, .form');
+    ' .cintro, .people, .phint, .rows .row, .rows-fine, .form');
   if (!('IntersectionObserver' in window) || calm) {
     reveal.forEach(function (el) { el.classList.add('rv', 'in'); });
   } else {
