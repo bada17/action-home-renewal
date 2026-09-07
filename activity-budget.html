@@ -359,7 +359,7 @@
 }
 </style>
 
-<div id="act" aria-label="예산감시" data-act="budget">
+<div id="act" aria-label="예산감시" data-act="budget" data-board="/27">
 
   <!-- ───────── 맨 위 ─────────
        빵부스러기 → 감시 대상 → 제목 → 한 줄 → 숫자 셋이 한 덩이입니다.
@@ -372,7 +372,12 @@
          빵부스러기에 이미 활동 이름이 있고, 홈의 활동 다섯 줄에도 부제가 있습니다.
          값 자체는 ALL 에 그대로 있습니다(나라살림 · 지방재정) — 다시 넣으려면 이 자리에 넣으세요. -->
     <h1 id="act-head">세금이 어디로 갔는지<br>끝까지 따라갑니다</h1>
+    <!-- ⚠️ 한 줄 소개는 2026-09-07 사용자 지시로 **주석 처리**했습니다.
+         네 화면에 같은 꼴로 붙어 있던 줄입니다. 지우지 마세요 — 값은 PAGES 의
+         lede 에 그대로 있고, AH_SCRIPT 도 act-lede 를 그대로 찾습니다.
+         아래 한 줄의 주석만 벗기면 되살아납니다.
     <p class="by" id="act-lede">나라살림과 지방재정을 들여다보고, 새는 곳을 찾아 기록하고 공개합니다.</p>
+    -->
     <!-- ⚠️ 숫자 칸은 2026-09-01 사용자 지시로 **주석 처리**했습니다.
          "나중에 사용할 수 있음" — 지우지 마세요. 값은 PAGES 의 nums 에 그대로 있고,
          build_nums 도 그대로 돕니다. 아래 두 줄의 주석만 벗기면 되살아납니다.
@@ -392,8 +397,8 @@
       <p>나라 예산은 해마다 같은 순서로 정해집니다. 의견을 낼 수 있는 때도 정해져 있습니다.</p>
     </div>
       <div class="cal rv">
-        <div class="today" style="left:73.13%"><b>오늘 9월 3일</b></div>
-        <div class="bar"><span class="done" style="width:73.13%"></span></div>
+        <div class="today" style="left:74.33%"><b>오늘 9월 7일</b></div>
+        <div class="bar"><span class="done" style="width:74.33%"></span></div>
         <div class="marks"><span class="mk" style="left:0.00%"></span><span class="mk" style="left:45.07%"></span><span class="mk is-law" style="left:72.84%"></span><span class="mk is-law" style="left:100%"></span></div>
         <div class="steps">
           <div class="step" style="flex:0 0 45.07%"><b>부처 요구</b><span>각 부처가 필요한 돈을 적어 냅니다<br>~5월 31일</span></div>
@@ -430,7 +435,11 @@
 
     <!-- ───────── 결과 ─────────
          사건 하나에 [무엇을 했나] + [무엇이 바뀌었나] 두 줄. 근거 글을 아래에 답니다.
-         ⚠️ 확인된 사실만 적었습니다. 후속 조치나 성과 수치는 확인 전까지 쓰지 마세요. -->
+         ⚠️ 확인된 사실만 적었습니다. 후속 조치나 성과 수치는 확인 전까지 쓰지 마세요.
+         ★ 2026-09-07 사용자 지시로 이 칸을 **주석 처리**했습니다 — "추후에 설정해보자".
+           지운 것이 아닙니다. 값은 PAGES 의 result 에 그대로 있고 build_result 도
+           그대로 돕니다. 아래 주석만 벗기면 되살아납니다. -->
+    <!--
     <section class="sec"><div class="sh">
       <h2>무엇이 달라졌나</h2>
       <p>글이 아니라 사건으로 적습니다. 무엇을 했고, 그래서 무엇이 바뀌었는지 두 줄입니다.</p>
@@ -452,6 +461,7 @@
         </article>
       </div>
     </section>
+    -->
 
     <!-- ───────── 글 ─────────
          ★ 2026-09-01 사용자 결정: 이 칸이 **그 게시판의 글을 다 보여 주는 자리**입니다.
@@ -651,6 +661,89 @@
 })();
 </script>
 
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   지금 무엇을 보고 있나 — 이 화면이 앉은 게시판의 **최신 글 둘**을 올립니다.
+   (2026-09-07 사용자 지시. build-activity.py 가 TEMPLATE 의 {nowboard} 에 끼웁니다.)
+
+   게시판 번호는 #act 의 data-board 에 적혀 있습니다(활동마다 다릅니다).
+   action.or.kr/rss 를 받아, 글 주소가 그 게시판인 것만 위에서부터 둘 씁니다.
+
+   ★ 못 받거나 그 게시판 글이 아직 없으면 아무것도 하지 않습니다 —
+     HTML 에 적힌 씨앗이 그대로 남습니다('켜는 것만 스크립트가 한다' 원칙).
+   ⚠ AH_DATA 스크립트보다 뒤에 그립니다(받아오는 데 시간이 걸립니다).
+     둘 다 값이 있으면 게시판 쪽이 이깁니다 — 그게 최신입니다.
+   ⚠ 사진은 RSS 의 media:content 를 씁니다. 없으면 빈 액자로 둡니다 —
+     글자 무늬(data-mark)는 사람이 고른 말이라 여기서 지어내지 않습니다.
+   ═══════════════════════════════════════════════════════════════ */
+(function () {
+  var box = document.getElementById('act');
+  var list = document.getElementById('act-now');
+  if (!box || !list) return;
+
+  var board = String(box.getAttribute('data-board') || '').replace(/\/+$/, '');
+  if (!board) return;
+
+  function esc(v) {
+    var d = document.createElement('div');
+    d.textContent = (v === null || v === undefined) ? '' : String(v);
+    return d.innerHTML;
+  }
+  function nodeText(node, tag) {
+    var el = node.getElementsByTagName(tag)[0];
+    return el ? String(el.textContent || '').trim() : '';
+  }
+  function boardPath(link) {
+    try { return new URL(link, window.location.href).pathname.replace(/\/+$/, ''); }
+    catch (e) { return ''; }
+  }
+  function ymd(raw) {
+    var t = Date.parse(raw);
+    if (isNaN(t)) return '';
+    var d = new Date(t);
+    function p(n) { return (n < 10 ? '0' : '') + n; }
+    return d.getFullYear() + '.' + p(d.getMonth() + 1) + '.' + p(d.getDate());
+  }
+
+  fetch('/rss', { credentials: 'same-origin' })
+    .then(function (res) {
+      if (!res.ok) throw new Error('RSS ' + res.status);
+      return res.text();
+    })
+    .then(function (xmlText) {
+      var xml = new DOMParser().parseFromString(xmlText, 'application/xml');
+      if (xml.getElementsByTagName('parsererror').length) throw new Error('RSS XML');
+
+      var rows = [];
+      Array.prototype.forEach.call(xml.getElementsByTagName('item'), function (item) {
+        if (rows.length >= 2) return;
+        var url = nodeText(item, 'link');
+        if (boardPath(url) !== board) return;
+        var media = item.getElementsByTagName('media:content')[0];
+        rows.push({
+          t: nodeText(item, 'title'),
+          url: url,
+          img: media ? (media.getAttribute('url') || '') : '',
+          date: ymd(nodeText(item, 'pubDate'))
+        });
+      });
+      if (!rows.length) return;
+
+      var html = '';
+      rows.forEach(function (r) {
+        var shot = r.img
+          ? '<span class="shot"><img src="' + esc(r.img) + '" alt="" loading="lazy"></span>'
+          : '<span class="shot" aria-hidden="true"></span>';
+        html += '<li><a href="' + esc(r.url) + '">' + shot
+              +   '<span class="t">' + esc(r.t) + '</span>'
+              +   '<span class="m">' + (r.date ? '<span>' + esc(r.date) + '</span>' : '') + '</span>'
+              + '</a></li>';
+      });
+      list.innerHTML = html;
+    })
+    .catch(function () { /* 못 받으면 씨앗을 그대로 보여 줍니다. */ });
+})();
+</script>
 <script>
 /* 스크롤로 들어올 때 살짝 올라오기.
    숨기는 상태(.is-armed)를 스크립트가 직접 붙입니다. 그래서 스크립트가 막히면

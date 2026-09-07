@@ -401,7 +401,7 @@ TEMPLATE = u'''<style>
 }}
 </style>
 
-<div id="act" aria-label="{title}" data-act="{key}">
+<div id="act" aria-label="{title}" data-act="{key}" data-board="{board_path}">
 
   <!-- ───────── 맨 위 ─────────
        빵부스러기 → 감시 대상 → 제목 → 한 줄 → 숫자 셋이 한 덩이입니다.
@@ -414,7 +414,12 @@ TEMPLATE = u'''<style>
          빵부스러기에 이미 활동 이름이 있고, 홈의 활동 다섯 줄에도 부제가 있습니다.
          값 자체는 ALL 에 그대로 있습니다({who}) — 다시 넣으려면 이 자리에 넣으세요. -->
     <h1 id="act-head">{headline}</h1>
+    <!-- ⚠️ 한 줄 소개는 2026-09-07 사용자 지시로 **주석 처리**했습니다.
+         네 화면에 같은 꼴로 붙어 있던 줄입니다. 지우지 마세요 — 값은 PAGES 의
+         lede 에 그대로 있고, AH_SCRIPT 도 act-lede 를 그대로 찾습니다.
+         아래 한 줄의 주석만 벗기면 되살아납니다.
     <p class="by" id="act-lede">{lede}</p>
+    -->
     <!-- ⚠️ 숫자 칸은 2026-09-01 사용자 지시로 **주석 처리**했습니다.
          "나중에 사용할 수 있음" — 지우지 마세요. 값은 PAGES 의 nums 에 그대로 있고,
          build_nums 도 그대로 돕니다. 아래 두 줄의 주석만 벗기면 되살아납니다.
@@ -438,7 +443,11 @@ TEMPLATE = u'''<style>
 
     <!-- ───────── 결과 ─────────
          사건 하나에 [무엇을 했나] + [무엇이 바뀌었나] 두 줄. 근거 글을 아래에 답니다.
-         ⚠️ 확인된 사실만 적었습니다. 후속 조치나 성과 수치는 확인 전까지 쓰지 마세요. -->
+         ⚠️ 확인된 사실만 적었습니다. 후속 조치나 성과 수치는 확인 전까지 쓰지 마세요.
+         ★ 2026-09-07 사용자 지시로 이 칸을 **주석 처리**했습니다 — "추후에 설정해보자".
+           지운 것이 아닙니다. 값은 PAGES 의 result 에 그대로 있고 build_result 도
+           그대로 돕니다. 아래 주석만 벗기면 되살아납니다. -->
+    <!--
     <section class="sec"><div class="sh">
       <h2>무엇이 달라졌나</h2>
       <p>글이 아니라 사건으로 적습니다. 무엇을 했고, 그래서 무엇이 바뀌었는지 두 줄입니다.</p>
@@ -447,6 +456,7 @@ TEMPLATE = u'''<style>
 {result}
       </div>
     </section>
+    -->
 
     <!-- ───────── 글 ─────────
          ★ 2026-09-01 사용자 결정: 이 칸이 **그 게시판의 글을 다 보여 주는 자리**입니다.
@@ -485,6 +495,7 @@ TEMPLATE = u'''<style>
 </div>
 
 {ahdata}
+{nowboard}
 <script>
 /* 스크롤로 들어올 때 살짝 올라오기.
    숨기는 상태(.is-armed)를 스크립트가 직접 붙입니다. 그래서 스크립트가 막히면
@@ -892,6 +903,19 @@ PAGES = {
 
 
 # ══════════════════════════════════════════════════════════════════
+#  '지금 무엇을 보고 있나' 를 게시판 최신 글 둘로 채웁니다 (2026-09-07 사용자 지시)
+#
+#  본문은 tools/parts/activity-now-board.js 입니다. TEMPLATE 이 .format() 문자열이라
+#  자바스크립트를 여기 직접 적으면 중괄호를 두 번씩 써야 해서 파일로 뺐습니다.
+# ══════════════════════════════════════════════════════════════════
+NOW_BOARD_SCRIPT = (
+    u'<script>' + chr(10)
+    + io.open(os.path.join(HERE, 'parts', 'activity-now-board.js'),
+              encoding='utf-8').read().rstrip()
+    + chr(10) + u'</script>')
+
+
+# ══════════════════════════════════════════════════════════════════
 #  조각 만들기
 # ══════════════════════════════════════════════════════════════════
 def build_nums(rows):
@@ -1160,7 +1184,20 @@ def build_sig(d):
     else:
         raise ValueError(u'모르는 칸 종류: %s' % kind)
 
-    return NL + head + body + u'    </section>' + NL
+    out = NL + head + body + u'    </section>' + NL
+    if kind == 'where':
+        # ★ 2026-09-07 사용자 지시로 '올해 들여다본 곳' 만 주석으로 나갑니다
+        #   ("추후에 설정해보자"). 지운 것이 아닙니다 — 주석만 벗기면 되살아납니다.
+        out = (NL +
+               u'    <!-- ───────── 이 활동만의 칸 ─────────' + NL +
+               u'         ★ 2026-09-07 사용자 지시로 주석 처리했습니다 — "추후에 설정해보자".' + NL +
+               u"           값은 PAGES['local']['sig'] 에 그대로 있습니다. -->" + NL +
+               u'    <!--' + NL +
+               # head 첫 줄이 이미 주석이라 그대로 감싸면 주석이 겹쳐 화면이 깨집니다.
+               u''.join(l + NL for l in out.strip(NL).split(NL)
+                        if u'이 활동만의 칸' not in l) +
+               u'    -->' + NL)
+    return out
 
 
 def build_sibs(me):
@@ -1366,6 +1403,8 @@ def main():
         html = TEMPLATE.format(
             key=key,
             ahdata=AH_SCRIPT,
+            nowboard=NOW_BOARD_SCRIPT,
+            board_path=href,
             title=name,
             who=who,
             headline=d['headline'],
