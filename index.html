@@ -416,6 +416,12 @@
   #action-home-v2 .wrow .who{
     display:block;margin-top:5px;font-size:12.5px;font-weight:700;color:var(--brand-deep);letter-spacing:.01em
   }
+  /* 사업 이름만 있고 무엇을 하는 곳인지가 없었습니다. 2026-09-07 사용자 제공 문안입니다.
+     ⚠️ 지어낸 말이 아닙니다 — 고칠 때는 사용자에게 새 문안을 받으세요. */
+  #action-home-v2 .wrow .wdesc{
+    display:block;margin-top:9px;max-width:62ch;
+    font-size:15px;line-height:1.65;color:var(--ink-soft);font-weight:400
+  }
   #action-home-v2 .wrow .go{
     width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);
     display:grid;place-items:center;font-size:16px;color:var(--ink-soft);background:#fff;transition:.18s
@@ -507,21 +513,30 @@
     #action-home-v2 .wrow{grid-template-columns:minmax(0,1fr) 40px;gap:4px 16px;padding:18px 12px}
     #action-home-v2 .wrow .go{width:40px;height:40px;font-size:15px}
     #action-home-v2 .wrow h3{font-size:18px}
+    #action-home-v2 .wrow .wdesc{margin-top:7px;font-size:14px;line-height:1.6}
     #action-home-v2 .cta2{grid-template-columns:1fr}
     /* 좁으면 색 블록이 위, 폼이 아래 */
     #action-home-v2 .nl-in{grid-template-columns:1fr}
     /* 좁으면 이메일·이름을 한 줄에 둘 수 없으니 한 칸씩 */
     #action-home-v2 .nl-form form{grid-template-columns:1fr}
   }
-  /* 아주 좁은 화면(360px 안팎) — 두 칸으로 두면 글자가 뭉개지는 것만 한 칸으로 */
-  @media(max-width:430px){
-    #action-home-v2 .wrap{width:min(100% - 28px,1120px)}
-    /* 아주 좁으면 아래 '소식' 카드만 한 줄에 하나씩, 사진은 왼쪽에 작게 붙입니다. */
-    /* 아주 좁으면 한 장에 하나씩 = 여덟 장. 폭은 800%. */
-    #action-home-v2 .news .pgrid{width:calc(800% + 7 * 12px);gap:12px}
+  /* ── 손안 화면에서는 소식을 옆으로 밀지 않습니다 (2026-09-07 사용자 지시) ──
+     한 장에 하나씩 넘겨 보는 꼴이 답답하다는 지적이었습니다. 옆으로 미는 것을
+     그만두고 아래로 넷을 세웁니다(나머지 넷은 '전체보기'로 갑니다).
+     사진은 왼쪽에 작게 붙여 네 줄이 한눈에 들어오게 합니다.
+     ⚠️ 이 폭에서는 ‹ › 도 스크립트가 스스로 감춥니다(한 칸짜리 격자를 알아봅니다). */
+  @media(max-width:620px){
+    #action-home-v2 .news .pgrid{
+      width:100%;grid-template-columns:minmax(0,1fr);gap:12px;transform:none!important
+    }
+    #action-home-v2 .news .pgrid .pcard:nth-child(n+5){display:none}
     #action-home-v2 .pgrid .pcard{flex-direction:row}
     #action-home-v2 .pgrid .pcard-media{flex:none;width:118px;aspect-ratio:1;
       border-bottom:none;border-right:1px solid var(--line)}
+  }
+  /* 아주 좁은 화면(360px 안팎) — 두 칸으로 두면 글자가 뭉개지는 것만 한 칸으로 */
+  @media(max-width:430px){
+    #action-home-v2 .wrap{width:min(100% - 28px,1120px)}
     /* 첫 화면 목록은 다섯 줄이라 여기서 더 눌러 담습니다 */
     #action-home-v2 .litem{grid-template-columns:26px minmax(0,1fr);gap:1px 9px;padding:11px 10px}
     #action-home-v2 .litem .lt{font-size:16px;-webkit-line-clamp:2}
@@ -849,7 +864,7 @@
     <div class="work-list">
 
       <div class="wrow reveal">
-        <span><h3><a href="/49">지자체 감시</a></h3><span class="who">지방정부 · 지방의회</span></span>
+        <span><h3><a href="/49">지자체 감시</a></h3><span class="who">지방정부 · 지방의회</span><span class="wdesc">시민의 눈높이에서 지방자치단체의 사업 집행과 지방의회의 의정활동을 살피고, 주민을 위한 행정과 의정활동이 이루어지도록 감시합니다.</span></span>
         <span class="go" aria-hidden="true">→</span>
       </div>
 
@@ -861,17 +876,17 @@
       -->
 
       <div class="wrow reveal">
-        <span><h3><a href="/27">예산감시</a></h3><span class="who">나라살림 · 지방재정</span></span>
+        <span><h3><a href="/27">예산감시</a></h3><span class="who">나라살림 · 지방재정</span><span class="wdesc">시민의 세금으로 마련된 정부 예산이 제대로 쓰이는지 살피고, 시민이 재정 과정에 참여할 수 있도록 지원합니다.</span></span>
         <span class="go" aria-hidden="true">→</span>
       </div>
 
       <div class="wrow reveal">
-        <span><h3><a href="/51">시민참여</a></h3><span class="who">참여예산 · 시민 교육</span></span>
+        <span><h3><a href="/51">시민참여</a></h3><span class="who">참여예산 · 시민 교육</span><span class="wdesc">주민참여예산을 비롯한 주민직접참여제도의 활성화를 지원하고, 시민참여를 넓히기 위한 제도개선과 교육을 진행합니다.</span></span>
         <span class="go" aria-hidden="true">→</span>
       </div>
 
       <div class="wrow reveal">
-        <span><h3><a href="/76">밑빠진 독상</a></h3></span>
+        <span><h3><a href="/76">밑빠진 독상</a></h3><span class="wdesc">정부와 지방자치단체, 공공기관의 예산낭비 사례를 시민과 함께 발굴하고, ‘밑빠진 독상’을 시민의 참여로 함께 만들어갑니다.</span></span>
         <span class="go" aria-hidden="true">→</span>
       </div>
 
@@ -1392,7 +1407,7 @@
    한 장에 몇 개를 보여 줄지는 화면 폭이 정합니다(CSS 와 짝을 맞춰야 합니다).
        넓은 화면   4개  → 두 장
        1100px 이하 2개  → 네 장
-       430px 이하  1개  → 여덟 장
+       620px 이하  밀지 않습니다 — 카드 넷이 아래로 쌓입니다
    여기서 직접 세지 않고 **첫 카드의 실제 폭**을 재서 한 장에 몇 개가 들어가는지
    계산합니다. 그래야 CSS 를 고쳐도 스크립트를 같이 안 고쳐도 됩니다.
 
@@ -1424,11 +1439,25 @@
     return Math.max(1, Math.min(n, cards.length));
   }
 
+  /* 좁은 화면에서는 격자가 한 칸짜리로 바뀌어 카드가 아래로 쌓입니다(@media 620px).
+     그때는 밀 것이 없으므로 ‹ › 를 감추고 옮겨 둔 것도 되돌립니다. */
+  function stacked() {
+    var cols = getComputedStyle(grid).gridTemplateColumns || '';
+    return cols.split(' ').filter(Boolean).length < 2;
+  }
+
   function pages() {
+    if (stacked()) return 1;
     return Math.ceil(cards.length / perPage());
   }
 
   function draw() {
+    if (stacked()) {
+      page = 0;
+      grid.style.transform = '';
+      nav.classList.remove('is-on');
+      return;
+    }
     var total = pages();
     if (page >= total) page = 0;
     if (page < 0) page = total - 1;
