@@ -97,9 +97,8 @@ TEMPLATE = u'''<style>
 #act .sh h2{{font-size:clamp(20px,2.3vw,27px); font-weight:700; line-height:1.4}}
 #act .sh p{{margin-top:8px; font-size:14.5px; color:var(--soft); line-height:1.65; max-width:60ch}}
 
-/* 확인 안 된 값 표시. 공개 전에 이 딱지가 화면에 하나도 없어야 합니다. */
-#act .tbd{{background:var(--flag-bg); color:var(--flag); border:1px dashed var(--flag-line);
-  border-radius:999px; padding:1px 8px; font-size:.8em; font-weight:700; white-space:nowrap}}
+/* 내부 검수 표시는 나중 확인을 위해 자료와 마크업에는 남기되 공개 화면에는 보이지 않습니다. */
+#act .tbd{{display:none!important}}
 
 /* ───── 빵부스러기 ───── */
 #act .crumb{{padding:16px 0 0; font-size:12.5px; font-weight:600; color:var(--deep)}}
