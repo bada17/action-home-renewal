@@ -170,22 +170,10 @@
   /* ───────── 오른쪽 도구 ───────── */
   #ah-nav .hd-tools{display:flex;align-items:center;gap:6px;flex:none;margin-left:8px}
 
-  /* ───────── 회원 — 회원가입 (2026-09-01, 로그인은 2026-09-07 에 뺐습니다) ─────────
-     캠페이너스 기본 헤더(#doz_header)를 우리가 감추는데, 로그인·회원가입이
-     원래 거기 있었습니다. 그래서 이 자리에 다시 냅니다.
-     후원하기 버튼과 다투지 않게 알약이 아니라 작은 글자입니다. */
-  #ah-nav .hd-acc{display:flex;align-items:center;gap:9px;flex:none;margin-left:4px}
-  #ah-nav .hd-acc a{font-size:12.5px;font-weight:700;color:var(--ink-soft);white-space:nowrap}
-  #ah-nav .hd-acc a:hover{color:var(--brand-deep)}
-  #ah-nav .hd-acc a+a{position:relative;padding-left:11px}
-  #ah-nav .hd-acc a+a::before{
-    content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
-    width:1px;height:11px;background:var(--line)
-  }
-  /* 좁은 화면의 ☰ 안에 들어가는 같은 것. 검색칸 바로 밑입니다. */
-  #ah-nav .macc{display:flex;align-items:center;gap:12px;margin:-6px 0 16px}
-  #ah-nav .macc a{font-size:13.5px;font-weight:700;color:var(--ink-soft)}
-  #ah-nav .macc a:hover{color:var(--brand-deep)}
+  /* ✖ 회원 자리(로그인·회원가입)는 2026-09-07 에 통째로 뺐습니다(사용자 지시).
+       회원이 실제로 쓰는 곳은 후원 정보를 고치는 자리라, 그것만 후원하기 목차의
+       '회원정보 수정'(도너스 마이페이지)으로 남겼습니다.
+       ✖ SITE_MEMBER.openLogin · openJoinPatternChoice 를 다시 붙이지 마세요. */
   #ah-nav .ico{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:17px;color:var(--ink-soft);background:none;cursor:pointer}
   #ah-nav .ico:hover{border-color:var(--brand);color:var(--brand-deep)}
 
@@ -363,7 +351,6 @@
     #ah-nav .gnb{display:none}
     #ah-nav .menu-btn{display:grid}
     #ah-nav .hd-search{display:none}   /* 좁으면 ☰ 안의 검색칸을 씁니다 */
-    #ah-nav .hd-acc{display:none}      /* 회원가입도 ☰ 안으로 들어갑니다 */
 
     #ah-nav .hd-tools{margin-left:auto}
 
@@ -559,20 +546,10 @@
         <input type="search" name="keyword" placeholder="무엇을 찾으세요?" aria-label="통합검색" autocomplete="off">
         <button type="submit" aria-label="검색">⌕</button>
       </form>
-      <!-- ★ 2026-09-07 — 웹 로그인을 뺐습니다(사용자 지시. 넓은 화면·좁은 화면 둘 다).
-           회원이 실제로 쓰는 곳은 후원 정보를 고치는 자리라, 그것을 후원하기 목차의
-           '회원정보 수정'(도너스 마이페이지)으로 옮겼습니다.
-           ✖ SITE_MEMBER.openLogin 을 다시 붙이지 마세요. 지운 것이 맞습니다.
-           회원가입만 캠페이너스 것을 그대로 부릅니다 —
-             SITE_MEMBER.openJoinPatternChoice(<돌아올 곳>, '')
-           ⚠️ SITE_MEMBER 는 캠페이너스가 페이지에 심어 주는 것이라 미리보기엔 없습니다.
-              그래서 href 에 실제로 열리는 /login 을 먼저 적어 둡니다. 스크립트가
-              죽어도 눌러집니다 — 켜는 것만 스크립트가 합니다.
-           ⚠️ 회원가입을 /join 으로 걸지 마세요. 거기는 '후원 신청' 화면입니다.
-           ⚠️ 후원회원 가입과도 다릅니다 — 그건 밖의 도너스(secure.donus.org)로 나갑니다. -->
-      <div class="hd-acc">
-        <a href="/login" data-acc="join">회원가입</a>
-      </div>
+      <!-- ★ 2026-09-07 — 여기 있던 로그인·회원가입을 뺐습니다(사용자 지시).
+           캠페이너스 회원 기능(SITE_MEMBER)은 이제 이 헤더에서 아무것도 부르지 않습니다.
+           회원이 쓰는 것은 후원하기 목차의 '회원정보 수정' 하나뿐입니다 —
+           도너스 마이페이지로 나갑니다. 되살리지 마세요. -->
       <button class="ico menu-btn" type="button" id="ah-menu-btn" aria-label="전체 메뉴" aria-expanded="false" aria-controls="ah-mnav">☰</button>
     </div>
   </div>
@@ -593,10 +570,6 @@
       <input type="search" name="keyword" placeholder="무엇을 찾으세요?" aria-label="통합검색" autocomplete="off">
       <button type="submit" aria-label="검색">⌕</button>
     </form>
-    <!-- 넓은 화면에서는 검색 옆 작은 글자(.hd-acc)로 있는 것과 같은 것입니다. -->
-    <div class="macc">
-      <a href="/login" data-acc="join">회원가입</a>
-    </div>
     <ul>
     <li class="is-open">
       <button class="mtitle" type="button" aria-expanded="true">후원하기<span class="marrow" aria-hidden="true"></span></button>
@@ -1015,24 +988,8 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  /* ── 5. 회원 (회원가입) ──
-     캠페이너스 안에서는 SITE_MEMBER 가 가입 창을 띄우고, 그게 없는
-     미리보기에서는 href 에 적어 둔 /login 으로 그냥 갑니다.
-     돌아올 곳은 실제 헤더와 같은 꼴입니다 — 지금 주소를 base64 로 싸서 넘깁니다.
-     로그인은 2026-09-07 에 뺐습니다 — 후원하기 목차의 '회원정보 수정'(도너스)로 갑니다. */
-  var accBtns = document.querySelectorAll('#ah-nav [data-acc]');
-  function accBack() {
-    try { return encodeURIComponent(btoa(location.pathname + location.search)); }
-    catch (err) { return 'Lw%3D%3D'; }   /* '/' 를 싸둔 값 */
-  }
-  for (var ai = 0; ai < accBtns.length; ai++) {
-    accBtns[ai].addEventListener('click', function (e) {
-      var M = window.SITE_MEMBER;
-      if (!M || !M.openJoinPatternChoice) return;
-      e.preventDefault();
-      M.openJoinPatternChoice(accBack(), '');
-    });
-  }
+  /* ✖ 5. 회원 — 2026-09-07 에 없앴습니다.
+     로그인·회원가입을 헤더에서 뺐으니 SITE_MEMBER 를 부를 일도 없습니다. */
 })();
 </script>
 <!-- CAMPAIGNERS:COMMON-HEADER END -->
