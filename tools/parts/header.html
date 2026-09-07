@@ -283,16 +283,36 @@
      넓은 화면에서는 아예 쓰지 않습니다 — 햄버거(☰)가 없으니 열릴 일도 없습니다.
      실제 모양(옆에서 밀려 나오는 판)은 아래 @media(max-width:1060px) 안에 있습니다. */
   #ah-nav .mnav,#ah-nav .mscrim{display:none}
-  #ah-nav .mnav>div>ul{padding:10px 0 18px}
-  #ah-nav .mnav>div>ul>li+li{border-top:1px solid var(--line)}
-  /* .mtitle 은 링크가 아닌 이름표입니다 — '활동'이 그렇습니다(가는 곳이 없습니다). */
-  #ah-nav .mnav>div>ul>li>a,
-  #ah-nav .mnav>div>ul>li>.mtitle{display:flex;align-items:center;justify-content:space-between;padding:15px 4px 8px;font-size:16px;font-weight:700}
-  #ah-nav .mnav a:hover{color:var(--brand-deep)}
-  #ah-nav .mnav a.is-cta{color:var(--brand-deep);padding-bottom:15px}
-  #ah-nav .msub{display:flex;flex-wrap:wrap;gap:6px;padding:0 4px 14px}
-  #ah-nav .msub a{background:var(--paper);border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:600;color:var(--ink-soft)}
-  #ah-nav .msub a:hover{background:var(--brand);color:#fff}
+  /* 큰 칸(.mtitle)은 링크가 아니라 펴고 접는 단추입니다. 한 번에 하나만 펴 둡니다.
+     여섯 칸이 다 펴져 있으면 판이 길어져 아래쪽은 스크롤해야 보였습니다(2026-09-07).
+     ⚠️ 큰 칸에 링크를 걸지 마세요. 갈 곳은 각 칸의 첫 줄에 그대로 있습니다 —
+        후원하기→정기후원하기 · 소개→우리 단체는 · 캠페인→함께하기 · 소식→공지.
+        '활동'은 원래 갈 곳이 없습니다(/52 는 없는 화면입니다). */
+  #ah-nav .mnav>div>ul{padding:6px 0 18px}
+  #ah-nav .mnav>div>ul>li{border-bottom:1px solid var(--line)}
+  #ah-nav .mtitle{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    width:100%;padding:15px 4px;border:0;background:none;cursor:pointer;
+    font:inherit;font-size:16px;font-weight:700;color:var(--ink);text-align:left
+  }
+  #ah-nav .mtitle:hover{color:var(--brand-deep)}
+  #ah-nav .mnav>div>ul>li.is-open>.mtitle{color:var(--brand-deep)}
+  /* 삼각형은 글꼴 문자가 아니라 테두리로 그립니다(글꼴에 따라 모양이 달라집니다). */
+  #ah-nav .marrow{
+    flex:none;width:0;height:0;
+    border-left:5px solid transparent;border-right:5px solid transparent;
+    border-top:6px solid currentColor;transition:transform .18s
+  }
+  #ah-nav .mnav>div>ul>li.is-open>.mtitle .marrow{transform:rotate(180deg)}
+  /* 하위 목차는 알약이 아니라 한 줄에 하나씩 놓습니다(2026-09-07 사용자 지시). */
+  #ah-nav .msub{display:none;padding:0 0 10px}
+  #ah-nav .mnav>div>ul>li.is-open>.msub{display:block}
+  #ah-nav .msub li+li{margin-top:2px}
+  #ah-nav .msub a{
+    display:block;padding:11px 12px;border-radius:8px;
+    font-size:15px;font-weight:500;color:var(--ink-soft)
+  }
+  #ah-nav .msub a:hover{background:var(--paper);color:var(--brand-deep)}
 
   /* ───────── 떠 있는 후원 버튼 ─────────
      레퍼런스: 서울환경연합 오른쪽 아래 알약 버튼.
@@ -623,8 +643,8 @@
       <a href="/login" data-acc="join">회원가입</a>
     </div>
     <ul>
-    <li>
-      <a class="is-cta" href="https://secure.donus.org/withaction0909/pay/step1" target="_blank" rel="noopener">후원하기 →</a>
+    <li class="is-open">
+      <button class="mtitle" type="button" aria-expanded="true">후원하기<span class="marrow" aria-hidden="true"></span></button>
       <ul class="msub">
         <li><a href="https://secure.donus.org/withaction0909/pay/step1" target="_blank" rel="noopener">정기후원하기</a></li>
         <li><a href="https://donate.action.or.kr/">정기후원 안내</a></li>
@@ -634,7 +654,7 @@
       </ul>
     </li>
     <li>
-      <a href="/aboutus">소개</a>
+      <button class="mtitle" type="button" aria-expanded="false">소개<span class="marrow" aria-hidden="true"></span></button>
       <ul class="msub">
         <li><a href="/aboutus">우리 단체는</a></li>
         <li><a href="/45">지나온 길</a></li>
@@ -644,9 +664,9 @@
       </ul>
     </li>
     <li>
-      <!-- 여기서는 하위 목차가 이미 펼쳐져 있어 '활동'은 이름표일 뿐입니다.
-           링크로 두면 /52(없는 화면)로 갑니다 — 그래서 <a> 가 아닙니다. -->
-      <span class="mtitle">활동</span>
+      <!-- 큰 칸은 전부 펴고 접는 단추입니다. '활동'은 원래 갈 곳도 없습니다
+           (링크로 두면 /52 — 없는 화면으로 갑니다). -->
+      <button class="mtitle" type="button" aria-expanded="false">활동<span class="marrow" aria-hidden="true"></span></button>
       <ul class="msub">
         <li><a href="/49" data-nav="act-local">지자체 감시</a></li>
         <!-- 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 확정되면 주석만 벗기세요.
@@ -658,7 +678,7 @@
       </ul>
     </li>
     <li>
-      <a href="/77">캠페인</a>
+      <button class="mtitle" type="button" aria-expanded="false">캠페인<span class="marrow" aria-hidden="true"></span></button>
       <ul class="msub">
         <li><a class="is-all" href="/77" data-nav="issue">함께하기 →</a></li>
         <li><a href="https://dokseong.pages.dev/" target="_blank" rel="noopener">2026 하반기 밑빠진 독상</a></li>
@@ -667,7 +687,7 @@
       </ul>
     </li>
     <li>
-      <a href="/26">소식</a>
+      <button class="mtitle" type="button" aria-expanded="false">소식<span class="marrow" aria-hidden="true"></span></button>
       <ul class="msub">
         <!-- 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 쓰게 되면 주석만 벗기세요.
              <li><a href="/library" data-nav="library">자료실</a></li> -->
@@ -988,8 +1008,25 @@
        판을 닫았을 때 엉뚱한 곳에 가 있어, 뒤 스크롤을 잠급니다.
        ⚠️ <html> 이 아니라 <body> 를 잠급니다 — 캠페이너스 쪽이 <html> 에
           자기 스타일을 걸어 두는 일이 있어 건드리지 않습니다. */
+    /* 큰 칸은 한 번에 하나만 폅니다. 판을 열 때마다 첫 칸(후원하기)으로 되돌립니다 —
+       어디를 보다 닫았든 다시 열면 늘 같은 모습이라야 찾기 쉽습니다. */
+    var mtops = mnav.querySelectorAll('.mtitle');
+    function openSection(t) {
+      for (var i = 0; i < mtops.length; i++) {
+        var on = mtops[i] === t;
+        mtops[i].parentNode.classList.toggle('is-open', on);
+        mtops[i].setAttribute('aria-expanded', on ? 'true' : 'false');
+      }
+    }
+    for (var mi = 0; mi < mtops.length; mi++) {
+      mtops[mi].addEventListener('click', function () {
+        openSection(this.parentNode.classList.contains('is-open') ? null : this);
+      });
+    }
+
     var lockedY = 0;
     function setMenu(open) {
+      if (open && mtops.length) openSection(mtops[0]);
       mnav.classList.toggle('open', open);
       if (mscrim) mscrim.classList.toggle('open', open);
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
