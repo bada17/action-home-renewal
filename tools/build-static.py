@@ -67,7 +67,7 @@ PAGES = [
     ('activity-budget.html', '27/index.html',           '활동 › 예산감시',       'budget'),
     ('activity-civic.html',  '51/index.html',           '활동 › 시민참여',       'civic'),
     ('dok-history.html',     '76/index.html',           '활동 › 밑빠진 독상',    'dok'),
-    ('pb.html',              '80/index.html',           '캠페인 › 참여예산 상담소', 'pb'),
+    ('pb.html',              '80/index.html',           '캠페인 › 시민참여 상담소', 'pb'),
     # 2026-09-02: 랜딩(donate.action.or.kr)을 안으로 옮기는 중입니다.
     # 캠페이너스 번호가 아직 없어 임시 주소로 굽습니다 — tools/build-donate.py 를 보세요.
     ('donate-guide.html',    'donate-guide/index.html', '후원 › 정기후원 안내',  'donate'),
@@ -84,7 +84,7 @@ NAV = [
     ('budget', '/27',           '예산감시'),
     ('civic',  '/51',           '시민참여'),
     ('dok',    '/76',           '밑빠진 독상'),
-    ('pb',     '/80',           '참여예산 상담소'),
+    ('pb',     '/80',           '시민참여 상담소'),
     # 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 쓰게 되면 주석만 벗기세요.
     # ('lib',    '/library',      '자료실'),
 ]
@@ -203,7 +203,7 @@ def rebase(html, base):
     html = re.sub(r'\b(href|src)="/(?!/)', r'\1="%s/' % b, html)
 
     # 밑빠진 독상이 데이터를 읽어 가는 자리 (자바스크립트 문자열이라 위 규칙에 안 걸립니다)
-    html = html.replace("var BASE = '/dok/';", "var BASE = '%s/dok/';" % b)
+    html = html.replace("var DATA = '/dok/data/';", "var DATA = '%s/dok/data/';" % b)
 
     return html
 
@@ -337,13 +337,17 @@ def main():
         # 원본 파일은 그대로 두고 여기 나가는 사본만 바꿉니다
         # (캠페이너스에 붙일 때는 원본 사이트에서 받아와야 하므로).
         if name == 'dok-history.html' and dok_ok:
-            old = "var BASE = isLocal ? '/dok/' : LIVE;"
-            new = ("var BASE = '/dok/';   // 정적 시안: 데이터를 같이 담아 CORS 를 피합니다\n"
+            # 2026-09-07 — 변수 이름이 BASE 에서 DATA 로 바뀌면서(e8d3d62) 이 갈아끼우기가
+            # 조용히 헛돌고 있었습니다. 그동안 정적 시안의 지도·역대 표는 담아 둔 데이터가
+            # 아니라 옛 주소(chatgpt.site)에서 받아오고 있었습니다.
+            # ⚠️ 아래 prefix_paths() 의 같은 줄도 함께 고쳐야 합니다.
+            old = "var DATA = isLocal ? '/dok/data/' : LIVE + 'public-data/';"
+            new = ("var DATA = '/dok/data/';   // 정적 시안: 데이터를 같이 담아 CORS 를 피합니다\n"
                    "  void isLocal; void LIVE;")
             if old in body:
                 body = body.replace(old, new, 1)
             else:
-                print(u'  ⚠ dok-history 의 BASE 줄을 못 찾았습니다 — 지도가 빌 수 있습니다')
+                print(u'  ⚠ dok-history 의 DATA 줄을 못 찾았습니다 — 지도가 빌 수 있습니다')
 
         # 내부 메모가 공개 주소에 실리지 않게 주석을 걷어냅니다.
         before = len(body)
