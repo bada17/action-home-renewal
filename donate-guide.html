@@ -1836,9 +1836,11 @@ document.querySelector('.amount-custom').addEventListener('input', () => {
 //   - 추후 토스트/모달로 UX 개선 여지 있음
 // -----------------------------------------------------------------
 const DONATE_URLS = {
+  // 2026-09-07 — 정기·일시 둘 다 도너스로 보냅니다(사용자 지시).
+  //   옛 시스템(mrmweb.hsit.co.kr)의 후원 신청 두 입구는 404 였습니다.
+  //   일시후원 자리는 도너스에서 '모금함'인데 건마다 주소가 달라, 모금함을 열면
+  //   once 한 줄만 그 주소로 바꾸면 됩니다.
   regular: 'https://secure.donus.org/withaction0909/pay/step1',
-  // 2026-09-07 사용자 지시 — 일시후원도 같은 도너스 주소로 보냅니다.
-  //    옛 시스템(mrmweb.hsit.co.kr/SupportOnce.aspx)은 404 였습니다.
   once: 'https://secure.donus.org/withaction0909/pay/step1'
 };
 document.getElementById('donate-go').addEventListener('click', () => {
