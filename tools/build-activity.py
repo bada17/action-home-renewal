@@ -1368,8 +1368,16 @@ def build_board_before(html, key, board):
     <!-- 이 코드 바로 다음에 캠페이너스 기본 %(board)s 게시판 위젯을 둡니다. -->
   </div>
 </div>
+
+<!-- ⚠️ '지금 무엇을 보고 있나' 를 아래 게시판의 최신 글 둘로 갈아 끼우는 스크립트입니다.
+     2026-09-07 이전에는 이 조각에 스크립트가 하나도 안 실려 있었습니다 — 자를 때
+     '글' 칸부터 뒤를 통째로 버리는데 스크립트가 거기 있었기 때문입니다. 그래서
+     캠페이너스에 붙인 화면에는 코드에 적어 둔 씨앗(임시 제목·빈 링크)만 남았습니다.
+     ★ 게시판 위젯은 이 코드보다 뒤에 그려집니다. 스크립트가 기다렸다가 읽습니다. -->
+%(nowboard)s
 <!-- CAMPAIGNERS:ACTIVITY-%(tag)s-BEFORE-BOARD END -->
-""" % {'tag': tag, 'key': key, 'board': board, 'style': style, 'body': before_body}
+""" % {'tag': tag, 'key': key, 'board': board, 'style': style,
+       'body': before_body, 'nowboard': NOW_BOARD_SCRIPT}
 
 
 def build_board_after(key, board):
