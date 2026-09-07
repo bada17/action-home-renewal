@@ -433,11 +433,10 @@
   }
   #pb .person > div:last-child{text-align:left}
   #pb .person .nm{font-size:clamp(30px,3vw,42px)}
-  #pb .tags{justify-content:flex-start}
 }
 /* ═══ 전문위원 창 ═══
    카드를 누르면 슝 하고 떠오릅니다. 안에 들어가는 내용은 카드에서 그대로
-   옮겨 담습니다 — 이름·분야·이력이 마크업 한 곳에만 있게 하려는 것입니다.
+   옮겨 담습니다 — 이름과 이력이 마크업 한 곳에만 있게 하려는 것입니다.
    ⚠️ <dialog> 라서 Esc 닫기·바깥 어둡게·초점 가두기를 브라우저가 맡습니다. */
 #pb .pmodal{
   width:min(920px,calc(100% - 40px)); max-height:calc(100% - 40px);
@@ -482,7 +481,6 @@
 #pb .pmodal .person .phw{width:100%}
 #pb .pmodal .person > div:last-child{max-width:none}
 #pb .pmodal .person .nm{font-size:clamp(24px,2.6vw,32px)}
-#pb .pmodal .person .tags{justify-content:flex-start}
 #pb .pmodal .person .career{display:block; margin-top:20px}
 #pb .pmodal .person .more{display:none}
 @media(max-width:700px){
@@ -490,7 +488,6 @@
   #pb .pmodal{width:100%; max-width:100%; height:100%; max-height:100%; border-radius:0}
   #pb .pmodal-in{padding:64px 20px 34px; max-height:100vh}
   #pb .pmodal .person{grid-template-columns:1fr; justify-items:center; text-align:center}
-  #pb .pmodal .person .tags{justify-content:center}
   #pb .pmodal .person .phw{width:min(240px,72%)}
 }
 /* 사진 아래 — 이름 · 분야 · 이력.
@@ -498,12 +495,6 @@
    '현/전' 배지가 줄마다 다른 자리에 서서 훑을 수가 없습니다. */
 #pb .person > div:last-child{width:100%; max-width:660px}
 #pb .person .nm{display:block; font-family:GmarketSans,sans-serif; font-size:clamp(22px,2.3vw,29px); font-weight:700; color:var(--ink)}
-/* 분야 — 예전의 '담당' 한 줄을 대신합니다. 여럿이라 칩으로 늘어놓습니다. */
-#pb .tags{display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin-top:10px}
-#pb .tags span{
-  border-radius:999px; padding:3px 11px; font-size:12px; font-weight:700;
-  background:var(--band); color:var(--soft); white-space:nowrap
-}
 /* 이력. 왼쪽에 현/전 배지를 세로로 맞춰 세우면 훑기 좋습니다. */
 #pb .career{margin-top:18px; padding-top:16px; border-top:1px solid var(--line); text-align:left}
 #pb .career li{display:flex; align-items:flex-start; gap:10px; padding:6px 0;
@@ -514,7 +505,6 @@
   font-size:11px; font-weight:700; color:var(--faint); white-space:nowrap
 }
 #pb .career li i.now{background:var(--tint); border-color:var(--brand); color:var(--deep)}
-#pb .career .none{padding:5px 0; font-size:13.5px; color:var(--faint)}
 
 @media(min-width:900px){
   #pb .pv .person{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -523,12 +513,9 @@
     display:flex; flex-direction:column; justify-content:center
   }
   #pb .pv .person .nm{font-size:clamp(34px,3.4vw,46px)}
-  #pb .pv .tags{margin-top:18px}
-  #pb .pv .tags span{padding:5px 14px; font-size:14px}
   #pb .pv .career{margin-top:30px; padding-top:24px}
   #pb .pv .career li{gap:14px; padding:10px 0; font-size:clamp(15.5px,1.35vw,18px); line-height:1.65}
   #pb .pv .career li i{min-width:46px; padding:3px 8px; font-size:12px}
-  #pb .pv .career .none{font-size:16px}
 }
 
 /* ───── 글 목록 ───── */
@@ -690,7 +677,7 @@
 #pb.js .cintro.rv.in{
   animation:pb-slide-in .8s cubic-bezier(.22,1,.36,1) var(--d,0s) both
 }
-/* 물음 셋은 칸이 자리잡은 뒤 짧게 뒤따라옵니다. 거리가 칸보다 짧아야
+/* 문단 셋은 칸이 자리잡은 뒤 짧게 뒤따라옵니다. 거리가 칸보다 짧아야
    한 덩이가 밀려온 것처럼 보입니다(같은 거리면 따로 노는 것처럼 보입니다). */
 #pb.js .cintro .cin-row{opacity:0}
 #pb.js .cintro.in .cin-row{
@@ -791,8 +778,7 @@
 #pb.js .person.is-on .career li:nth-child(3){animation-delay:.24s}
 #pb.js .person.is-on .career li:nth-child(4){animation-delay:.31s}
 #pb.js .person.is-on .career li:nth-child(5){animation-delay:.38s}
-#pb .tags span{transition:transform .2s cubic-bezier(.22,1,.36,1), background .2s, color .2s}
-#pb .person.is-on .tags span:hover{transform:translateY(-2px); background:var(--tint); color:var(--deep)}
+#pb.js .person.is-on .career li:nth-child(6){animation-delay:.45s}
 
 /* ── 전문적인 시각 체계 ──
    섹션마다 다른 표정을 없애고, 제목·선·카드·정보 표시에 같은 규칙을 씁니다. */
@@ -824,17 +810,91 @@
 #pb .cintro b{color:var(--navy)}
 #pb .cintro-lead{font-size:16px; font-weight:600; color:var(--navy)}
 /* 물음 셋. 아직 답이 없어서 자리만 잡아 둔 줄입니다. */
-#pb .cin-row{
-  display:grid; gap:4px; margin-top:13px; padding-top:13px;
-  border-top:1px solid var(--line)
-}
+/* 소개 문단. 물음-답 짜임이던 것을 2026-09-07 에 문단으로 바꿨습니다 —
+   가르는 줄은 뺐습니다. 세 문단이 한 이야기라 칸막이가 있으면 끊겨 읽힙니다. */
+#pb .cin-row{margin-top:12px}
 #pb .cintro .cin-row p{margin:0}
-#pb .cin-q{font-size:13.5px; font-weight:700; color:var(--deep); line-height:1.6}
-#pb .cin-a{font-size:13.5px; color:var(--faint); line-height:1.7}
-#pb .cin-a .tbd{margin-right:7px}
 #pb .tbd{
   color:#765213; background:#fbf5e9; border-color:#d8c49e;
   font-family:'Pretendard Variable',Pretendard,sans-serif; font-weight:700
+}
+
+/* ═══ 우리가 하는 일 ═══
+   카드는 위 '시민참여 개념 정의' 와 **같은 .word 부품**을 그대로 씁니다.
+   부품이 하나면 화면이 한 몸으로 읽히고 고칠 곳도 한 곳입니다 —
+   다른 것은 칸 수(넷 → 셋)와 키뿐입니다(설명이 두 문장이라 조금 높습니다).
+   ⚠️ 비슷한 카드를 새로 만들지 마세요. 뒤집기 스크립트도 .word 하나만 봅니다. */
+#pb .words.acts{grid-template-columns:repeat(3,1fr)}
+#pb .words.acts .word{min-height:126px}
+
+/* ═══ 걸어온 길 ═══
+   왼쪽에 해, 가운데 세로줄과 점, 오른쪽에 내용. 줄은 칸마다 한 도막씩이고
+   칸이 맞닿아 있어서 이어져 보입니다(하나의 긴 줄을 절대배치로 깔면
+   접었다 폈다 할 때 길이가 안 맞습니다).
+   ⚠️ 스물넷을 다 펼치면 아래 의뢰 폼이 한참 밀려서 다섯 마디만 둡니다.
+      접는 일은 #pb.js 안에만 있습니다 — 스크립트가 안 돌면 스물넷이 다 보입니다.
+      숨겨 놓고 못 펴는 것보다 낫습니다. */
+#pb .tl{margin:0; padding:0; list-style:none}
+#pb .tl li{
+  display:grid; grid-template-columns:clamp(50px,6vw,72px) 14px minmax(0,1fr);
+  align-items:start; column-gap:clamp(10px,1.2vw,16px)
+}
+#pb .tl .yr{
+  padding-top:1px; text-align:right; white-space:nowrap;
+  font-family:GmarketSans,sans-serif; font-size:12.5px; font-weight:700;
+  color:var(--deep); letter-spacing:-.02em
+}
+/* 가운데 칸이 줄이고, 점은 그 위에 얹습니다. */
+#pb .tl .ln{position:relative; align-self:stretch; justify-self:center; width:2px; background:var(--line)}
+#pb .tl li:first-child .ln{background:linear-gradient(transparent 6px,var(--line) 6px)}
+#pb .tl li:last-child .ln{background:linear-gradient(var(--line) 10px,transparent 10px)}
+#pb .tl .ln::before{
+  content:""; position:absolute; left:50%; top:4px; transform:translateX(-50%);
+  width:8px; height:8px; border-radius:50%;
+  background:var(--paper); border:2px solid var(--line)
+}
+/* 다섯 마디만 점이 찹니다 — 훑을 때 눈이 걸리는 자리입니다. */
+#pb .tl .key .ln::before{background:var(--brand); border-color:var(--brand)}
+#pb .tl .bd{padding-bottom:18px}
+#pb .tl b{
+  display:block; font-size:14px; font-weight:700; line-height:1.5;
+  color:var(--ink); word-break:keep-all
+}
+#pb .tl .key b{color:var(--deep)}
+#pb .tl p{margin:4px 0 0; font-size:12.5px; line-height:1.7; color:var(--soft); word-break:keep-all}
+/* 접힘. 스크립트가 돌 때만 걸립니다. */
+#pb.js .tl.is-folded .is-more{display:none}
+#pb .tl-more{display:none; margin-top:2px; text-align:center}
+#pb.js .tl-more{display:block}
+#pb .tl-toggle{
+  border:1.5px solid var(--line); border-radius:999px; background:var(--paper);
+  padding:9px 18px; font-size:13.5px; font-weight:700; color:var(--deep);
+  cursor:pointer; transition:border-color .18s, background .18s
+}
+#pb .tl-toggle:hover{border-color:var(--brand); background:var(--tint)}
+/* 칸 끝에 붙는 한 줄. 원고의 '지향'과 '맺음말'을 한 문장씩만 남긴 자리입니다. */
+#pb .snote{
+  margin:20px 0 0; padding-top:16px; border-top:1px solid var(--line);
+  font-size:13.5px; line-height:1.8; color:var(--soft); word-break:keep-all
+}
+
+@media(min-width:900px){
+  #pb .words.acts .word{min-height:168px}
+  #pb .tl .yr{font-size:15px}
+  #pb .tl b{font-size:17px}
+  #pb .tl p{font-size:15px}
+  #pb .tl .bd{padding-bottom:24px}
+  #pb .snote{font-size:16px}
+}
+@media(min-width:1200px){
+  #pb .tl li{grid-template-columns:88px 16px minmax(0,1fr)}
+  #pb .tl .yr{font-size:16px}
+  #pb .tl b{font-size:18px}
+  #pb .tl p{font-size:15.5px}
+  #pb .snote{font-size:17px}
+}
+@media(max-width:700px){
+  #pb .words.acts{grid-template-columns:repeat(2,1fr)}
 }
 
 /* 질문과 의뢰는 같은 종류의 접수 화면이라는 것이 보이도록 맞춥니다. */
@@ -945,18 +1005,12 @@
   #pb .phint{font-size:15px}
   #pb .pv .person .nm{font-size:clamp(40px,4vw,54px)}
   #pb .pv .person > div:last-child{min-height:560px}
-  #pb .pv .tags::before{
-    content:"전문 분야"; flex:0 0 100%; margin-bottom:3px;
-    color:var(--faint); font-size:13px; font-weight:800; letter-spacing:.08em
-  }
-  #pb .pv .tags span{padding:6px 16px; font-size:16px}
   #pb .pv .career::before{
     content:"주요 경력"; display:block; margin-bottom:10px;
     color:var(--faint); font-size:13px; font-weight:800; letter-spacing:.08em
   }
   #pb .pv .career li{font-size:clamp(17px,1.5vw,20px); line-height:1.65}
   #pb .pv .career li i{min-width:50px; font-size:14px}
-  #pb .pv .career .none{font-size:18px}
 
   #pb .row{padding:21px 2px}
   #pb .row .t{font-size:19px}
@@ -1252,37 +1306,34 @@
       <h2>시민참여정책위원회</h2>
     </div>
 
-      <!-- 위원회 소개 — 2026-09-04. **자리만 잡아 둔 칸입니다.**
-           사용자: "소개 글은 아직 없어. 자리만 만들어놔. 나중에 내용줄게".
-           ⚠️ 첫 줄(.cintro-lead)만 확인된 사실입니다 — 위원회가 시민행동 안에
-              있다는 것. 아래 물음 셋은 **빈 자리**입니다. 지어내지 마세요.
-              글을 받으면 그 줄의 .cin-a 속을 갈아 끼우고 '준비 중' 딱지를 걷습니다.
-              물음 차례는 '왜 생겼나 → 무슨 일을 해 왔나 → 왜 상담을 여나' 입니다.
-              생겨난 까닭 · 해 온 일 · 지금 여는 까닭 순서라야 읽는 사람이
-              따라옵니다(2026-09-04 사용자가 고른 세 가지). -->
+      <!-- 위원회 소개 — 2026-09-07 에 원고를 받아 채웠습니다.
+           바탕화면 '시민참여정책위원회 연혁.txt' 의 첫 덩어리입니다.
+           ⚠️ 원고는 다섯 문단인데 여기에는 **셋만** 옮겼습니다. 이 페이지의 일은
+              질문과 의뢰를 받는 것이라, 소개가 길어지면 아래 폼이 한참 밀립니다
+              (2026-09-07 사용자와 정한 것: 접어서 넣기).
+              뺀 것은 '하는 일 여섯'과 '지향'인데, 버린 것이 아니라 아래
+              '우리가 하는 일' 칸으로 옮겼습니다.
+           ⚠️ 문단 셋은 .cin-row 로 감쌉니다 — 칸이 자리잡은 뒤 0.3 · 0.4 · 0.5 초에
+              차례로 뒤따라오는 연출이 이미 그 이름에 걸려 있습니다. 이름을 바꾸려면
+              위 #pb.js .cintro .cin-row 규칙도 함께 바꾸세요. -->
       <div class="cintro">
-        <p class="cintro-lead"><b>시민참여정책위원회</b>는
-          <b>함께하는 시민행동</b> 안에 있는 기구입니다.</p>
-        <!-- 2026-09-07 사용자 지시: "위원회 글은 없이 일단 갈거야."
-             물음 셋을 화면에서 뺐습니다 — **지운 것이 아니라 주석입니다.**
-             글을 받으면 아래 주석만 벗기고 .cin-a 속을 갈아 끼우세요.
-             확인된 첫 줄(.cintro-lead)은 그대로 둡니다.
+        <p class="cintro-lead">시민의 참여로 재정을 바꾸고, 제도를 움직입니다.</p>
         <div class="cin-row">
-          <p class="cin-q">왜 생겼나</p>
-          <p class="cin-a"><span class="tbd">준비 중</span>
-            언제, 어떤 필요 때문에 만들어졌는지 한두 줄.</p>
+          <p><b>시민참여정책위원회</b>는 중앙정부와 지방자치단체, 교육청 등 공공부문의
+            재정 운용 과정에 시민의 참여를 넓히고, 재정의 민주성·투명성·책임성을 높이기 위해
+            <b>함께하는 시민행동</b> 안에 둔 시민참여정책 전문기구입니다.</p>
         </div>
         <div class="cin-row">
-          <p class="cin-q">무슨 일을 해 왔나</p>
-          <p class="cin-a"><span class="tbd">준비 중</span>
-            구체적인 사례 하나 — 어느 지자체의 무엇을 했는지.</p>
+          <p>예산은 단순한 숫자가 아니라, 우리 사회가 무엇을 중요하게 생각하고 어디에 자원을
+            배분할 것인지를 결정하는 과정입니다. 시민이 그 결정에 참여하는 것이
+            재정민주주의의 출발점입니다.</p>
         </div>
         <div class="cin-row">
-          <p class="cin-q">왜 상담을 여나</p>
-          <p class="cin-a"><span class="tbd">준비 중</span>
-            이 창구가 찾아온 사람에게 무슨 뜻인지 한두 줄.</p>
+          <p>함께하는 시민행동은 2002년 주민참여예산조례 제정운동을 시작으로 제도 연구와
+            모니터링, 시민교육, 활동가 네트워크, 제도 개선 활동을 이어 왔습니다. 위원회는 그
+            경험을 바탕으로 참여예산을 넘어 주민자치회와 청년·청소년 참여, 시민위원회 등
+            여러 민관거버넌스 영역으로 범위를 넓히고 있습니다.</p>
         </div>
-        -->
       </div>
       <!-- 카루셀. 넘기는 일은 .pv 의 가로 스크롤 + 스냅이 하고,
            화살표·점·기울임만 스크립트가 얹습니다(스크립트가 막혀도 넘어갑니다). -->
@@ -1299,12 +1350,11 @@
           </div>
           <div>
             <b class="nm">김민철</b>
-            <div class="tags"><span>참여예산</span><span>지역회의</span></div>
             <ul class="career">
-              <li><i class="now">현</i>행정안전부 주민참여예산제 컨설턴트</li>
-              <li><i class="now">현</i>함께하는시민행동 시민참여국장</li>
-              <li><i class="now">현</i>좋은예산센터 시민교육위원</li>
-              <li><i>전</i>서울시 자치구 주민참여예산 운영 평가위원</li>
+              <li><i class="now">현</i>함께하는시민행동 기획실장</li>
+              <li><i class="now">현</i>좋은예산컨설팅 이사</li>
+              <li><i class="now">현</i>행정안전부 주민참여예산 평가·자문단</li>
+              <li><i>전</i>서울시 자치구 참여예산 운영 평가위원</li>
               <li><i>전</i>서울시 동(洞) 지역회의 시범사업 운영 컨설턴트</li>
             </ul>
             <!-- 넓은 화면(카드 넷)에서만 보입니다. 누르면 창이 열립니다. -->
@@ -1321,12 +1371,12 @@
           </div>
           <div>
             <b class="nm">정남진</b>
-            <div class="tags"><span>참여예산</span><span>청년 · 청소년 참여기구</span></div>
             <ul class="career">
-              <li><i class="now">현</i>서울시 시민참여예산 시민의견서 작성분과 코디네이터</li>
               <li><i class="now">현</i>함께하는시민행동 사무처장</li>
+              <li><i class="now">현</i>함께해봄협동조합 이사</li>
+              <li><i class="now">현</i>서울시 시민참여예산 시민의견서 분과 코디네이터</li>
+              <li><i>전</i>서울시 청년자율예산 자치구 청년정책 거버넌스 활성화 TF위원</li>
               <li><i>전</i>서울시 서대문구 참여예산 지원단</li>
-              <li><i>전</i>서울시 청년자율예산 자치구 청년정책 거버넌스 활성화 TF</li>
             </ul>
             <!-- 넓은 화면(카드 넷)에서만 보입니다. 누르면 창이 열립니다. -->
             <span class="more" aria-hidden="true">이력 보기 →</span>
@@ -1342,11 +1392,11 @@
           </div>
           <div>
             <b class="nm">최인욱</b>
-            <div class="tags"><span>참여예산</span><span>SDGs</span><span>공무원 교육</span></div>
             <ul class="career">
-              <li><i class="now">현</i>전국 지속가능발전협의회 사무국장</li>
-              <li><i>15~22</i>서울시 참여예산지원센터장 · 시민협력팀장</li>
-              <li><i>전</i>행정안전부 주민참여예산제 컨설턴트</li>
+              <li><i class="now">현</i>좋은예산컨설팅 이사</li>
+              <li><i>전</i>행정안전부 주민참여예산 컨설턴트</li>
+              <li><i>전</i>서울시 참여예산지원센터장·시민협력팀장</li>
+              <li><i>전</i>전국 지속가능발전협의회 사무국장</li>
               <li><i>전</i>좋은예산센터 사무국장</li>
             </ul>
             <!-- 넓은 화면(카드 넷)에서만 보입니다. 누르면 창이 열립니다. -->
@@ -1363,15 +1413,40 @@
           </div>
           <div>
             <b class="nm">오지은</b>
-            <div class="tags"><span>주민자치회</span></div>
             <ul class="career">
-              <li class="none">이력을 받는 대로 채웁니다.</li>
+              <li><i class="now">현</i>함께하는시민행동 운영위원</li>
+              <li><i class="now">현</i>시민의사회적상상력 대표 / 시민주권센터 센터장</li>
+              <li><i>전</i>희망제작소 시민주권센터장</li>
+              <li><i>전</i>군포시 공익활동지원센터 사무국장</li>
+              <li><i>전</i>서울시 참여예산 지원협의회 시민사회 전문가</li>
+              <li><i>전</i>경기도 주민참여예산 연구회 / 시흥시 주민참여예산 연구회</li>
             </ul>
-            <!-- 넓은 화면(카드 넷)에서만 보입니다. 누르면 창이 열립니다.
-                 ⚠️ 오지은 위원은 이력을 아직 못 받아서 '이력 보기'라고 적지 않습니다 —
-                    눌렀는데 "받는 대로 채웁니다" 한 줄만 나오면 속은 기분이 듭니다.
-                    이력이 채워지면 다른 셋과 같은 '이력 보기 →' 로 바꾸세요. -->
-            <span class="more" aria-hidden="true">크게 보기 →</span>
+            <!-- 넓은 화면에서만 보입니다. 누르면 창이 열립니다. -->
+            <span class="more" aria-hidden="true">이력 보기 →</span>
+          </div>
+        </article>
+
+        <!-- 채연하 위원 — 2026-09-07 에 더했습니다(사용자: "채연하 위원이 추가됐어").
+             ⚠️ 사진은 바깥에서 찍은 것이라 나머지 넷(스튜디오 정면 사진)과 결이
+                다릅니다. 증명사진을 받으면 make-photo.py 로 다시 만드세요. -->
+        <article class="person">
+          <div class="phw">
+            <img class="pho" src="img/chaeyeonha.webp" alt="채연하" loading="lazy" decoding="async">
+            <span class="ring" aria-hidden="true"></span>
+            <span class="shine" aria-hidden="true"></span>
+            <span class="spk" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          </div>
+          <div>
+            <b class="nm">채연하</b>
+            <ul class="career">
+              <li><i class="now">현</i>함께하는시민행동 운영위원장</li>
+              <li><i class="now">현</i>함께해봄협동조합 이사장</li>
+              <li><i class="now">현</i>기획예산처 부정수급 심사 소위원회 위원</li>
+              <li><i>전</i>서울시 시민참여예산 온예산위원회 코디네이터</li>
+              <li><i>전</i>서울시 공익활동지원사업 심사평가 위원</li>
+            </ul>
+            <!-- 넓은 화면에서만 보입니다. 누르면 창이 열립니다. -->
+            <span class="more" aria-hidden="true">이력 보기 →</span>
           </div>
         </article>
 
@@ -1401,6 +1476,80 @@
       </dialog>
 
       <p class="phint">전문위원이 3초마다 순서대로 바뀝니다. 화살표로 직접 넘길 수도 있습니다.</p>
+    </section>
+
+
+    <!-- ───────── 우리가 하는 일 ─────────
+         2026-09-07 — 받은 원고('시민참여정책위원회 연혁.txt')의 '우리가 하는 일' 여섯입니다.
+         원고에는 항목마다 두 문장이 붙어 있는데, 다 펼치면 이 페이지가 상담소가 아니라
+         단체 소개가 됩니다. 그래서 위 '시민참여 개념 정의' 와 **같은 .word 카드**로
+         제목만 보이다가 눌러야 설명이 열리게 했습니다(사용자와 정한 것: 접어서 넣기).
+         ⚠️ 카드를 새로 만들지 마세요 — .words.acts 는 칸 수와 키만 다른 같은 부품입니다.
+         ⚠️ 맨 아래 .snote 는 원고 '우리가 지향하는 시민참여' 를 두 문장으로 줄인 것입니다.
+            다섯 마디(알고 → 논의하고 → 우선순위 → 확인 → 다시 참여)를 지우지 마세요.
+            그 차례가 이 위원회가 말하는 '참여'의 정의입니다. -->
+    <section class="sec"><div class="sh">
+      <h2>우리가 하는 일</h2>
+    </div>
+      <div class="words acts">
+        <button type="button" class="word" aria-pressed="false"><b>시민참여정책 연구</b><span>주민참여예산제, 주민자치회, 청년·청소년 참여정책 등 여러 시민참여제도의 운영 구조와 정책 효과를 연구합니다. 국내외 제도와 사례를 분석해 새로운 시민참여 모델을 제안합니다.</span></button>
+        <button type="button" class="word" aria-pressed="false"><b>제도 운영 모니터링</b><span>중앙정부와 지방자치단체, 교육청이 운영하는 시민참여제도를 꾸준히 지켜봅니다. 조례와 운영계획, 참여 절차, 시민 권한, 정책 반영 구조, 정보공개와 결과 환류를 살핍니다.</span></button>
+        <button type="button" class="word" aria-pressed="false"><b>제도 개선 · 정책 제안</b><span>현장에서 드러난 문제를 분석해 제도 개선 방안을 제안합니다. 법령과 조례, 운영체계, 위원회 구성, 사업 선정 과정, 숙의와 공론 과정을 검토해 정책 대안을 마련합니다.</span></button>
+        <button type="button" class="word" aria-pressed="false"><b>시민참여제도 컨설팅</b><span>지방자치단체와 교육청, 공공기관이 시민참여제도를 더 잘 운영하도록 제도 진단과 개선 컨설팅을 합니다. 지역과 기관의 여건에 맞는, 현장에서 체감되는 방안을 제시합니다.</span></button>
+        <button type="button" class="word" aria-pressed="false"><b>시민 · 활동가 역량 강화</b><span>시민이 정책과 예산을 이해하고 스스로 참여할 수 있도록 시민교육과 활동가 교육을 운영합니다. 참여예산위원, 주민자치회 위원, 청년·청소년, 활동가를 위한 교육을 만듭니다.</span></button>
+        <button type="button" class="word" aria-pressed="false"><b>민관거버넌스 네트워크</b><span>시민사회와 전문가, 활동가, 행정기관이 경험과 과제를 나누도록 토론회와 워크숍, 네트워크를 운영합니다. 현장의 경험이 정책 연구를 거쳐 제도 개선으로 이어지게 합니다.</span></button>
+      </div>
+      <p class="snote">시민참여정책위원회는 참여의 숫자보다 <b>참여의 실질적인 영향력</b>을
+        중요하게 봅니다. 시민이 정보를 알고 → 정책을 함께 논의하고 → 예산의 우선순위를
+        결정하며 → 실행과 결과를 확인하고 → 다시 제도 개선에 참여하는 구조, 그것이
+        우리가 만들고자 하는 시민참여입니다.</p>
+    </section>
+
+    <!-- ───────── 걸어온 길 ─────────
+         2026-09-07. 전문위원 **아래**에 둡니다(사용자 결정). 사람을 먼저 보이고
+         그 사람들이 해 온 일을 뒤에 놓아야, 연혁이 자랑이 아니라 이력의 근거로 읽힙니다.
+         원고는 2002~2026 스물넷입니다. 다 펼치면 아래 의뢰 폼이 한참 밀리므로
+         **다섯 마디만** 두고 나머지는 접습니다.
+         ⚠️ class 둘이 하는 일이 다릅니다 — key 는 점 색깔(눈이 걸리는 자리),
+            is-more 는 접힘 여부. 마디를 바꾸려면 둘을 함께 옮기세요.
+         ⚠️ 접는 일은 #pb.js 안에만 있습니다. 스크립트가 안 돌면 스물넷이 다 보이고
+            펼치기 단추는 숨습니다 — 숨겨 놓고 못 펴는 것보다 낫습니다. -->
+    <section class="sec"><div class="sh">
+      <h2>걸어온 길</h2>
+    </div>
+      <ol class="tl is-folded" id="pb-tl">
+        <li class="key"><span class="yr">2002</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>전국 지방자치단체 참여예산조례 제정운동</b><p>지방재정의 편성 과정에 주민이 직접 참여할 수 있는 제도적 기반을 마련하기 위해 전국 지방자치단체를 대상으로 조례 제정운동을 폈습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2006</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>「주민참여가이드북」 발간</b><p>주민참여제도의 이해와 활용 방법을 종합적으로 정리한 총괄 매뉴얼을 펴냈습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2006</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>'아름다운 예산만들기' 사업 시작</b><p>3년간 세 시범지역에서 참여예산운동을 벌이며, 주민이 지역의 예산과 정책 결정에 직접 참여하는 모델을 현장에서 실험했습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2007</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>참여예산제도 확립운동</b><p>전국 지방자치단체의 주민참여예산제 운영 현황을 조사하고 제도의 확산과 정착을 위한 활동을 폈습니다.</p></div></li>
+        <li class="key"><span class="yr">2010</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>좋은예산센터 창립</b><p>시민의 눈으로 정부와 지방자치단체의 예산을 분석하고 시민의 예산 참여를 넓히기 위한 전문 활동 기반을 마련했습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2011</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>전국 참여예산 워크숍 공동주최</b><p>전국의 참여예산 담당자와 활동가가 운영 경험과 과제를 나누는 자리를 열었습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2012</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>「주민이 결정하면 행복해진다」 사례발표회</b><p>주민참여예산의 현장 사례와 성과를 공유하고, 시민이 직접 예산 결정에 참여하는 뜻과 가능성을 알렸습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2012–2014</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>'주민참여로 행복예산 만들기' 프로젝트</b><p>주민이 지역의 문제를 찾고 예산을 제안하며 정책 결정에 참여할 수 있도록 여러 시민참여 활동을 진행했습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2014</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>주민참여예산 시민교육위원회 발족</b><p>제도의 지속적인 발전을 위해 시민교육의 필요를 제기하고, 참여예산위원과 시민의 역량을 기르는 교육 체계를 세웠습니다.</p></div></li>
+        <li class="key"><span class="yr">2016</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>지방재정법 주민참여예산제 후퇴 개정안 반대 캠페인</b><p>당시 행정자치부의 지방재정법 개정 과정에서 제도의 취지를 약화시킬 수 있는 변화에 맞서 반대 캠페인을 폈습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2019</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>청년참여정책 모니터링단 운영</b><p>청년의 눈으로 정책과 제도의 운영을 살피고, 청년의 실질적인 정책 참여를 넓히기 위한 모니터링을 했습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2019</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>전국 참여예산 활동가 워크숍</b><p>전국에서 주민참여예산제도를 실천해 온 활동가들이 경험과 사례를 나누고 앞으로의 방향을 논의했습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2019</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>서울시 자치구 참여예산 운영계획 모니터링</b><p>서울시 자치구의 운영계획을 분석해 제도의 운영 수준과 개선 과제를 짚었습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2020</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>「감성충만 예산학교」 발간</b><p>어렵게 느껴지는 예산과 재정을 쉽게 이해하고 참여할 수 있도록 시민 예산교육 콘텐츠를 만들었습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2020</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>「시민참여매뉴얼」 발간</b><p>정보공개와 예산참여를 중심으로, 시민이 공공정책 과정에 참여하는 구체적인 방법과 제도를 정리했습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2020–2021</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>'뭐든지 참여예산' 연재</b><p>학교와 공공기관, 국제기구 등 해외의 여러 참여예산 사례를 소개하며 제도의 새로운 가능성을 찾았습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2021</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>청년 참여예산 네트워크 운영</b><p>청년의 정책·예산 참여 경험을 나누고 청년 참여예산의 발전 방향을 논의하는 네트워크를 꾸렸습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2022</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>서울시 참여예산 후퇴 대응 활동</b><p>서울시 주민참여예산제도의 변화 과정에서 시민참여 축소와 제도 후퇴 문제를 제기하고, 제도의 취지와 시민의 참여 권한을 지키는 활동을 폈습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2022</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>전국 참여예산 운영 모니터링</b><p>전국 지방자치단체의 운영 현황을 조사하고 지역별 운영 구조와 제도적 특징, 개선 과제를 분석했습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2022</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>주민참여예산 활동가 인터뷰 기획</b><p>각 지역에서 활동을 이어 온 활동가들의 경험과 고민을 기록해 참여예산운동의 역사와 현장 경험을 남겼습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2023</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>「정치적 참견자 시점 – 우리 지역 예산 만들기」 교육</b><p>재정과 시민참여를 잇는 시민교육 프로그램으로, 시민이 지역의 정책과 예산을 이해하고 직접 참여하도록 도왔습니다.</p></div></li>
+        <li class="is-more"><span class="yr">2024</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>시민예산학교 운영</b><p>지방재정과 예산편성 과정을 이해하고 지역의 정책·예산 결정에 실질적으로 참여할 수 있도록 시민예산교육을 운영했습니다.</p></div></li>
+        <li class="key"><span class="yr">2025</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>시민참여정책위원회 발족</b></div></li>
+        <li class="key"><span class="yr">2026</span><span class="ln" aria-hidden="true"></span><div class="bd"><b>「참여예산제, 길을 묻다」 국회토론회 개최</b><p>김영진 국회의원실과 함께 주민참여예산제도의 성과와 한계를 짚고, 달라진 환경에서 제도가 나아갈 방향을 논의했습니다.</p></div></li>
+      </ol>
+      <div class="tl-more">
+        <button type="button" class="tl-toggle" id="pb-tl-more"
+                aria-expanded="false" aria-controls="pb-tl">전체 연혁 펼치기 (19개 더)</button>
+      </div>
+      <p class="snote">제도를 연구하는 데 그치지 않고, 현장을 지켜보는 데 그치지 않고,
+        <b>실질적인 제도의 변화까지</b> 만들어가는 것. 함께하는 시민행동
+        시민참여정책위원회가 만들어가고자 하는 시민참여정책입니다.</p>
     </section>
 
     <!-- ───────── 전문위원의 글 ─────────
@@ -1612,6 +1761,20 @@
     });
   });
 
+  /* ── 3. 연혁 펼치기 ──
+     기본은 접힘입니다(마크업에 is-folded 가 붙어 있습니다). 접는 규칙 자체가
+     #pb.js 안에만 있어서, 이 코드가 안 돌면 스물넷이 그냥 다 보입니다. */
+  var tl = root.querySelector('#pb-tl');
+  var tlBtn = root.querySelector('#pb-tl-more');
+  if (tl && tlBtn) {
+    var shut = tlBtn.textContent;
+    tlBtn.addEventListener('click', function () {
+      var open = !tl.classList.toggle('is-folded');
+      tlBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      tlBtn.textContent = open ? '연혁 접기' : shut;
+    });
+  }
+
   /* ── 히어로에서 고른 주제 ── */
   /* 고른 주제는 숨은 칸(#pb-topic)에 적어 둡니다. 전에는 이 파일 안의 변수에만
      담겨서, 접수가 열려도 주제가 함께 가지 않았습니다. */
@@ -1645,7 +1808,8 @@
      'in' 을 바로 붙여 그냥 다 보이게 둡니다. */
   var reveal = root.querySelectorAll(
     '.sec > .sh, .qtools, .qa .item, .words, .word,' +
-    ' .cintro, .people, .phint, .rows .row, .rows-fine, .form');
+    ' .cintro, .people, .phint, .tl, .tl-more, .snote,' +
+    ' .rows .row, .rows-fine, .form');
   if (!('IntersectionObserver' in window) || calm) {
     reveal.forEach(function (el) { el.classList.add('rv', 'in'); });
   } else {
