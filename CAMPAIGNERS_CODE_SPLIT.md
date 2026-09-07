@@ -89,9 +89,11 @@ python tools/build-campaign-together.py
 python tools/build-campaign-together.py --check
 ```
 
-개별 캠페인(`/78`, `/79`, `/80`)은 `/77` 안에 합치지 않습니다. 각자 자기 캠페이너스
-페이지와 코드 조각을 유지합니다. 현재 저장소에서 참여예산 상담소(`/80`)의 원본은
-`pb.html`입니다.
+개별 캠페인은 캠페이너스 페이지를 따로 만들지 않습니다. 홈·공통 상단·`/77`의 카드는
+각 외부 사이트(`dokseong.pages.dev`, `pb-action-site.pages.dev`, `vote.action.or.kr`)로
+바로 연결합니다. 상담소 주소는 DNS 복구 뒤 `pb.action.or.kr`로 되돌립니다.
+`/78·/79·/80`은 사용하지 않습니다. `pb.html`은 로컬 검토용 원본으로만
+남겨 두며 캠페이너스 `/80`에 붙이지 않습니다.
 
 ## 수정할 때 지키는 순서
 

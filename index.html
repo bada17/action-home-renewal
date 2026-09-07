@@ -1,4 +1,4 @@
-<!-- CAMPAIGNERS:PAGE-CODE START file=index.html -->
+<!-- CAMPAIGNERS:PAGE-CODE START file=index.html FIX=2026-09-07-SINGLE-IMAGE -->
 <!-- 이 파일 전체를 해당 페이지의 코드 위젯 하나에 붙입니다. 공통 상단은 tools/parts/header.html, 공통 하단은 tools/parts/footer.html이 각각 따로 맡습니다. -->
 <style>
   /* ═══════════════════════════════════════════════════════════════
@@ -44,6 +44,7 @@
   }
   #action-home-v2 a{color:inherit;text-decoration:none}
   #action-home-v2 img{display:block;width:100%}
+  #action-home-v2 [hidden]{display:none!important}
   #action-home-v2 ul{list-style:none;margin:0;padding:0}
   /* 키보드로 옮겨 다닐 때 지금 어디인지 보이게 합니다.
      나머지 여섯 화면(캠페인·자료실·서명·활동 넷)과 같은 규칙입니다. */
@@ -134,13 +135,14 @@
   #action-home-v2 .band-in{flex:1 1 420px;min-width:0}
   #action-home-v2 .band-t{
     font-family:GmarketSans,sans-serif;font-weight:700;letter-spacing:-.02em;
-    font-size:clamp(28px,4.1vw,54px);line-height:1.25
+    font-size:clamp(28px,4.1vw,54px);line-height:1.25;color:var(--ink)
   }
+  #action-home-v2 .band-accent{color:#fff}
   #action-home-v2 .band-d{
-    margin-top:14px;font-size:clamp(16px,1.5vw,22px);color:#fff
+    margin-top:14px;font-size:clamp(16px,1.5vw,22px);color:var(--ink)
   }
-  /* 알약 둘 — 채운 것이 '정기후원하기', 테두리형이 '후원 안내'입니다.
-     둘 다 흰색으로 채우면 무엇을 먼저 누를지가 안 보입니다. */
+  #action-home-v2 .band-d strong{color:#fff;font-weight:700}
+  /* 후원 안내는 빼고 실제 신청서로 가는 정기후원 버튼만 둡니다. */
   #action-home-v2 .band-cta{
     flex:none;display:flex;align-items:center;gap:12px;flex-wrap:wrap
   }
@@ -151,8 +153,6 @@
     transition:transform .15s,box-shadow .15s,background .15s,color .15s
   }
   #action-home-v2 .band-go:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(6,35,48,.24)}
-  #action-home-v2 .band-go.is-ghost{background:transparent;color:#fff}
-  #action-home-v2 .band-go.is-ghost:hover{background:#fff;color:var(--brand-deep)}
 
   /* 반짝이는 심벌 — 그림 파일을 부르지 않고 CSS 마스크로 모양만 오려 씁니다.
      색을 흰색으로 바꿔야 해서입니다 — 띠 바탕이 같은 브랜드 색이라
@@ -177,7 +177,7 @@
   @media(prefers-reduced-motion:reduce){
     #action-home-v2 .spark{animation:none;opacity:calc(var(--o,.3) * .8);transform:rotate(var(--r,0deg))}
   }
-  #action-home-v2 .lead{padding:clamp(32px,4vw,60px) 0 clamp(48px,6vw,90px)}
+  #action-home-v2 .lead{padding:0 0 clamp(48px,6vw,90px)}
   #action-home-v2 .lead-in{
     display:grid;grid-template-columns:minmax(0,1.62fr) minmax(310px,.95fr);
     gap:clamp(16px,1.8vw,26px);align-items:stretch
@@ -202,7 +202,9 @@
     display:grid;
     background:#fff;border:1px solid var(--line);overflow:hidden
   }
-  #action-home-v2 .slide{grid-area:1/1;opacity:0;visibility:hidden;z-index:0}
+  #action-home-v2 .slide{
+    grid-area:1/1;opacity:0;visibility:hidden;z-index:0
+  }
   /* 스크립트가 없어도 첫 장은 보입니다 */
   #action-home-v2 .slide:first-child,
   #action-home-v2 .slide.is-on{opacity:1;visibility:visible;z-index:1}
@@ -490,7 +492,7 @@
     /* 좁으면 띠 안이 빽빽해집니다 — 가장자리 심벌 몇을 숨깁니다. */
     #action-home-v2 .spark.less{display:none}
     #action-home-v2 .band-go{padding:13px 24px}
-    #action-home-v2 .lead{padding:24px 0 40px}
+    #action-home-v2 .lead{padding:0 0 40px}
     #action-home-v2 .lead-in{grid-template-columns:1fr;gap:0}
     /* 좁은 화면에서는 액자를 조금 낮춥니다(16:9 → 4:3 은 너무 높습니다).
        높이를 못박지 않는 것은 넓은 화면과 같습니다 — 글자가 잘리면 안 되니까요. */
@@ -549,21 +551,17 @@
          스크립트가 세어 'D-5' 로 바꿉니다. HTML 에는 '8/31' 이 먼저 적혀 있어
          스크립트가 막혀도 틀린 숫자가 뜨지 않습니다.
 
-       ⚠️ 사진이 없는 시민참여 상담소는 색 타일로 채웁니다.
+       ⚠️ 시민참여 상담소는 정식 대표 이미지가 나오기 전까지 상담 화면 캡처를 씁니다.
           (2026-09-01 '더 걷힐 세금, 어디에 쓸래?' · '1회 참여예산 고민대회' 삭제 — 사용자 지시.
            남은 셋의 순서를 지키려고 오른쪽 목록의 data-go 와 번호를 다시 매겼습니다.)
           점선 빈 칸을 두면 그 카드만 미완성으로 보여 줄이 어그러집니다.
-          사진이 생기면 slide-shot 안의 <span class="mark"> 를 아래 두 줄로 바꾸면 됩니다.
+          정식 사진이 생기면 slide-shot 안의 아래 두 주소만 바꾸면 됩니다.
             <img class="fill" src="주소" alt="" aria-hidden="true">   ← 액자를 채우는 흐린 바탕
             <img class="real" src="주소" alt="설명">                  ← 안 잘리는 진짜 사진
           주소는 둘 다 같습니다. 앞의 것은 바탕이라 alt 를 비웁니다. -->
   <!-- ───────── 머리 띠 ─────────
-       ⚠️ 문구는 임의입니다(2026-09-01). 실제 표현으로 바꿔 주세요.
        2026-09-02 사용자 지시로 버튼을 후원으로 바꿨습니다(전에는 활동 /52).
-       알약 둘 — 정기후원하기(도너스 후원 페이지) · 후원 안내(랜딩).
-       ⚠️ 도너스 이관이 끝나면 정기후원하기를 도너스 주소로 바꿔야 합니다.
-          같은 주소를 쓰는 곳이 헤더 CTA · 모바일 목차 · 떠 있는 버튼 · 푸터 띠에
-          더 있습니다 — 다섯을 함께 바꾸세요.
+       2026-09-07 사용자 지시로 후원 안내 버튼은 빼고 정기후원하기만 남겼습니다.
        반짝이는 심벌은 장식이라 낭독기에 안 읽힙니다(글자가 없습니다).
 
        ★ 2026-09-03 — 이 줄을 <p> 에서 <h1> 로 바꿨습니다. 홈에는 h1 이 하나도
@@ -575,12 +573,11 @@
   <section class="band" aria-label="후원으로 함께하기">
     <div class="wrap">
       <div class="band-in">
-        <h1 class="band-t">예산은 함께 사는 세상을 만드는 가계부니까</h1>
-        <p class="band-d">함께 만들어가요!</p>
+        <h1 class="band-t">예산은 <span class="band-accent">우리가 만드는</span> 가계부니까</h1>
+        <p class="band-d">시민행동과 <strong>함께 만들고 지켜봐요!</strong></p>
       </div>
       <div class="band-cta">
         <a class="band-go" href="https://secure.donus.org/withaction0909/pay/step1" target="_blank" rel="noopener">정기후원하기 →</a>
-        <a class="band-go is-ghost" href="https://donate.action.or.kr/">후원 안내</a>
       </div>
     </div>
     <span class="spark" style="--w:66px;left:2%;top:12%;--r:-16deg;--o:.28;--dur:5.4s;--delay:0s"></span>
@@ -606,10 +603,9 @@
 
         <!-- 왼쪽 큰 칸. 네 장이 겹쳐 있고 하나만 보입니다. -->
         <div class="stage" id="lead-stage">
-        <article class="slide" data-due="2026-09-15" style="--tile:#062330">
-          <a class="slide-link" href="/78">
+        <article class="slide" data-ah-slide data-due="2026-09-15" style="--tile:#062330">
+          <a class="slide-link" href="https://dokseong.pages.dev/" target="_blank" rel="noopener">
             <span class="slide-shot">
-              <img class="fill" src="https://cdn.imweb.me/thumbnail/20260825/c4b8e2d1b259d.png" alt="" aria-hidden="true">
               <img class="real" src="https://cdn.imweb.me/thumbnail/20260825/c4b8e2d1b259d.png" alt="2026 하반기 밑빠진 독상">
             </span>
             <span class="slide-in">
@@ -623,10 +619,10 @@
             </span>
           </a>
         </article>
-        <article class="slide" style="--tile:#062330">
-          <a class="slide-link" href="/80">
+        <article class="slide" data-ah-slide hidden style="--tile:#062330">
+          <a class="slide-link" href="https://pb-action-site.pages.dev/" target="_blank" rel="noopener">
             <span class="slide-shot">
-              <span class="mark" aria-hidden="true">상담</span>
+              <img class="real" src="https://pb-action-site.pages.dev/img/citizen-counseling-home-temp.png?v=20260907" alt="시민참여 상담소 질문 접수 화면">
             </span>
             <span class="slide-in">
               <span class="pills">
@@ -639,10 +635,9 @@
             </span>
           </a>
         </article>
-        <article class="slide" style="--tile:#0d4f66">
-          <a class="slide-link" href="/79">
+        <article class="slide" data-ah-slide hidden style="--tile:#0d4f66">
+          <a class="slide-link" href="https://vote.action.or.kr/" target="_blank" rel="noopener">
             <span class="slide-shot">
-              <img class="fill" src="https://vote.action.or.kr/og-budget-vote-v1.png?v=2" alt="" aria-hidden="true">
               <img class="real" src="https://vote.action.or.kr/og-budget-vote-v1.png?v=2" alt="10만원 예산 편성">
             </span>
             <span class="slide-in">
@@ -664,11 +659,10 @@
              원래 제목이 '[논평]미래대응기금, …' 이라 알약이 '논평'이 됐습니다.
              설명 줄에 요약이 아니라 날짜와 게시판을 적는 이유: RSS 가 본문 요약을
              주지 않습니다. 지어내지 않으려면 있는 것만 적어야 합니다. -->
-        <article class="slide" style="--tile:#3d5765">
+        <article class="slide" data-ah-slide hidden style="--tile:#3d5765">
           <a class="slide-link" href="/27/?idx=173415033&amp;bmode=view">
             <span class="slide-shot">
-              <img class="fill" src="https://cdn.imweb.me/thumbnail/20260825/1a34d985c024b.png" alt="" aria-hidden="true">
-              <img class="real" src="https://cdn.imweb.me/thumbnail/20260825/1a34d985c024b.png" alt="미래대응기금 논평">
+              <img class="real" src="https://cdn.imweb.me/upload/S20210826b814397ca4e6d/21aa8479b6f98.png" alt="미래대응기금 논평">
             </span>
             <span class="slide-in">
               <span class="pills">
@@ -689,21 +683,21 @@
              커서를 올리면 왼쪽 큰 칸이 그것으로 바뀌고, 누르면 그리로 갑니다.
              2026-09-01: 제목 위에 알약을 붙였습니다(큰 칸의 종류 알약과 같은 뜻). -->
         <div class="lead-list" id="lead-list">
-        <a class="litem is-on" href="/78" data-go="0" data-due="2026-09-15">
+        <a class="litem is-on" href="https://dokseong.pages.dev/" target="_blank" rel="noopener" data-go="0" data-due="2026-09-15">
           <span class="lno">01</span>
           <span class="lpill is-kind">캠페인</span>
           <span class="lt">2026 하반기 밑빠진 독상</span>
           <!--<span class="lm"><b class="d" data-dday>9/15</b><span>9월 15일 제보 마감</span></span>-->
           <span class="lbar" aria-hidden="true"><i></i></span>
         </a>
-        <a class="litem" href="/80" data-go="1">
+        <a class="litem" href="https://pb-action-site.pages.dev/" target="_blank" rel="noopener" data-go="1">
           <span class="lno">02</span>
           <span class="lpill is-kind">캠페인</span>
           <span class="lt">시민참여 상담소</span>
           <!--<span class="lm"><b class="d is-todo" data-dday>기간 미정</b><span>마감일 확인 필요</span></span>-->
           <span class="lbar" aria-hidden="true"><i></i></span>
         </a>
-        <a class="litem" href="/79" data-go="2">
+        <a class="litem" href="https://vote.action.or.kr/" target="_blank" rel="noopener" data-go="2">
           <span class="lno">03</span>
           <span class="lpill is-kind">캠페인</span>
           <span class="lt">10만원 예산편성 투표</span>
@@ -754,7 +748,7 @@
       <div class="pgrid" id="news-grid">
 
       <a class="pcard reveal" href="/27/?idx=173415033&amp;bmode=view">
-        <span class="pcard-media"><img class="fill" src="https://cdn.imweb.me/thumbnail/20260825/1a34d985c024b.png" alt="" aria-hidden="true" loading="lazy"><img class="real" src="https://cdn.imweb.me/thumbnail/20260825/1a34d985c024b.png" alt="" loading="lazy"></span>
+        <span class="pcard-media"><img class="fill" src="https://cdn.imweb.me/upload/S20210826b814397ca4e6d/21aa8479b6f98.png" alt="" aria-hidden="true" loading="lazy"><img class="real" src="https://cdn.imweb.me/upload/S20210826b814397ca4e6d/21aa8479b6f98.png" alt="미래대응기금 논평" loading="lazy"></span>
         <span class="pcard-body">
           <span class="pbadge">일반 활동</span>
           <strong>[논평] 미래대응기금, 대규모 재정운용체계 변화에 걸맞은 촘촘한 설계가 필요하다</strong>
@@ -1178,8 +1172,7 @@
       D.issues.slice(0, 5).forEach(function (it, i) {
       var due  = it.due ? ' data-due="' + esc(it.due) + '"' : '';
       var shot = it.img
-        ? '<img class="fill" src="' + esc(it.img) + '" alt="" aria-hidden="true">'
-          + '<img class="real" src="' + esc(it.img) + '" alt="' + esc(it.title) + '">'
+        ? '<img class="real" src="' + esc(it.img) + '" alt="' + esc(it.title) + '">'
         : '<span class="mark">' + esc(it.mark || two(it.title)) + '</span>';
 
       // 종류 알약. it.kind 가 없으면 캠페인으로 봅니다(예전 값과 그대로 맞물립니다).
@@ -1187,7 +1180,8 @@
       var kind  = it.kind || '캠페인';
       var post  = kind !== '캠페인' ? ' is-post' : '';
 
-      sHtml += '<article class="slide"' + due + ' style="--tile:' + esc(it.tile || '#0079a6') + '">'
+      sHtml += '<article class="slide" data-ah-slide' + (i ? ' hidden' : '') + due
+            +    ' style="--tile:' + esc(it.tile || '#0079a6') + '">'
             +    '<a class="slide-link" href="' + esc(it.url || '#') + '"' + linkAttrs(it) + '>'
             +      '<span class="slide-shot">' + shot + '</span>'
             +      '<span class="slide-in">'
@@ -1298,7 +1292,7 @@
   var list  = document.getElementById('lead-list');
   if (!lead || !stage || !list) return;
 
-  var slides = stage.querySelectorAll('.slide');
+  var slides = stage.querySelectorAll('[data-ah-slide]');
   var items  = list.querySelectorAll('.litem');
   if (slides.length < 2 || slides.length !== items.length) return;
 
@@ -1313,6 +1307,7 @@
     if (n === at) return;
     at = n;
     for (var k = 0; k < slides.length; k++) {
+      slides[k].hidden = k !== n;
       slides[k].classList.toggle('is-on', k === n);
       items[k].classList.toggle('is-on', k === n);
       // 안 보이는 장은 화면 읽기 프로그램에도 안 읽히게
@@ -1379,8 +1374,12 @@
   }
 
   // 첫 장을 켠 상태로 맞춰 두고 시작합니다.
+  slides[0].hidden = false;
   slides[0].classList.add('is-on');
-  for (var m = 1; m < slides.length; m++) slides[m].setAttribute('aria-hidden', 'true');
+  for (var m = 1; m < slides.length; m++) {
+    slides[m].hidden = true;
+    slides[m].setAttribute('aria-hidden', 'true');
+  }
   restartBar();
   run();
 })();

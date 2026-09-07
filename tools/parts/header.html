@@ -503,9 +503,9 @@
           <!-- 맨 위 '함께하기' — 진행 중과 종료된 캠페인을 탭으로 한자리에서 봅니다. -->
           <li><a class="iall" href="/77" data-nav="issue">함께하기<span class="idue">진행 중 · 종료</span></a></li>
           <li class="isep" aria-hidden="true"></li>
-          <li><a href="/78" data-nav="issue-dok">2026 하반기 밑빠진 독상<!--<span class="idue">9/15 마감</span>--></a></li>
-          <li><a href="/80" data-nav="pb">시민참여 상담소<!--<span class="idue">상시</span>--></a></li>
-          <li><a href="/79" data-nav="issue-vote">10만원 예산편성 투표<!--<span class="idue">기간 미정</span>--></a></li>
+          <li><a href="https://dokseong.pages.dev/" target="_blank" rel="noopener">2026 하반기 밑빠진 독상<!--<span class="idue">9/15 마감</span>--></a></li>
+          <li><a href="https://pb-action-site.pages.dev/" target="_blank" rel="noopener">시민참여 상담소<!--<span class="idue">상시</span>--></a></li>
+          <li><a href="https://vote.action.or.kr/" target="_blank" rel="noopener">10만원 예산편성 투표<!--<span class="idue">기간 미정</span>--></a></li>
         </ul></div>
       </div>
 
@@ -611,9 +611,9 @@
       <a href="/77">캠페인</a>
       <ul class="msub">
         <li><a class="is-all" href="/77" data-nav="issue">함께하기 →</a></li>
-        <li><a href="/78" data-nav="issue-dok">2026 하반기 밑빠진 독상</a></li>
-        <li><a href="/80" data-nav="pb">시민참여 상담소</a></li>
-        <li><a href="/79" data-nav="issue-vote">10만원 예산편성 투표</a></li>
+        <li><a href="https://dokseong.pages.dev/" target="_blank" rel="noopener">2026 하반기 밑빠진 독상</a></li>
+        <li><a href="https://pb-action-site.pages.dev/" target="_blank" rel="noopener">시민참여 상담소</a></li>
+        <li><a href="https://vote.action.or.kr/" target="_blank" rel="noopener">10만원 예산편성 투표</a></li>
       </ul>
     </li>
     <li>
@@ -724,10 +724,7 @@
       ['/76', 'act-dok'],
       ['/library', 'library'],
       ['/77', 'issue'],
-      ['/78', 'issue-dok'],
-      ['/79', 'issue-vote'],
       ['/sign', 'issue'],
-      ['/80', 'pb'],
       ['/49', 'act-local'],
       ['/51', 'act-civic'],
       ['/69', 'home']
@@ -770,7 +767,8 @@
      좁은 화면 — 알약 줄이 가로로 스크롤되는 상자라 그 안에서는 판이 잘립니다.
                 그래서 상자 밖 #ah-sheet 에 목차를 복사해 넣고 헤더 밑에 폅니다.
 
-     후원하기는 이 규칙에서 뺐습니다 — 눌러서 바로 가야 하는 버튼입니다. */
+     후원하기도 같은 규칙을 씁니다 — 누르면 목차가 열리고, 그 안의
+     '정기후원하기'를 누르면 실제 도너스 신청서로 갑니다. */
   var narrow = window.matchMedia('(max-width:1060px)');
   var sheet = document.getElementById('ah-sheet');
   var openItem = null;
@@ -893,7 +891,7 @@
 
     var a = item.querySelector('a');
     var drop = item.querySelector('.drop');
-    if (!a || !drop || a.classList.contains('is-cta')) return;
+    if (!a || !drop) return;
 
     a.setAttribute('aria-haspopup', 'true');
     a.setAttribute('aria-expanded', 'false');
