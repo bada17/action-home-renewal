@@ -808,7 +808,14 @@
 #pb .cintro p{margin:0; font-size:16px; line-height:1.8; color:var(--soft)}
 #pb .cintro p + p{margin-top:12px}
 #pb .cintro b{color:var(--navy)}
-#pb .cintro-lead{font-size:18.5px; font-weight:600; color:var(--navy)}
+/* 2026-09-07 오후 — 첫 줄이 본문에 묻혀서 키웠습니다. 이 줄은 문단이 아니라
+   **머리말**입니다. 아래 세 문단과 크기가 비슷해지면 하는 일이 사라집니다. */
+/* ⚠️ p 를 붙여야 합니다 — ".cintro p" 가 요소까지 짚어서 ".cintro-lead" 보다
+   셉니다. 붙이기 전에는 29px 을 적어 놓고 19.5px 로 나왔습니다(2026-09-07 확인). */
+#pb .cintro p.cintro-lead{
+  margin-bottom:20px; font-family:GmarketSans,sans-serif; font-size:21px;
+  font-weight:700; line-height:1.5; color:var(--deep); word-break:keep-all
+}
 /* 물음 셋. 아직 답이 없어서 자리만 잡아 둔 줄입니다. */
 /* 소개 문단. 물음-답 짜임이던 것을 2026-09-07 에 문단으로 바꿨습니다 —
    가르는 줄은 뺐습니다. 세 문단이 한 이야기라 칸막이가 있으면 끊겨 읽힙니다. */
@@ -1038,10 +1045,8 @@
   #pb .sh p{font-size:18px; max-width:72ch}
   #pb .sh .eyebrow{font-size:15px}
   #pb .cintro p{font-size:19.5px}
-  #pb .cintro-lead{font-size:23px}
-  #pb .cin-row{grid-template-columns:170px 1fr; gap:18px; align-items:start;
-    margin-top:15px; padding-top:15px}
-  #pb .cin-q,#pb .cin-a{font-size:15.5px}
+  #pb .cintro p.cintro-lead{font-size:29px; margin-bottom:26px}
+  #pb .cin-row{margin-top:16px}
   #pb .cintro{max-width:70ch}
   #pb .hero h1{font-size:clamp(54px,5.8vw,74px)}
   #pb .hero .by{font-size:21px; max-width:60ch}
@@ -1407,21 +1412,30 @@
               위 #pb.js .cintro .cin-row 규칙도 함께 바꾸세요. -->
       <div class="cintro">
         <p class="cintro-lead">시민의 참여로 재정을 바꾸고, 제도를 움직입니다.</p>
+        <!-- 2026-09-07 오후 — 다시 썼습니다. 사용자: "너무 심심해. 잘 읽히게 수정해봐."
+             고친 것은 **글투**이지 사실이 아닙니다. 원고에 있는 것만 씁니다.
+             ⚠️ 세 문단의 일이 각각 다릅니다 — 붙이거나 순서를 바꾸지 마세요.
+                ① 왜 남의 일이 아닌가 (예산이 무엇인지)
+                ② 그래서 우리는 누구인가 (소속과 하는 일)
+                ③ 얼마나 오래 했나 (2002년 · 넓힌 영역 셋)
+             ⚠️ 명사를 쌓지 않기로 했습니다 — '재정의 민주성·투명성·책임성 제고'를
+                '더 민주적으로, 더 투명하게, 쓴 만큼 책임지게'로 풀었습니다.
+                되돌리면 다시 심심해집니다. -->
         <div class="cin-row">
-          <p><b>시민참여정책위원회</b>는 중앙정부와 지방자치단체, 교육청 등 공공부문의
-            재정 운용 과정에 시민의 참여를 넓히고, 재정의 민주성·투명성·책임성을 높이기 위해
-            <b>함께하는 시민행동</b> 안에 둔 시민참여정책 전문기구입니다.</p>
+          <p>예산은 숫자가 아닙니다. <b>무엇을 먼저 할 것인가</b>를 정하는 일입니다.
+            도로를 넓힐지 돌봄을 늘릴지, 그 순서를 정하는 자리에 시민이 앉는 것 —
+            재정민주주의는 거기서 시작합니다.</p>
         </div>
         <div class="cin-row">
-          <p>예산은 단순한 숫자가 아니라, 우리 사회가 무엇을 중요하게 생각하고 어디에 자원을
-            배분할 것인지를 결정하는 과정입니다. 시민이 그 결정에 참여하는 것이
-            재정민주주의의 출발점입니다.</p>
+          <p><b>시민참여정책위원회</b>는 그 자리를 넓히는 <b>함께하는 시민행동</b>의
+            전문기구입니다. 중앙정부와 지방자치단체, 교육청의 돈이 어떻게 쓰이는지 살피고,
+            그 과정을 <b>더 민주적으로, 더 투명하게, 쓴 만큼 책임지게</b> 만드는 일을 합니다.</p>
         </div>
         <div class="cin-row">
-          <p>함께하는 시민행동은 2002년 주민참여예산조례 제정운동을 시작으로 제도 연구와
-            모니터링, 시민교육, 활동가 네트워크, 제도 개선 활동을 이어 왔습니다. 위원회는 그
-            경험을 바탕으로 참여예산을 넘어 주민자치회와 청년·청소년 참여, 시민위원회 등
-            여러 민관거버넌스 영역으로 범위를 넓히고 있습니다.</p>
+          <p>시작은 <b>2002년</b>이었습니다. 전국 지자체에 주민참여예산조례를 만들자는
+            운동이었고, 그 뒤로 20년 넘게 제도 연구와 모니터링, 시민교육, 활동가 네트워크를
+            이어 왔습니다. 지금은 참여예산을 넘어 <b>주민자치회</b>와
+            <b>청년·청소년 참여</b>, <b>시민위원회</b>까지 봅니다.</p>
         </div>
       </div>
       <!-- 카루셀. 넘기는 일은 .pv 의 가로 스크롤 + 스냅이 하고,
