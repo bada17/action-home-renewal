@@ -1278,7 +1278,7 @@
     <!-- 주소는 아래 DONATE_URLS.regular와 같은 것. JS가 꺼져도 눌리도록 여기에도 적어 둠.
          한쪽을 바꾸면 다른 쪽도 같이 바꿀 것. -->
     <a class="cover-btn" id="cover-btn"
-       href="https://mrmweb.hsit.co.kr/v2/Member/MemberJoin.aspx?action=join&amp;server=GdGrmt6XtgAAdxPdh65AQQ==">
+       href="https://secure.donus.org/withaction0909/pay/step1">
       지금 후원하기 <span class="arrow" aria-hidden="true">→</span>
     </a>
 
@@ -1836,7 +1836,10 @@ document.querySelector('.amount-custom').addEventListener('input', () => {
 //   - 추후 토스트/모달로 UX 개선 여지 있음
 // -----------------------------------------------------------------
 const DONATE_URLS = {
-  regular: 'https://mrmweb.hsit.co.kr/v2/Member/MemberJoin.aspx?action=join&server=GdGrmt6XtgAAdxPdh65AQQ==',
+  regular: 'https://secure.donus.org/withaction0909/pay/step1',
+  // ⚠️ 일시후원은 아직 옛 시스템(MRM)입니다. 도너스에서는 '모금함'이 그 자리인데,
+  //    모금함은 건마다 주소가 따로라 정기후원 주소로 대신할 수 없습니다.
+  //    모금함 주소를 받으면 이 한 줄만 바꾸세요 (2026-09-07).
   once: 'https://mrmweb.hsit.co.kr/v2/Member/SupportOnce.aspx?action=once&server=GdGrmt6XtgAAdxPdh65AQQ=='
 };
 document.getElementById('donate-go').addEventListener('click', () => {
