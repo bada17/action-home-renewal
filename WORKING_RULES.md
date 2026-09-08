@@ -25,7 +25,7 @@
 
    → 2026-09-07 캠페인 연결 결정: `밑빠진 독상(/76)`과 `함께하기(/77)`만
      캠페이너스 화면으로 둡니다. 개별 캠페인 셋은 각각 `dok.action.or.kr`,
-     `pb-action-site.pages.dev`(DNS 복구 뒤 `pb.action.or.kr`), `vote.action.or.kr`로
+     `pb.action.or.kr`, `vote.action.or.kr`로
      바로 연결하며 `/78·/79·/80`은 만들지 않습니다.
      `/76`의 메뉴 이름은 `밑빠진 독상`으로만 씁니다.
 
