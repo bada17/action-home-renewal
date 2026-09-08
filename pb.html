@@ -919,7 +919,21 @@
 }
 #pb .snote-lead{margin:0; font-size:15px; line-height:1.85}
 #pb .snote-lead b{color:var(--deep)}
-#pb .snote-tail{margin:14px 0 0; font-size:14px; line-height:1.8}
+
+/* 걸어온 길 맺음말 (2026-09-08). 전에는 한 문단짜리 줄글이었습니다 — 세 마디가
+   문장 속에 묻혀 힘이 없었습니다(사용자 지시: "임팩트있게, 가운데 정렬").
+   ⚠️ 세 마디의 차례를 지키세요 — 앞의 둘('그치지 않고')을 딛고 셋째로 올라섭니다.
+      앞 둘을 지우면 셋째가 그냥 구호가 됩니다.
+   ⚠️ 두 줄은 span 을 block 으로 세워 나눕니다. br 로 나누면 좁은 화면에서
+      쉼표 뒤가 어색하게 남습니다. */
+#pb .snote-claim{text-align:center}
+#pb .snote-claim .cl-up{margin:0; font-size:15px; line-height:1.9; color:var(--soft)}
+#pb .snote-claim .cl-up span{display:block}
+#pb .snote-claim .cl-hit{
+  margin:10px 0 0; font-size:26px; font-weight:800; line-height:1.35;
+  letter-spacing:-0.02em; color:var(--brand)
+}
+#pb .snote-claim .cl-sub{margin:14px 0 0; font-size:14px; line-height:1.75; color:var(--faint)}
 
 /* 다섯 단계 (2026-09-08). 전에는 한 문단짜리 줄글이었습니다 — 다섯 마디가
    문장 속에 묻혀 차례로 읽히지 않았습니다(사용자 지적: "굳이 저렇게 줄글로?").
@@ -956,6 +970,9 @@
   #pb .cyc{flex-direction:column; align-items:flex-start; gap:0}
   #pb .cyc li{flex-direction:column; align-items:flex-start}
   #pb .cyc li + li::before{margin:2px 0 2px 15px; font-size:15px}
+  /* 390px 에서 26px 이면 '실질적인 제도의 변화까지' 가 두 줄로 접힙니다.
+     접히는 것 자체는 괜찮지만 한 줄로 읽히는 편이 세서 조금 줄입니다. */
+  #pb .snote-claim .cl-hit{font-size:23px}
 }
 
 /* ⚠️ 아래 두 묶음이 '웹에서 보는 크기'입니다. 2026-09-07 오후에 한 번 키웠습니다
@@ -971,7 +988,9 @@
   #pb .tl .bd{padding-bottom:28px}
   #pb .tl-toggle{padding:13px 26px; font-size:17px}
   #pb .snote-lead{font-size:18.5px}
-  #pb .snote-tail{font-size:17px}
+  #pb .snote-claim .cl-up{font-size:17px}
+  #pb .snote-claim .cl-hit{font-size:33px}
+  #pb .snote-claim .cl-sub{font-size:16px}
   #pb .cyc .p{font-size:16.5px; padding:9px 17px 9px 9px}
   #pb .cyc .p i{width:24px; height:24px; font-size:13px}
 }
@@ -983,7 +1002,9 @@
   #pb .tl b{font-size:23px}
   #pb .tl p{font-size:18.5px}
   #pb .snote-lead{font-size:20px}
-  #pb .snote-tail{font-size:18.5px}
+  #pb .snote-claim .cl-up{font-size:18.5px}
+  #pb .snote-claim .cl-hit{font-size:38px}
+  #pb .snote-claim .cl-sub{font-size:17px}
   #pb .cyc .p{font-size:18px}
 }
 @media(max-width:700px){
@@ -1593,7 +1614,6 @@
           <li><span class="p"><i>4</i>실행과 결과를 확인한다</span></li>
           <li><span class="p"><i>5</i>다시 제도 개선에 참여한다</span></li>
         </ol>
-        <p class="snote-tail">이 다섯이 끊기지 않고 도는 구조, 그것이 우리가 만들고자 하는 시민참여입니다.</p>
       </div>
     </section>
 
@@ -1639,9 +1659,15 @@
         <button type="button" class="tl-toggle" id="pb-tl-more"
                 aria-expanded="false" aria-controls="pb-tl">전체 연혁 펼치기 (19개 더)</button>
       </div>
-      <p class="snote">제도를 연구하는 데 그치지 않고, 현장을 지켜보는 데 그치지 않고,
-        <b>실질적인 제도의 변화까지</b> 만들어가는 것. 함께하는 시민행동
-        시민참여정책위원회가 만들어가고자 하는 시민참여정책입니다.</p>
+      <div class="snote snote-claim">
+        <p class="cl-up">
+          <span>제도를 연구하는 데 그치지 않고,</span>
+          <span>현장을 지켜보는 데 그치지 않고,</span>
+        </p>
+        <p class="cl-hit">실질적인 제도의 변화까지</p>
+        <p class="cl-sub">함께하는 시민행동 시민참여정책위원회가
+          만들어가고자 하는 시민참여정책입니다.</p>
+      </div>
     </section>
 
     <!-- ───────── 전문위원의 글 ─────────
