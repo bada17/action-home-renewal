@@ -44,7 +44,7 @@
   /* 고정 헤더가 문서 흐름에서 빠진 만큼 자리를 비웁니다.
      반복 섹션은 맨 아래에 있어야 하므로, 스크립트가 이 칸만 실제 본문 앞으로 옮기고
      헤더 높이를 잽니다. 막혀도 넓은 화면 기본 높이는 유지합니다. */
-  #ah-nav-space{height:72px}
+  #ah-nav-space{height:78px}
   /* 스크롤을 내리면 그림자가 생겨, 아래 내용과 겹쳐도 띠가 떠 보입니다. */
   #ah-nav.is-stuck{box-shadow:0 6px 20px rgba(13,28,38,.09)}
   #ah-nav a{color:inherit;text-decoration:none}
@@ -55,12 +55,12 @@
   #ah-nav p{margin:0}
   #ah-nav .wrap{width:min(1120px,calc(100% - 48px));margin:0 auto}
 
-  #ah-nav .hd-in{display:flex;align-items:center;gap:20px;min-height:72px}
+  #ah-nav .hd-in{display:flex;align-items:center;gap:22px;min-height:78px}
   /* 사용자 제공 공식 로고. 원본 PNG 좌우에 투명 여백이 있어 링크 상자에서 잘라 냅니다. */
-  #ah-nav .logo{display:block;flex:none;width:145px;height:56px;overflow:hidden}
+  #ah-nav .logo{display:block;flex:none;width:158px;height:61px;overflow:hidden}
   #ah-nav .logo-img{
-    display:block;width:auto;max-width:none;height:56px;
-    transform:translateX(-24px)
+    display:block;width:auto;max-width:none;height:61px;
+    transform:translateX(-26px)
   }
 
   /* ───────── 알약 메뉴 ───────── */
@@ -69,8 +69,8 @@
      판이 닫히지 않습니다. */
   #ah-nav .gnb-item{position:relative;display:flex;align-items:center}
   #ah-nav .gnb-item>a{
-    display:inline-flex;align-items:center;height:42px;padding:0 20px;border-radius:999px;
-    border:1.5px solid var(--line);font-size:15px;font-weight:700;transition:.15s;white-space:nowrap
+    display:inline-flex;align-items:center;height:46px;padding:0 22px;border-radius:999px;
+    border:1.5px solid var(--line);font-size:16px;font-weight:700;transition:.15s;white-space:nowrap
   }
   #ah-nav .gnb-item>a:hover{border-color:var(--brand);color:var(--brand-deep)}
   /* '활동' 알약은 href 가 없습니다 — 가는 곳이 아니라 여는 손잡이입니다(아래 주석 참고).
@@ -174,7 +174,7 @@
        회원이 실제로 쓰는 곳은 후원 정보를 고치는 자리라, 그것만 후원하기 목차의
        '회원정보 수정'(도너스 마이페이지)으로 남겼습니다.
        ✖ SITE_MEMBER.openLogin · openJoinPatternChoice 를 다시 붙이지 마세요. */
-  #ah-nav .ico{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:17px;color:var(--ink-soft);background:none;cursor:pointer}
+  #ah-nav .ico{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:18px;color:var(--ink-soft);background:none;cursor:pointer}
   #ah-nav .ico:hover{border-color:var(--brand);color:var(--brand-deep)}
 
   /* ───────── 통합검색 ─────────
@@ -189,14 +189,14 @@
     background:#fff;transition:border-color .18s,box-shadow .18s}
   #ah-nav .hd-search:focus-within{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-tint)}
   #ah-nav .hd-search input{
-    width:clamp(120px,13vw,190px);border:0;outline:0;background:none;padding:8px 0;
-    font-family:inherit;font-size:14.5px;color:var(--ink);min-width:0
+    width:clamp(130px,14vw,205px);border:0;outline:0;background:none;padding:9px 0;
+    font-family:inherit;font-size:15.5px;color:var(--ink);min-width:0
   }
   #ah-nav .hd-search input::placeholder{color:#9fb2bc}
   /* 크롬이 붙이는 X 버튼은 알약 안에서 어긋나 보여 지웁니다. */
   #ah-nav .hd-search input::-webkit-search-cancel-button{display:none}
   #ah-nav .hd-search button{
-    flex:none;width:34px;height:34px;border:0;border-radius:50%;cursor:pointer;
+    flex:none;width:37px;height:37px;border:0;border-radius:50%;cursor:pointer;
     background:var(--brand);color:#fff;font-size:17px;line-height:1;
     display:grid;place-items:center;transition:background .18s
   }
@@ -332,10 +332,10 @@
      사라지기 전에 먼저 작아지게 하고, 정말 좁아지면 그때 햄버거로 넘깁니다. */
   @media(max-width:1400px){
     #ah-nav .gnb{gap:6px}
-    #ah-nav .gnb-item>a{height:40px;padding:0 15px;font-size:14px}
+    #ah-nav .gnb-item>a{height:44px;padding:0 17px;font-size:15px}
   }
   @media(max-width:1220px){
-    #ah-nav .gnb-item>a{padding:0 12px;font-size:13.5px}
+    #ah-nav .gnb-item>a{padding:0 14px;font-size:14.5px}
     #ah-nav .hd-in{gap:14px}
   }
   /* 알약을 감추지 않고 둘째 줄로 내려 가로로 넘깁니다.
@@ -346,8 +346,8 @@
        무엇을 하는 곳인지 첫 화면에서 안 보인다"). 이제 옆에서 나오는 메뉴판(☰)이
        그 일을 대신하고, 머리에는 로고와 ☰ 만 남습니다.
        되살릴 때는 .gnb 규칙과 #ah-nav-space 높이를 함께 되돌려야 합니다. */
-    #ah-nav-space{height:74px}
-    #ah-nav .hd-in{min-height:0;padding:9px 0}
+    #ah-nav-space{height:80px}
+    #ah-nav .hd-in{min-height:0;padding:10px 0}
     #ah-nav .gnb{display:none}
     #ah-nav .menu-btn{display:grid}
     #ah-nav .hd-search{display:none}   /* 좁으면 ☰ 안의 검색칸을 씁니다 */
@@ -394,12 +394,12 @@
     #ah-nav .msearch{margin-top:14px}
   }
   @media(max-width:820px){
-    #ah-nav-space{height:64px}
+    #ah-nav-space{height:70px}
     #ah-nav .wrap{width:min(100% - 36px,1120px)}
     #ah-nav .hd-in{gap:10px}
-    #ah-nav .logo{width:119px;height:46px}
-    #ah-nav .logo-img{height:46px;transform:translateX(-20px)}
-    #ah-nav .ico{width:38px;height:38px}
+    #ah-nav .logo{width:130px;height:50px}
+    #ah-nav .logo-img{height:50px;transform:translateX(-22px)}
+    #ah-nav .ico{width:42px;height:42px}
     /* 떠 있는 버튼이 아래쪽 내용을 가리지 않게 가로로 눕힙니다.
        env(safe-area-inset-bottom) 은 아이폰 아래 홈 표시줄을 피하는 값입니다. */
     .ah-float{
