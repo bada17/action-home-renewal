@@ -765,8 +765,8 @@
      ⚠️ 알약은 넓은 화면에만 있습니다(1060px 이하에서는 .gnb 가 display:none).
         좁은 화면에서 알약 밑에 펴 주던 #ah-sheet 는 그래서 없앴습니다.
 
-     후원하기도 같은 규칙을 씁니다 — 누르면 목차가 열리고, 그 안의
-     '정기후원하기'를 누르면 실제 도너스 신청서로 갑니다. */
+     후원하기는 누르면 정기후원 신청서로 바로 갑니다. 하위 목차는 커서를
+     올렸을 때 그대로 열립니다. */
   var narrow = window.matchMedia('(max-width:1060px)');
   var openItem = null;
 
@@ -878,6 +878,10 @@
     a.setAttribute('aria-haspopup', 'true');
     a.setAttribute('aria-expanded', 'false');
     a.addEventListener('click', function (e) {
+      if (a.classList.contains('is-cta')) {
+        closeDrops();
+        return;
+      }
       e.preventDefault();
       openDrop(item);
     });
