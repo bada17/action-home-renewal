@@ -174,7 +174,7 @@
        회원이 실제로 쓰는 곳은 후원 정보를 고치는 자리라, 그것만 후원하기 목차의
        '회원정보 수정'(도너스 마이페이지)으로 남겼습니다.
        ✖ SITE_MEMBER.openLogin · openJoinPatternChoice 를 다시 붙이지 마세요. */
-  #ah-nav .ico{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:18px;color:var(--ink-soft);background:none;cursor:pointer}
+  #ah-nav .ico{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:18px;color:var(--ink-soft);background:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   #ah-nav .ico:hover{border-color:var(--brand);color:var(--brand-deep)}
 
   /* ───────── 통합검색 ─────────
@@ -276,15 +276,22 @@
      ⚠️ 큰 칸에 링크를 걸지 마세요. 갈 곳은 각 칸의 첫 줄에 그대로 있습니다 —
         후원하기→정기후원하기 · 소개→우리 단체는 · 캠페인→함께하기 · 소식→공지.
         '활동'은 원래 갈 곳이 없습니다(/52 는 없는 화면입니다). */
-  #ah-nav .mnav>div>ul{padding:6px 0 18px}
+  #ah-nav .mnav>div>ul{padding:0 0 18px;border-top:1px solid var(--line)}
   #ah-nav .mnav>div>ul>li{border-bottom:1px solid var(--line)}
   #ah-nav .mtitle{
     display:flex;align-items:center;justify-content:space-between;gap:10px;
-    width:100%;padding:15px 4px;border:0;background:none;cursor:pointer;
-    font:inherit;font-size:16px;font-weight:700;color:var(--ink);text-align:left
+    width:100%;min-height:54px;padding:14px 18px;border:0;background:#fff;cursor:pointer;
+    font:inherit;font-size:16px;font-weight:700;color:var(--ink);text-align:left;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent
   }
   #ah-nav .mtitle:hover{color:var(--brand-deep)}
   #ah-nav .mnav>div>ul>li.is-open>.mtitle{color:var(--brand-deep)}
+  /* 서울환경연합 예시처럼 후원하기 한 줄만 브랜드색으로 구분합니다. */
+  #ah-nav .mnav>div>ul>li:first-child>.mtitle,
+  #ah-nav .mnav>div>ul>li:first-child.is-open>.mtitle{
+    background:var(--brand);color:#fff
+  }
+  #ah-nav .mnav>div>ul>li:first-child>.mtitle:active{background:var(--brand-deep)}
   /* 삼각형은 글꼴 문자가 아니라 테두리로 그립니다(글꼴에 따라 모양이 달라집니다). */
   #ah-nav .marrow{
     flex:none;width:0;height:0;
@@ -292,13 +299,23 @@
     border-top:6px solid currentColor;transition:transform .18s
   }
   #ah-nav .mnav>div>ul>li.is-open>.mtitle .marrow{transform:rotate(180deg)}
-  /* 하위 목차는 알약이 아니라 한 줄에 하나씩 놓습니다(2026-09-07 사용자 지시). */
-  #ah-nav .msub{display:none;padding:0 0 10px}
-  #ah-nav .mnav>div>ul>li.is-open>.msub{display:block}
+  /* 하위 목차는 알약이 아니라 한 줄에 하나씩 놓습니다(2026-09-07 사용자 지시).
+     display 를 즉시 바꾸지 않고 높이·투명도를 움직여 손가락 조작이 끊겨 보이지 않게 합니다. */
+  #ah-nav .msub{
+    max-height:0;overflow:hidden;visibility:hidden;opacity:0;padding:0 14px;
+    transition:max-height .3s cubic-bezier(.32,.72,0,1),opacity .18s ease,
+      padding .3s cubic-bezier(.32,.72,0,1),visibility 0s linear .3s
+  }
+  #ah-nav .mnav>div>ul>li.is-open>.msub{
+    max-height:430px;visibility:visible;opacity:1;padding:8px 14px 12px;
+    transition:max-height .3s cubic-bezier(.32,.72,0,1),opacity .2s ease,
+      padding .3s cubic-bezier(.32,.72,0,1),visibility 0s
+  }
   #ah-nav .msub li+li{margin-top:2px}
   #ah-nav .msub a{
     display:block;padding:11px 12px;border-radius:8px;
-    font-size:15px;font-weight:500;color:var(--ink-soft)
+    font-size:15px;font-weight:500;color:var(--ink-soft);
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent
   }
   #ah-nav .msub a:hover{background:var(--paper);color:var(--brand-deep)}
 
@@ -361,37 +378,44 @@
     #ah-nav .mscrim{
       display:block;position:fixed;inset:0;z-index:9994;
       background:rgba(13,28,38,.42);
-      opacity:0;visibility:hidden;transition:opacity .28s,visibility .28s
+      opacity:0;visibility:hidden;
+      transition:opacity .3s ease,visibility 0s linear .3s;
+      -webkit-tap-highlight-color:transparent
     }
-    #ah-nav .mscrim.open{opacity:1;visibility:visible}
+    #ah-nav .mscrim.open{opacity:1;visibility:visible;transition:opacity .3s ease,visibility 0s}
     #ah-nav .mnav{
       display:block;position:fixed;top:0;right:0;bottom:0;z-index:9995;
       width:min(86vw,380px);
       background:#fff;border-left:1px solid var(--line);
       box-shadow:-16px 0 44px rgba(13,28,38,.2);
       overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+      touch-action:pan-y;will-change:transform;backface-visibility:hidden;
       padding-top:env(safe-area-inset-top,0px);
       padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));
-      transform:translateX(100%);visibility:hidden;
-      transition:transform .28s cubic-bezier(.32,.72,0,1),visibility .28s
+      transform:translate3d(100%,0,0);visibility:hidden;
+      transition:transform .32s cubic-bezier(.32,.72,0,1),visibility 0s linear .32s
     }
-    #ah-nav .mnav.open{transform:none;visibility:visible}
+    #ah-nav .mnav.open{
+      transform:translate3d(0,0,0);visibility:visible;
+      transition:transform .32s cubic-bezier(.32,.72,0,1),visibility 0s
+    }
+    #ah-nav .mnav>.wrap{width:100%;margin:0}
     /* 판 안 첫 줄 — 로고와 닫기(✕). 헤더의 ☰ 는 판에 가려 안 보입니다.
        스크롤해도 닫기가 늘 손에 닿게 위에 붙여 둡니다. */
     #ah-nav .mhead{
       position:sticky;top:0;z-index:1;background:#fff;
       display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:14px 0 12px;border-bottom:1px solid var(--line)
+      padding:14px 18px 12px;border-bottom:1px solid var(--line)
     }
     #ah-nav .mlogo{display:block;flex:none;width:120px;height:46px;overflow:hidden}
     #ah-nav .mlogo img{display:block;width:auto;max-width:none;height:46px;transform:translateX(-20px)}
     #ah-nav .mclose{
       flex:none;width:40px;height:40px;border:1px solid var(--line);border-radius:10px;
       background:#fff;color:var(--ink);font-size:16px;line-height:1;cursor:pointer;
-      display:grid;place-items:center
+      display:grid;place-items:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent
     }
     #ah-nav .mclose:hover{border-color:var(--brand);color:var(--brand-deep)}
-    #ah-nav .msearch{margin-top:14px}
+    #ah-nav .msearch{margin:14px 18px}
   }
   @media(max-width:820px){
     #ah-nav-space{height:70px}
@@ -571,8 +595,8 @@
       <button type="submit" aria-label="검색">⌕</button>
     </form>
     <ul>
-    <li class="is-open">
-      <button class="mtitle" type="button" aria-expanded="true">후원하기<span class="marrow" aria-hidden="true"></span></button>
+    <li>
+      <button class="mtitle" type="button" aria-expanded="false">후원하기<span class="marrow" aria-hidden="true"></span></button>
       <ul class="msub">
         <li><a href="https://secure.donus.org/withaction0909/pay/step1" target="_blank" rel="noopener">정기후원하기</a></li>
         <li><a href="/74">정기후원 안내</a></li>
@@ -961,17 +985,31 @@
     }
 
     var lockedY = 0;
+    var bodyBefore = null;
     function setMenu(open) {
-      if (open && mtops.length) openSection(mtops[0]);
+      if (open) openSection(null);
       mnav.classList.toggle('open', open);
       if (mscrim) mscrim.classList.toggle('open', open);
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       var b = document.body;
       if (open) {
         lockedY = window.pageYOffset || document.documentElement.scrollTop || 0;
+        bodyBefore = {
+          overflow: b.style.overflow,
+          position: b.style.position,
+          top: b.style.top,
+          width: b.style.width
+        };
         b.style.overflow = 'hidden';
-      } else if (b.style.overflow === 'hidden') {
-        b.style.overflow = '';
+        b.style.position = 'fixed';
+        b.style.top = -lockedY + 'px';
+        b.style.width = '100%';
+      } else if (bodyBefore) {
+        b.style.overflow = bodyBefore.overflow;
+        b.style.position = bodyBefore.position;
+        b.style.top = bodyBefore.top;
+        b.style.width = bodyBefore.width;
+        bodyBefore = null;
         window.scrollTo(0, lockedY);
       }
     }
