@@ -650,9 +650,33 @@
    안 되는 것은 '현재 위치 표시'와 '햄버거'뿐입니다. */
 (function () {
   'use strict';
-  var hd = document.getElementById('ah-nav');
+  /* 캠페이너스에서 PC용·모바일용 섹션에 이 코드를 각각 넣으면 같은 id가 두 벌 생깁니다.
+     문서 전체에서 찾으면 두 스크립트가 첫 번째 햄버거에 함께 붙어, 한 번 누를 때
+     열렸다가 곧바로 닫힙니다. 현재 코드 위젯 안의 상단만 찾아 각자 제어합니다. */
+  var current = document.currentScript;
+  var scope = current && current.parentElement;
+  var hd = scope && scope.querySelector ? scope.querySelector('#ah-nav') : null;
+
+  /* 캠페이너스가 스크립트를 따로 실행해 currentScript를 주지 않는 경우에는
+     아직 초기화하지 않은 상단을 문서 순서대로 하나만 맡습니다. */
+  if (!hd || hd.getAttribute('data-ah-ready') === '1') {
+    var headers = document.querySelectorAll('#ah-nav');
+    hd = null;
+    for (var hi = 0; hi < headers.length; hi++) {
+      if (headers[hi].getAttribute('data-ah-ready') !== '1') {
+        hd = headers[hi];
+        scope = hd.parentElement;
+        break;
+      }
+    }
+  }
   if (!hd) return;
-  var hdSpace = document.getElementById('ah-nav-space');
+  hd.setAttribute('data-ah-ready', '1');
+
+  function localById(id) {
+    return scope && scope.querySelector ? scope.querySelector('#' + id) : null;
+  }
+  var hdSpace = localById('ah-nav-space');
 
   /* 섹션 반복은 페이지 맨 아래에서만 켤 수 있습니다. 그래서 코드 위젯은 아래에 두되,
      빈자리만 캠페이너스 기본 상단 바로 뒤(즉 실제 본문 앞)로 옮깁니다.
@@ -911,10 +935,10 @@
   if (narrow.addEventListener) narrow.addEventListener('change', closeDrops);
 
   /* ── 3. 햄버거 ── */
-  var btn = document.getElementById('ah-menu-btn');
-  var mnav = document.getElementById('ah-mnav');
-  var mscrim = document.getElementById('ah-mnav-scrim');
-  var mclose = document.getElementById('ah-mnav-close');
+  var btn = hd.querySelector('#ah-menu-btn');
+  var mnav = hd.querySelector('#ah-mnav');
+  var mscrim = hd.querySelector('#ah-mnav-scrim');
+  var mclose = hd.querySelector('#ah-mnav-close');
   if (btn && mnav) {
     /* 판이 오른쪽에서 밀려 나옵니다. 열려 있는 동안 뒤쪽 화면이 같이 스크롤되면
        판을 닫았을 때 엉뚱한 곳에 가 있어, 뒤 스크롤을 잠급니다.
@@ -977,7 +1001,7 @@
   /* ── 4. 스크롤 ──
      두 가지를 한 번에 봅니다: 헤더 그림자, 떠 있는 후원 버튼.
      requestAnimationFrame 으로 묶어 스크롤마다 계산이 몰리지 않게 합니다. */
-  var floatCta = document.getElementById('ah-float');
+  var floatCta = localById('ah-float');
   var ticking = false;
   function onScroll() {
     if (ticking) return;
