@@ -851,8 +851,11 @@ PAGES = {
         # 다른 넷은 우리가 무엇을 보는지를 말하지만, 이 활동은 **시민이 할 수 있는 것**을
         # 말해야 합니다. 그래서 감시 대상이 아니라 '들어오는 문'을 늘어놓습니다.
         #
-        # ⚠️ 아래 셋은 이미 근거가 있는 것만 적었습니다(상담소는 캠페인 목록에,
-        #    10만원 편성은 캠페이너스 /79 에, 주민참여예산은 /51 게시판에 있습니다).
+        # ⚠️ 아래 셋은 이미 근거가 있는 것만 적었습니다.
+        # 2026-09-09 — 상담소와 10만원 편성을 **바깥 주소**로 바꿨습니다.
+        #    캠페이너스 `/80`(상담소)은 없애기로 했고(사용자 결정), `/79` 도
+        #    만들지 않기로 한 번호입니다(HANDOFF 0-1). 번호로 두면 죽은 링크가 됩니다.
+        #    주민참여예산만 캠페이너스 게시판 `/51` 이라 번호 그대로 둡니다.
         #    2026-09-01: '1회 참여예산 고민대회'는 캠페인에서 삭제되어 여기서도 뺐습니다.
         #    '지금 열려 있나'가 확인 안 된 것은 tbd=True 로 두었습니다.
         sig=dict(
@@ -863,10 +866,10 @@ PAGES = {
             ways=[
                 ('시민참여 상담소',
                  '참여예산위원으로 활동하다 막히는 것을 물어보는 곳입니다.',
-                 '/80', 'open', '상시'),
+                 'https://pb.action.or.kr', 'open', '상시'),
                 ('10만원 예산편성 투표',
                  '내 몫의 예산 10만원을 어디에 쓸지 직접 편성해 봅니다.',
-                 '/79', 'open', '기간 확인 필요'),
+                 'https://vote.action.or.kr/', 'open', '기간 확인 필요'),
                 ('주민참여예산 게시판',
                  '제도가 어디까지 왔는지, 무엇을 요구하고 있는지 모아 둔 곳입니다.',
                  '/51', 'open', '상시'),
@@ -1167,8 +1170,10 @@ def build_sig(d):
         for name, note, href, st, when in sig['ways']:
             flag = u' <span class="tbd">확인 필요</span>' if u'확인 필요' in when else u''
             shown = when.replace(u' 확인 필요', u'') if flag else when
+            # 바깥 주소는 새 탭으로 엽니다 — 홈 상단·캠페인 목록과 같은 방식입니다.
+            out = u' target="_blank" rel="noopener"' if href.startswith(u'http') else u''
             rows.append(
-                u'        <a class="way rv" href="%s">' % href + NL +
+                u'        <a class="way rv" href="%s"%s>' % (href, out) + NL +
                 u'          <span class="wt">%s</span>' % name + NL +
                 u'          <span class="wd">%s</span>' % note + NL +
                 u'          <span class="wm">' + NL +
