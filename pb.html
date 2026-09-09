@@ -1029,6 +1029,15 @@
 @media(max-width:700px){
   #pb .words.acts{grid-template-columns:repeat(2,1fr)}
 }
+/* 2026-09-09 — 손전화에서 카드를 뒤집으면 **그 줄이 통째로** 커집니다(그리드는
+   한 줄의 키를 가장 큰 칸에 맞춥니다). 그래서 옆 카드가 커다란 빈 상자가 되고,
+   뜻은 150px 폭에 여덟 줄로 눌려 읽기 어려웠습니다(사용자 지적).
+   한 줄에 하나면 둘 다 풀립니다 — 옆칸이 없고, 뜻이 서너 줄로 펴집니다.
+   앞면만 볼 때 허전하지 않게 최소 키도 풉니다(132px 은 세 칸일 때의 값입니다). */
+@media(max-width:560px){
+  #pb .words.acts{grid-template-columns:1fr; gap:8px}
+  #pb .words.acts .word{min-height:0; padding:15px 16px}
+}
 
 /* 질문과 의뢰는 같은 종류의 접수 화면이라는 것이 보이도록 맞춥니다. */
 #pb .hero .ask,#pb .form{
@@ -1172,6 +1181,17 @@
         아홉 화면 가운데 가로 스크롤이 생기는 곳은 여기뿐이었습니다. */
   #pb .qa summary .tail{margin-left:35px; width:calc(100% - 35px)}
 }
+
+/* 2026-09-09 — 손전화에서는 카드를 한 줄에 하나씩. '개념 정의' 도 같은 이유입니다
+   (위 '우리가 하는 일' 쪽 주석 참고) — 뒤집으면 그 줄이 통째로 커져서 옆 카드가
+   빈 상자가 되고, 뜻이 150px 폭에 일곱 줄로 눌립니다.
+   ⚠️ 이 묶음은 반드시 위 `max-width:820px` **뒤에** 있어야 합니다. 선택자 힘이
+      같아서(`#pb .words`) 앞에 두면 820px 의 두 칸 규칙에 집니다. 실제로 졌습니다. */
+@media(max-width:560px){
+  #pb .words{grid-template-columns:1fr}
+  #pb .words .word{min-height:0; padding:15px 16px}
+}
+
 /* 움직임을 끈 사람에게는 전부 멈춥니다.
    ⚠️ 애니메이션만 끄면 안 됩니다 — 떠오르기 전 상태가 opacity:0 이라,
       끄는 순간 그 칸들이 영영 안 보이게 됩니다. 그래서 보이게 되돌리는
