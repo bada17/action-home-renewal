@@ -868,6 +868,9 @@
   display:flex; align-items:flex-start; justify-content:center;
   padding:clamp(12px,4vh,56px) clamp(12px,4vw,40px)
 }
+/* ⚠️ 이 줄이 없으면 창이 영영 안 닫힙니다 — `display:flex` 가 브라우저 기본
+   규칙인 `[hidden]{display:none}` 을 이깁니다. 스크립트는 hidden 으로 여닫습니다. */
+#pb .postwin[hidden]{display:none}
 #pb .postwin-dim{position:fixed; inset:0; background:rgba(11,31,42,.55)}
 #pb .postwin-box{
   position:relative; z-index:1; width:100%; max-width:760px;
