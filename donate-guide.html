@@ -940,28 +940,6 @@
   font-weight: 700;
   font-size: 22px;
   margin-bottom: 24px;
-}#ah-donate .type-toggle {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  background: #eef5f9;
-  border-radius: 12px;
-  padding: 5px;
-  margin-bottom: 24px;
-}#ah-donate .type-btn {
-  font-family: 'GmarketSans', sans-serif;
-  font-weight: 700;
-  font-size: 15px;
-  padding: 13px 0;
-  border: none;
-  background: transparent;
-  color: var(--ink-soft);
-  border-radius: 9px;
-  cursor: pointer;
-  transition: all 0.15s;
-}#ah-donate .type-btn.active {
-  background: var(--brand);
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(0,175,236,0.35);
 }#ah-donate .amount-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1594,10 +1572,8 @@
     </div>
     <div class="donate-form">
       <h3>후원하기</h3>
-      <div class="type-toggle" role="tablist" aria-label="후원 방식 선택">
-        <button type="button" class="type-btn active" data-type="regular" role="tab" aria-selected="true">매달 정기후원</button>
-        <button type="button" class="type-btn" data-type="once" role="tab" aria-selected="false">한 번 후원</button>
-      </div>
+      <!-- 2026-09-09 — 정기/일시 토글을 없앴습니다. 도너스에 일시후원(모금함) 자리가
+           아예 없어졌다는 사용자 확인. 되살릴 일이 생기면 이 커밋을 되돌리면 됩니다. -->
       <div class="amount-grid">
         <button type="button" class="amount-btn" data-amount="10000">1만 원</button>
         <button type="button" class="amount-btn active" data-amount="30000">3만 원</button>
@@ -1708,7 +1684,7 @@
   </div>
   <div class="faq-item">
     <button type="button" class="faq-q">소액도 후원할 수 있나요? <span class="arrow">▾</span></button>
-    <div class="faq-a">네. 금액과 상관없이 모든 후원이 활동의 힘이 됩니다. 정기후원과 일시후원 중 원하는 방식을 선택할 수 있습니다.</div>
+    <div class="faq-a">네. 금액과 상관없이 모든 후원이 활동의 힘이 됩니다. 원하시는 금액을 직접 정하실 수 있습니다.</div>
   </div>
   <div class="faq-item">
     <button type="button" class="faq-q">기부금 영수증(연말정산)이 발급되나요? <span class="arrow">▾</span></button>
@@ -1756,7 +1732,7 @@ function track(name, params = {}) {
 }
 
 // ───── 상태 ─────
-let donateType = 'regular'; // regular | once
+const donateType = 'regular'; // 2026-09-09 정기후원 하나만 남았습니다(일시후원 자리가 없어졌음)
 function currentAmount() {
   const custom = document.querySelector('.amount-custom').value.replace(/[^0-9]/g, '');
   if (custom) return custom;
@@ -1771,13 +1747,6 @@ const impactMsgs = {
     '50000': '매달 5만 원 — 소송·현장조사까지, 더 깊은 감시 활동을 가능하게 합니다.',
     '100000': '매달 10만 원 — 시민행동의 하루를 통째로 함께 만드는 후원입니다.',
     custom: '매달 보내주시는 후원은 감시 활동을 지속하는 가장 큰 힘이 됩니다.'
-  },
-  once: {
-    '10000': '1만 원 — 지금 진행 중인 감시 활동에 바로 보태집니다.',
-    '30000': '3만 원 — 자료 수집과 분석 활동에 큰 도움이 됩니다.',
-    '50000': '5만 원 — 현장 조사와 캠페인 활동을 응원하는 후원입니다.',
-    '100000': '10만 원 — 한 번의 후원으로도 감시는 한 걸음 더 나아갑니다.',
-    custom: '보내주시는 후원은 예산감시 활동에 소중히 쓰입니다.'
   }
 };
 function updateImpact() {
@@ -1786,21 +1755,6 @@ function updateImpact() {
   const set = impactMsgs[donateType];
   box.textContent = set[amt] || set.custom;
 }
-
-// ───── 정기/일시 토글 ─────
-document.querySelectorAll('.type-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.type-btn').forEach(b => {
-      b.classList.remove('active');
-      b.setAttribute('aria-selected', 'false');
-    });
-    btn.classList.add('active');
-    btn.setAttribute('aria-selected', 'true');
-    donateType = btn.dataset.type;
-    updateImpact();
-    track('select_type', { donate_type: donateType });
-  });
-});
 
 // ───── 금액 선택 ─────
 document.querySelectorAll('.amount-btn').forEach(btn => {
@@ -1832,21 +1786,19 @@ document.querySelector('.amount-custom').addEventListener('input', () => {
 //
 // [벤더에 요청할 항목] — 담당: 휴먼소프트웨어 02-583-0425
 //   1. 금액 자동입력 (?amount=30000 → txtAmount 반영)
-//   2. 후원 방식 자동선택 (정기/일시)
-//   3. UTM 파라미터 유지 (후원 완료까지 이어지게, 유입별 전환율 추적용)
-//   4. 1단계 스킵 옵션 (?step=2 → 개인정보 입력부터 시작)
+//   2. UTM 파라미터 유지 (후원 완료까지 이어지게, 유입별 전환율 추적용)
+//   3. 1단계 스킵 옵션 (?step=2 → 개인정보 입력부터 시작)
 //
 // [지금 임시 처리]
 //   - 이동 직전 alert로 재입력 필요 안내 (아래 로직)
 //   - 추후 토스트/모달로 UX 개선 여지 있음
 // -----------------------------------------------------------------
 const DONATE_URLS = {
-  // 2026-09-07 — 정기·일시 둘 다 도너스로 보냅니다(사용자 지시).
+  // 2026-09-07 — 후원을 도너스로 보냅니다(사용자 지시).
   //   옛 시스템(mrmweb.hsit.co.kr)의 후원 신청 두 입구는 404 였습니다.
-  //   일시후원 자리는 도너스에서 '모금함'인데 건마다 주소가 달라, 모금함을 열면
-  //   once 한 줄만 그 주소로 바꾸면 됩니다.
-  regular: 'https://secure.donus.org/withaction0909/pay/step1',
-  once: 'https://secure.donus.org/withaction0909/pay/step1'
+  // 2026-09-09 — 일시후원(도너스 '모금함') 자리가 아예 없어졌다는 사용자 확인.
+  //   `once` 를 지우고 화면의 정기/일시 토글도 없앴습니다. 정기후원 하나만 남습니다.
+  regular: 'https://secure.donus.org/withaction0909/pay/step1'
 };
 document.getElementById('donate-go').addEventListener('click', () => {
   const amount = currentAmount();
@@ -1855,7 +1807,7 @@ document.getElementById('donate-go').addEventListener('click', () => {
   const extra = new URLSearchParams({ amount, donate_type: donateType, ...utmParams });
   // ⚠️ 외부 후원 시스템(MRM)이 URL 파라미터로 금액을 미리 채우지 못함 (2025 확인).
   // 사용자 이탈 방지 차원에서 재선택 필요함을 미리 안내.
-  const typeLabel = donateType === 'regular' ? '매달 정기후원' : '한 번 후원';
+  const typeLabel = '매달 정기후원';
   const amountLabel = amount ? Number(amount).toLocaleString() + '원' : '선택하신 금액';
   alert(
     `[${typeLabel} ${amountLabel}]으로 신청 페이지가 열립니다.\n\n` +
