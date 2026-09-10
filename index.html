@@ -394,35 +394,42 @@
   /* '활동 둘러보기'가 여기로 데려옵니다. 헤더가 붙어 다녀서, 그만큼 위를 비워 두지 않으면
      제목이 헤더 밑에 가립니다. */
   #action-home-v2 .work{padding:clamp(48px,6vw,86px) 0;background:var(--paper);scroll-margin-top:88px}
-  #action-home-v2 .work-list{border-top:2px solid var(--ink);background:#fff}
+  /* ★ 2026-09-10 사용자 결정 — 줄 목록이 아니라 **카드 2열**입니다.
+       줄로 놓으니 설명이 왼쪽 절반에만 들어가고 오른쪽 500px 가 통째로 비었습니다.
+       한 문장짜리 설명이 억지로 두 줄로 접히고 화살표만 저 멀리 떠 있었습니다. */
+  #action-home-v2 .work-list{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   #action-home-v2 .wrow{
-    position:relative;display:grid;align-items:center;gap:6px 26px;
-    grid-template-columns:minmax(0,1fr) 44px;
-    padding:clamp(20px,2.2vw,30px) clamp(14px,1.6vw,22px);
-    border-bottom:1px solid var(--line);overflow:hidden
+    position:relative;display:grid;align-items:start;gap:0;
+    grid-template-columns:1fr;
+    padding:30px 28px 76px;   /* 아래 여백은 왼쪽 밑에 앉힌 화살표 자리입니다 */
+    border:1px solid var(--line);border-radius:16px;background:#fff;overflow:hidden
   }
   /* 커서를 올리면 브랜드 색이 왼쪽에서 차오릅니다. 배경을 통째로 칠하는 것보다
      '고른 것'이 또렷하고, 다섯 줄이 나란히 있어도 어수선하지 않습니다. */
   #action-home-v2 .wrow::before{
-    content:"";position:absolute;inset:0;background:var(--brand-tint);
+    content:"";position:absolute;inset:0;background:var(--brand-tint);border-radius:16px;
     transform:scaleX(0);transform-origin:left;transition:transform .34s cubic-bezier(.22,.61,.36,1)
   }
+  #action-home-v2 .wrow:hover{border-color:var(--brand)}
   #action-home-v2 .wrow:hover::before,#action-home-v2 .wrow:focus-within::before{transform:none}
   #action-home-v2 .wrow>*{position:relative;z-index:1}
-  #action-home-v2 .wrow h3{font-size:clamp(19px,1.9vw,26px);font-weight:800;letter-spacing:-.025em;line-height:1.3}
+  #action-home-v2 .wrow h3{font-size:clamp(20px,1.8vw,23px);font-weight:800;letter-spacing:-.025em;line-height:1.3}
   /* 이 링크가 줄 전체를 덮습니다 — 줄 아무 데나 눌러도 활동 페이지로 갑니다. */
   #action-home-v2 .wrow h3 a::after{content:"";position:absolute;inset:0;z-index:2}
   #action-home-v2 .wrow:hover h3 a{color:var(--brand-deep)}
-  #action-home-v2 .wrow .who{
-    display:block;margin-top:5px;font-size:12.5px;font-weight:700;color:var(--brand-deep);letter-spacing:.01em
-  }
+  /* 2026-09-10 사용자 지시로 감시 대상 알약(<span class="who">)을 뺐습니다.
+     활동 화면 셋에서 2026-09-01 에 뺀 것과 같은 칸입니다 — 홈만 남아 있었습니다.
+     되살릴 때는 아래 규칙과 index.html 의 <span class="who"> 를 같이 넣으세요.
+       display:block;margin-top:5px;font-size:12.5px;font-weight:700;
+       color:var(--brand-deep);letter-spacing:.01em                                */
   /* 사업 이름만 있고 무엇을 하는 곳인지가 없었습니다. 2026-09-07 사용자 제공 문안입니다.
      ⚠️ 지어낸 말이 아닙니다 — 고칠 때는 사용자에게 새 문안을 받으세요. */
   #action-home-v2 .wrow .wdesc{
-    display:block;margin-top:9px;max-width:62ch;
-    font-size:15px;line-height:1.65;color:var(--ink-soft);font-weight:400
+    display:block;margin-top:12px;max-width:none;
+    font-size:15px;line-height:1.7;color:var(--ink-soft);font-weight:700
   }
   #action-home-v2 .wrow .go{
+    position:absolute;left:28px;bottom:26px;
     width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);
     display:grid;place-items:center;font-size:16px;color:var(--ink-soft);background:#fff;transition:.18s
   }
@@ -510,10 +517,12 @@
     #action-home-v2 .pcard strong{font-size:14.5px;line-height:1.45}
     #action-home-v2 .news{padding:40px 0}
     #action-home-v2 .work{padding:40px 0}
-    #action-home-v2 .wrow{grid-template-columns:minmax(0,1fr) 40px;gap:4px 16px;padding:18px 12px}
-    #action-home-v2 .wrow .go{width:40px;height:40px;font-size:15px}
-    #action-home-v2 .wrow h3{font-size:18px}
-    #action-home-v2 .wrow .wdesc{margin-top:7px;font-size:14px;line-height:1.6}
+    /* 좁으면 카드를 한 줄에 하나씩 (2026-09-08 결정과 같은 규칙) */
+    #action-home-v2 .work-list{grid-template-columns:1fr;gap:12px}
+    #action-home-v2 .wrow{padding:22px 20px 66px}
+    #action-home-v2 .wrow .go{left:20px;bottom:20px;width:40px;height:40px;font-size:15px}
+    #action-home-v2 .wrow h3{font-size:19px}
+    #action-home-v2 .wrow .wdesc{margin-top:9px;font-size:14.5px;line-height:1.65}
     #action-home-v2 .cta2{grid-template-columns:1fr}
     /* 좁으면 색 블록이 위, 폼이 아래 */
     #action-home-v2 .nl-in{grid-template-columns:1fr}
@@ -864,24 +873,24 @@
     <div class="work-list">
 
       <div class="wrow reveal">
-        <span><h3><a href="/49">지자체 감시</a></h3><span class="who">지방정부 · 지방의회</span><span class="wdesc">시민의 눈높이에서 지방자치단체의 사업 집행과 지방의회의 의정활동을 살피고, 주민을 위한 행정과 의정활동이 이루어지도록 감시합니다.</span></span>
+        <span><h3><a href="/49">지자체 감시</a></h3><span class="wdesc">시민의 눈높이에서 지방자치단체의 사업 집행과 지방의회의 의정활동을 살피고, 주민을 위한 행정과 의정활동이 이루어지도록 감시합니다.</span></span>
         <span class="go" aria-hidden="true">→</span>
       </div>
 
       <!-- 2026-09-01 사용자 지시로 숨겼습니다 — 지운 것이 아닙니다. 확정되면 주석만 벗기세요.
             <div class="wrow reveal">
-              <span><h3><a href="/act-power">권력감시</a></h3><span class="who">중앙정부 · 국회</span></span>
+              <span><h3><a href="/act-power">권력감시</a></h3></span>
               <span class="go" aria-hidden="true">→</span>
             </div>
       -->
 
       <div class="wrow reveal">
-        <span><h3><a href="/27">예산감시</a></h3><span class="who">나라살림 · 지방재정</span><span class="wdesc">시민의 세금으로 마련된 정부 예산이 제대로 쓰이는지 살피고, 시민이 재정 과정에 참여할 수 있도록 지원합니다.</span></span>
+        <span><h3><a href="/27">예산감시</a></h3><span class="wdesc">시민의 세금으로 마련된 정부 예산이 제대로 쓰이는지 살피고, 시민이 재정 과정에 참여할 수 있도록 지원합니다.</span></span>
         <span class="go" aria-hidden="true">→</span>
       </div>
 
       <div class="wrow reveal">
-        <span><h3><a href="/51">시민참여</a></h3><span class="who">참여예산 · 시민 교육</span><span class="wdesc">주민참여예산을 비롯한 주민직접참여제도의 활성화를 지원하고, 시민참여를 넓히기 위한 제도개선과 교육을 진행합니다.</span></span>
+        <span><h3><a href="/51">시민참여</a></h3><span class="wdesc">주민참여예산을 비롯한 주민직접참여제도의 활성화를 지원하고, 시민참여를 넓히기 위한 제도개선과 교육을 진행합니다.</span></span>
         <span class="go" aria-hidden="true">→</span>
       </div>
 
