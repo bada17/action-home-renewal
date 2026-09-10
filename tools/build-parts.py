@@ -75,7 +75,6 @@ PAGES = [
     'activity-civic.html',
     'dok-history.html',
     'issue.html',
-    'pb.html',
     'library.html',
 ]
 

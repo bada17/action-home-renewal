@@ -8,12 +8,19 @@
 > 최종 주소와 접속 상태, 남은 일을 누가 맡는지, 붙이기 전 점검표가 거기 있습니다.
 > 아래 기록은 날짜순 작업 일지라 옛 사실이 섞여 있습니다.
 
-> ★ **`pb.html`(상담소)을 건드리기 전에 `HANDOFF_PB_2026-09-08.md` 를 먼저 보세요.**
-> 이름이 **시민참여 상담소**로, 주소가 **`https://pb.action.or.kr`** 로 바뀌었고
-> **Cloudflare Pages(`pb-action-site.pages.dev`)는 안 씁니다.** 아래 옛 기록에
-> 그 주소와 옛 이름이 남아 있는데 지금은 틀린 것입니다.
-> `pb.html` 은 개편 홈의 한 페이지가 아니라 **딴 사이트로 구워 나갑니다** —
-> 여기서 고치고 push 해도 사는 화면은 안 바뀝니다. 굽는 절차가 그 문서에 있습니다.
+> ## ✖ 상담소(`pb.html`)는 2026-09-10 에 이 저장소를 떠났습니다
+>
+> **원본이 `participatory-budget` 저장소로 갔습니다.** 상담소는 독립 사이트
+> (`https://pb.action.or.kr`)라 원본도 거기 있는 것이 맞습니다.
+> 고칠 일이 있으면 그 저장소의 `pb.html` 과 `HANDOFF_PB_2026-09-08.md` 를 보세요.
+> 아래 옛 기록에 `pb.html` 이 나오면 그것은 지나간 얘기입니다.
+>
+> ⚠️ **여기서 알아야 할 것은 하나뿐입니다 — 하단(`tools/parts/footer.html`).**
+> 상담소와 밑빠진 독상이 그 파일을 **읽어 갑니다**(베끼지 않습니다).
+> 하단을 고쳤으면 두 저장소에서 한 번씩 다시 구워 주세요:
+>
+>     participatory-budget:  python build.py
+>     dokseong:              python tools/port-footer.py
 
 > **2026-09-07 — 개별 캠페인은 외부 사이트로 바로 연결합니다.**
 > 캠페이너스 `/78·/79·/80` 페이지는 만들지 않습니다. 홈·공통 상단·`/77`의
@@ -351,7 +358,7 @@ Claude 가 못 봅니다. 아래는 거기서만 할 수 있는 일들입니다.
 
 사용자 결정: **각 페이지는 개별 코드 위젯으로 올리고, 상단과 하단은 각각 공통영역으로 분리합니다.**
 
-- `index.html`, `activity-*.html`, `issue.html`, `dok-history.html`, `pb.html`,
+- `index.html`, `activity-*.html`, `issue.html`, `dok-history.html`,
   `library.html`은 각각 **해당 페이지 코드 위젯 하나에 파일 전체를** 붙입니다.
 - 각 파일 맨 위·아래의 `CAMPAIGNERS:PAGE-CODE START/END`가 붙여넣기 범위입니다.
 - 페이지 파일에는 공통 상단·하단이 **일부러 없습니다.** `#ah-nav`나 `#ah-foot`를
@@ -665,7 +672,6 @@ action.or.kr/69        =  개편안 홈 = 안쪽               ← 이 저장소
 | `activity-*.html` 넷 | ← `tools/build-activity.py` 가 만듭니다. **직접 고치지 마세요** | |
 | `dok-history.html` | 활동 &gt; 밑빠진 독상 (역대 기록) | 아직 없음 |
 | `issue.html` | 이슈 목록 | 아직 없음 |
-| `pb.html` | 이슈 &gt; 참여예산 상담소 | 아직 없음 |
 | `library.html` | 자료실 | 아직 없음 |
 | `library.html` | ← `tools/build-library.py` 가 만듭니다. **직접 고치지 마세요** | |
 | `redirect-snippet.html` | 대표 홈 → 랜딩. **아직 적용 안 함** | |

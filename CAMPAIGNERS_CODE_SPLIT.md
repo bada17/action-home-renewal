@@ -92,8 +92,8 @@ python tools/build-campaign-together.py --check
 개별 캠페인은 캠페이너스 페이지를 따로 만들지 않습니다. 홈·공통 상단·`/77`의 카드는
 각 외부 사이트(`dok.action.or.kr`, `pb.action.or.kr`, `vote.action.or.kr`)로
 바로 연결합니다. 상담소 주소는 2026-09-08 에 `pb.action.or.kr` 로 확정됐습니다.
-`/78·/79·/80`은 사용하지 않습니다. `pb.html`은 로컬 검토용 원본으로만
-남겨 두며 캠페이너스 `/80`에 붙이지 않습니다.
+`/78·/79·/80`은 사용하지 않습니다. 상담소 원본(`pb.html`)은 2026-09-10 에
+`participatory-budget` 저장소로 옮겼습니다 — 이 저장소에는 없습니다.
 
 ## 수정할 때 지키는 순서
 

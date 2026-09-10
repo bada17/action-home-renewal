@@ -22,10 +22,9 @@
     /76             활동 > 밑빠진 독상    dok-history.html
     /library        자료실                library.html
     /dok/           밑빠진 독상 원본      옆 저장소를 그 자리에서 읽습니다
-    /80             시민참여 상담소       pb.html
-    /pb-old/        상담소 옛 초안        옆 저장소를 그 자리에서 읽습니다
+    /pb/            시민참여 상담소       옆 저장소가 구운 화면을 그 자리에서 읽습니다
 
-    /dok/ 과 /pb-old/ 는 **복사하지 않습니다.** 원본 저장소를 그대로 물려 주므로
+    /dok/ 과 /pb/ 는 **복사하지 않습니다.** 원본 저장소를 그대로 물려 주므로
     거기서 고치면 여기서도 바로 보입니다.
 """
 
@@ -47,11 +46,13 @@ SIBLINGS = {
         os.path.join(os.path.dirname(ROOT), 'dokseong', 'public'),
         r'C:\Users\dbqke\dokseong\public',
     ],
-    # 2026-08-27: /80 은 이 저장소의 새 상담소(pb.html)가 씁니다.
-    # 옛 초안은 견줘 보려고 /pb-old/ 로 옮겨 두었습니다.
-    '/pb-old/': [
-        r'C:\Users\dbqke\participatory-budget',
+    # 2026-09-10: 상담소 원본은 participatory-budget 저장소로 옮겼습니다.
+    #             그래서 /80 은 없어졌습니다. 그 저장소가 구운 화면을 /pb/ 로 봅니다.
+    #             (예전 이름은 /pb-old/ '상담소 옛 초안' 이었는데, 실제로는
+    #              옛 초안이 아니라 지금 사는 화면이라 이름을 바로잡았습니다.)
+    '/pb/': [
         os.path.join(os.path.dirname(ROOT), 'participatory-budget'),
+        r'C:\Users\dbqke\participatory-budget',
     ],
 }
 
@@ -67,8 +68,6 @@ ROUTES = {
     '/51': 'activity-civic.html',
     '/76': 'dok-history.html',
     '/76/': 'dok-history.html',
-    '/80': 'pb.html',
-    '/80/': 'pb.html',
     '/library': 'library.html',
     '/library/': 'library.html',
     # 2026-09-02: 랜딩을 안으로 옮기는 중. 캠페이너스 번호가 정해지면 그 번호로 바꾸세요.
@@ -134,7 +133,7 @@ SHELL = u'''<!doctype html>
   <a href="/80"%(a_pb)s>시민참여 상담소</a>
   <a href="/library"%(a_lib)s>자료실</a>
   <b>원본</b>
-  <a href="/pb-old/">상담소 옛 초안</a>
+  <a href="/pb/">시민참여 상담소</a>
   <a href="/dok/"%(a_dokorg)s>독상 사이트</a>
 </nav>
 %(body)s

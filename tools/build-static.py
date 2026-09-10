@@ -67,7 +67,8 @@ PAGES = [
     ('activity-budget.html', '27/index.html',           '활동 › 예산감시',       'budget'),
     ('activity-civic.html',  '51/index.html',           '활동 › 시민참여',       'civic'),
     ('dok-history.html',     '76/index.html',           '활동 › 밑빠진 독상',    'dok'),
-    ('pb.html',              '80/index.html',           '캠페인 › 시민참여 상담소', 'pb'),
+    # 2026-09-10: 상담소(pb.html)는 participatory-budget 저장소로 옮겼습니다.
+    #             독립 사이트라 여기서 굽지 않습니다 — https://pb.action.or.kr
     # 2026-09-02: 랜딩(donate.action.or.kr)을 안으로 옮기는 중입니다.
     # 캠페이너스 번호가 아직 없어 임시 주소로 굽습니다 — tools/build-donate.py 를 보세요.
     ('donate-guide.html',    'donate-guide/index.html', '후원 › 정기후원 안내',  'donate'),

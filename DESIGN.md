@@ -192,7 +192,7 @@
 | `activity-budget.html` | 활동 > 예산감시 | `#act` |
 | `dok-history.html` | 활동 > 밑빠진 독상 | `#dok` |
 | `issue.html` | 이슈 목록 | `#iss` |
-| `pb.html` | 참여예산 상담소 | `#pb` |
+| `pb.html` | 시민참여 상담소 — 2026-09-10 에 `participatory-budget` 저장소로 옮김 | `#pb` |
 | `activity-civic.html` | 활동 > 시민참여 | `#act` |
 | `library.html` | 자료실 (`build-library.py` 가 찍어냄) | `#lib` |
 | `tools/parts/header.html` | **공통 헤더** (여섯 화면이 나눠 씀) | `#ah-nav` |
