@@ -117,6 +117,22 @@
   #ah-foot .ft-btns .mark{flex:none;display:flex;align-items:center;color:var(--ink-soft)}
   #ah-foot .ft-btns .mark svg{width:17px;height:17px;display:block;fill:currentColor}
   #ah-foot .ft-btns a:hover .mark{color:var(--brand-deep)}
+  /* ⚠️ 2026-09-10 — 위 로고와 **똑같은 일이 새창 표시에도** 났습니다.
+     캠페이너스에 이식하니 '관련 페이지' 넷의 오른쪽 표시 뒤에 노란 바탕이 깔렸습니다.
+     imweb 전역 CSS 가 깔아 놓은 것이고, 새창 표시는 선으로만 그린 투명한 그림이라
+     그 색이 그대로 비칩니다. 소셜 아이콘이 멀쩡해 보이는 것은 그쪽 그림에 꽉 찬
+     네모(rect)가 있어 노란색을 덮기 때문이지, 안 깔린 것이 아닙니다.
+     소셜과 관련 페이지가 같은 .ft-btns 라 한 규칙이 둘 다 덮습니다.
+     남의 규칙이라 !important 말고는 방법이 없습니다. */
+  #ah-foot .ft-btns a .mark,
+  #ah-foot .ft-btns a .mark svg{
+    background:none!important;background-color:transparent!important;
+    border:0!important;outline:0!important;box-shadow:none!important;
+    padding:0!important;border-radius:0!important;filter:none!important
+  }
+  #ah-foot .ft-btns a .mark::before,#ah-foot .ft-btns a .mark::after{
+    content:none!important;display:none!important
+  }
   #ah-foot .ft-policy{display:flex;flex-wrap:wrap;gap:6px;margin-top:22px}
   #ah-foot .ft-policy a{border:1px solid var(--line);padding:7px 12px;font-size:12.5px;font-weight:700;color:var(--ink-soft)}
   #ah-foot .ft-policy a:hover{border-color:var(--brand);color:var(--brand-deep)}
