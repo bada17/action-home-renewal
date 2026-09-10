@@ -77,7 +77,6 @@ PAGES = [
     'issue.html',
     'pb.html',
     'library.html',
-    'sign.html',
 ]
 
 

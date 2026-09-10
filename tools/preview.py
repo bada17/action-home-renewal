@@ -74,8 +74,6 @@ ROUTES = {
     # 2026-09-02: 랜딩을 안으로 옮기는 중. 캠페이너스 번호가 정해지면 그 번호로 바꾸세요.
     '/donate-guide': 'donate-guide.html',
     '/donate-guide/': 'donate-guide.html',
-    '/sign': 'sign.html',
-    '/sign/': 'sign.html',
 }
 
 # 아직 화면이 없는 주소. 404 대신 "무엇이 없는지"를 알려 줍니다.
@@ -134,7 +132,6 @@ SHELL = u'''<!doctype html>
   <a href="/76"%(a_dok)s>밑빠진 독상</a>
   <b>캠페인</b>
   <a href="/80"%(a_pb)s>시민참여 상담소</a>
-  <a href="/sign"%(a_sign)s>서명</a>
   <a href="/library"%(a_lib)s>자료실</a>
   <b>원본</b>
   <a href="/pb-old/">상담소 옛 초안</a>
@@ -162,7 +159,6 @@ TITLES = {
     '/80': '캠페인 > 시민참여 상담소', '/80/': '캠페인 > 시민참여 상담소',
     '/library': '자료실', '/library/': '자료실',
     '/donate-guide': '후원 > 정기후원 안내', '/donate-guide/': '후원 > 정기후원 안내',
-    '/sign': '캠페인 > 서명', '/sign/': '캠페인 > 서명',
 }
 
 MIME = {
@@ -381,8 +377,7 @@ def wrap(path, body, title):
            '/49': 'a_local', '/act-power': 'a_power', '/27': 'a_budget',
            '/51': 'a_pb51', '/76': 'a_dok', '/76/': 'a_dok',
            '/80': 'a_pb', '/80/': 'a_pb',
-           '/library': 'a_lib', '/library/': 'a_lib',
-           '/sign': 'a_sign', '/sign/': 'a_sign'}.get(path)
+           '/library': 'a_lib', '/library/': 'a_lib'}.get(path)
     if key:
         marks[key] = ' class="on"'
     d = dict(marks)
