@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개인정보 처리방침 — 함께하는 시민행동</title>
+<meta name="description" content="함께하는 시민행동 개인정보 처리방침">
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+<meta name="robots" content="noindex">
+
+<!-- ⚠️ 이 파일은 굽는 자리의 껍데기입니다(빈 자리 {{BODY}} 하나).
+     방침 글은 이 저장소의 PRIVACY-dok.md 가 정본이고,
+     tools/build-privacy.py 가 그 글을 이 껍데기에 넣어
+     ../dokseong/public/privacy.html 로 굽습니다.
+     ★ 굽는 결과물을 손으로 고치지 마세요 — 다음에 구울 때 사라집니다. -->
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+/* ── 범위 격리 ──────────────────────────────────────────────
+   index.html과 같은 규칙. 모든 스타일을 #dok 안에 가둔다.
+   나중에 캠페이너스 홈페이지에 붙여넣어도 바깥을 건드리지 않게 하기 위함.
+   ──────────────────────────────────────────────────────── */
+#dok {
+  --brand: #00afec;
+  --brand-deep: #0087b8;
+  --brand-tint: #e5f7fe;
+  --ink: #0d1c26;
+  --ink-soft: #47606f;
+  --alert: #ff4a3d;
+  --alert-tint: #ffedeb;
+  --bg: #ffffff;
+  --line: #d8e6ed;
+
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+#dok *, #dok *::before, #dok *::after { box-sizing: border-box; margin: 0; padding: 0; }
+#dok a { color: inherit; }
+
+#dok .dok-topbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 24px; border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; background: rgba(255,255,255,.94);
+  backdrop-filter: blur(8px); z-index: 50;
+}
+#dok .dok-topbar a { font-weight: 700; font-size: 15px; text-decoration: none; }
+#dok .dok-topbar .dok-back { font-size: 13.5px; font-weight: 600; color: var(--ink-soft); }
+#dok .dok-topbar .dok-back:hover { color: var(--brand-deep); }
+
+#dok .dok-doc { max-width: 820px; margin: 0 auto; padding: 56px 24px 100px; }
+#dok .dok-doc h1 { font-size: 30px; line-height: 1.35; word-break: keep-all; }
+#dok .dok-doc .dok-meta { font-size: 13.5px; color: var(--ink-soft); margin-top: 12px; }
+#dok .dok-doc h2 {
+  font-size: 20px; margin: 46px 0 14px; padding-top: 26px;
+  border-top: 1px solid var(--line); word-break: keep-all;
+}
+#dok .dok-doc h3 { font-size: 16px; margin: 24px 0 8px; color: var(--brand-deep); word-break: keep-all; }
+#dok .dok-doc p { font-size: 15.5px; margin-bottom: 12px; word-break: keep-all; }
+#dok .dok-doc ul, #dok .dok-doc ol { margin: 0 0 14px 20px; }
+#dok .dok-doc li { font-size: 15.5px; margin-bottom: 6px; word-break: keep-all; }
+#dok .dok-doc strong { font-weight: 700; }
+/* 단체의 사실관계를 아는 사람만 채울 수 있는 곳(법인명 등).
+   2026-09-03 에 캠페이너스·도너스 조항을 넣으면서 생겼습니다.
+   채워 넣은 뒤에는 <span> 을 지우고 글자만 남기면 됩니다. */
+#dok .dok-doc .dok-fill {
+  background: #fff3bf; border-bottom: 1px solid #e3c400;
+  padding: 0 4px; font-weight: 700;
+}
+
+#dok .dok-doc table {
+  width: 100%; border-collapse: collapse; margin: 14px 0 18px; font-size: 14.5px;
+}
+#dok .dok-doc th, #dok .dok-doc td {
+  border: 1px solid var(--line); padding: 10px 12px; text-align: left;
+  vertical-align: top; word-break: keep-all;
+}
+#dok .dok-doc th { background: #f4f9fc; font-weight: 700; }
+#dok .dok-table-scroll { overflow-x: auto; }
+
+/* 동의문 — 폼 옆에 그대로 붙여 쓸 수 있게 따로 묶어 둔다 */
+#dok .dok-consent {
+  border: 1px solid var(--line); border-radius: 14px;
+  padding: 24px 26px; margin: 18px 0 8px; background: #fbfdfe;
+}
+#dok .dok-consent h3 { margin-top: 20px; }
+#dok .dok-consent h3:first-child { margin-top: 0; }
+#dok .dok-consent .dok-consent-title {
+  font-size: 17px; font-weight: 700; margin-bottom: 10px; word-break: keep-all;
+}
+#dok .dok-consent .dok-consent-foot {
+  margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--line);
+  font-size: 14px; color: var(--ink-soft);
+}
+#dok .dok-consent .dok-consent-foot p { font-size: 14px; margin-bottom: 6px; }
+@media (max-width: 620px) {
+  #dok .dok-consent { padding: 20px; }
+}
+
+/* 아직 채워지지 않은 자리. 눈에 띄어야 그냥 공개되는 일이 없다. */
+#dok .dok-todo {
+  background: #fff3c4; color: #7a5b00; font-weight: 700;
+  padding: 1px 6px; border-radius: 4px; font-size: .95em;
+}
+#dok .dok-notice {
+  background: var(--alert-tint); border: 1px solid #ffc9c3; border-radius: 12px;
+  padding: 18px 20px; margin: 28px 0 8px; font-size: 14.5px; word-break: keep-all;
+}
+#dok .dok-notice b { color: var(--alert); }
+#dok .dok-notice ul { margin: 10px 0 0 20px; }
+#dok .dok-notice li { font-size: 14.5px; }
+
+/* 맨 끝 단체 주소 줄 앞의 가로줄 */
+#dok .dok-doc hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0 20px; }
+
+#dok .dok-toc {
+  background: #f4f9fc; border-radius: 12px; padding: 20px 24px; margin: 32px 0 0;
+}
+#dok .dok-toc ol { margin: 0 0 0 20px; }
+#dok .dok-toc li { font-size: 14.5px; margin-bottom: 4px; }
+#dok .dok-toc a { color: var(--brand-deep); text-decoration: none; }
+#dok .dok-toc a:hover { text-decoration: underline; }
+
+#dok footer { border-top: 1px solid var(--line); padding: 32px 24px; }
+#dok footer div {
+  max-width: 820px; margin: 0 auto; font-size: 13.5px; color: var(--ink-soft);
+  display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+}
+#dok footer a { color: var(--brand-deep); text-decoration: none; }
+
+@media (max-width: 620px) {
+  #dok .dok-doc { padding: 36px 18px 72px; }
+  #dok .dok-doc h1 { font-size: 24px; }
+  #dok .dok-doc h2 { font-size: 18px; margin-top: 36px; }
+  #dok .dok-doc p, #dok .dok-doc li { font-size: 15px; }
+}
+</style>
+</head>
+<body>
+
+<!-- 캠페이너스 이식 단위: 이 div 통째로 복사 -->
+<div id="dok">
+
+<header class="dok-topbar">
+  <a href="https://action.or.kr" target="_blank" rel="noopener">함께하는 시민행동</a>
+  <a class="dok-back" href="index.html">← 밑빠진 독상으로 돌아가기</a>
+</header>
+
+<main class="dok-doc">
+
+{{BODY}}
+
+</main>
+
+<footer>
+  <div>
+    <span><strong>함께하는 시민행동</strong> ·
+      <a href="https://action.or.kr" target="_blank" rel="noopener">action.or.kr</a></span>
+    <span><a href="index.html">밑빠진 독상</a></span>
+  </div>
+</footer>
+
+</div>
+<!-- /캠페이너스 이식 단위 -->
+
+</body>
+</html>

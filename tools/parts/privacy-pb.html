@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>개인정보처리방침 — 시민참여 상담소</title>
+<meta name="description" content="함께하는 시민행동 개인정보처리방침">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="함께하는 시민행동">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:url" content="https://pb.action.or.kr/privacy.html">
+<meta property="og:title" content="개인정보처리방침 — 시민참여 상담소">
+
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+
+<!-- ⚠️ 이 파일은 굽는 자리의 껍데기입니다(빈 자리 {{BODY}} 하나).
+     방침 글은 개편 저장소의 PRIVACY-pb.md 가 정본이고,
+     tools/build-privacy.py 가 그 글을 이 껍데기에 넣어
+     participatory-budget/privacy.html 로 굽습니다.
+     ★ 굽는 결과물을 손으로 고치지 마세요 — 다음에 구울 때 사라집니다. -->
+
+<!-- 글꼴. 독립 사이트라 아무도 대신 불러 주지 않습니다(index.html 과 같은 것들). -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+@font-face{font-family:'GmarketSans';src:url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');font-weight:700;font-display:swap}
+
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: #fff; }
+
+/* ── 맨 위 로고 띠 ──
+   index.html 의 것과 같습니다(build.py 의 SHELL_CSS). 색 #e2f5fd 는 pb.html 의
+   --tint 이고, 히어로 그러데이션의 0% 자리입니다. 한쪽만 고치면 두 색이 갈라집니다. */
+.pb-top { background: #e2f5fd; }
+.pb-top-in { width: min(1120px, calc(100% - 44px)); margin: 0 auto; padding: 14px 0; }
+.pb-logo { display: block; width: 145px; height: auto; }
+@media (max-width: 820px) {
+  .pb-top-in { width: min(100% - 36px, 1120px); padding: 11px 0; }
+  .pb-logo { width: 122px; }
+}
+
+/* ── 방침 글 (#pbp) ──
+   색·글꼴은 상담소 화면(pb.html)의 값 그대로입니다. 여기서 바꾸지 마세요.
+   규칙을 #pbp 안에 가두는 것도 같은 까닭입니다 — 나중에 캠페이너스 안에
+   붙여도 바깥을 건드리지 않게 하기 위함입니다. */
+#pbp {
+  --brand: #00afec;
+  --deep: #0079a6;
+  --ink: #0b1e28;
+  --soft: #3d5663;
+  --line: #cfdee5;
+  --paper: #f4f8fa;
+
+  font-family: 'Pretendard Variable', Pretendard, 'Noto Sans KR', -apple-system, sans-serif;
+  color: var(--ink);
+  line-height: 1.75;
+  word-break: keep-all;
+  -webkit-font-smoothing: antialiased;
+}
+#pbp *, #pbp *::before, #pbp *::after { box-sizing: border-box; margin: 0; padding: 0; }
+#pbp a { color: inherit; }
+
+#pbp .pbp-doc { max-width: 820px; margin: 0 auto; padding: 56px 24px 100px; }
+#pbp .pbp-doc h1 {
+  font-family: GmarketSans, 'Pretendard Variable', sans-serif;
+  font-size: 30px; font-weight: 700; line-height: 1.35; letter-spacing: -.022em;
+}
+#pbp .pbp-doc .pbp-meta { font-size: 13.5px; color: var(--soft); margin-top: 12px; }
+#pbp .pbp-doc h2 {
+  font-family: GmarketSans, 'Pretendard Variable', sans-serif;
+  font-size: 20px; font-weight: 700; letter-spacing: -.022em;
+  margin: 44px 0 12px; padding-top: 20px; border-top: 1px solid var(--line);
+}
+#pbp .pbp-doc h3 { font-size: 16px; margin: 24px 0 8px; color: var(--deep); }
+#pbp .pbp-doc p { font-size: 15.5px; margin-bottom: 12px; }
+#pbp .pbp-doc ul, #pbp .pbp-doc ol { margin: 0 0 14px 20px; }
+#pbp .pbp-doc li { font-size: 15.5px; margin-bottom: 6px; }
+#pbp .pbp-doc strong { font-weight: 700; }
+#pbp .pbp-doc hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0 20px; }
+
+#pbp .pbp-doc table {
+  width: 100%; border-collapse: collapse; margin: 6px 0 16px; font-size: 14.5px;
+}
+#pbp .pbp-doc th, #pbp .pbp-doc td {
+  border: 1px solid var(--line); padding: 9px 11px; text-align: left; vertical-align: top;
+}
+#pbp .pbp-doc th { background: var(--paper); font-weight: 700; }
+#pbp .pbp-table-scroll { overflow-x: auto; }
+
+#pbp .pbp-toc {
+  background: var(--paper); border-radius: 12px; padding: 20px 24px; margin: 32px 0 0;
+}
+#pbp .pbp-toc ol { margin: 0 0 0 20px; }
+#pbp .pbp-toc li { font-size: 14.5px; margin-bottom: 4px; }
+#pbp .pbp-toc a { color: var(--deep); text-decoration: none; }
+#pbp .pbp-toc a:hover { text-decoration: underline; }
+
+#pbp footer { border-top: 1px solid var(--line); padding: 32px 24px; }
+#pbp footer div {
+  max-width: 820px; margin: 0 auto; font-size: 13.5px; color: var(--soft);
+  display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+}
+#pbp footer a { color: var(--deep); text-decoration: none; }
+
+@media (max-width: 620px) {
+  #pbp .pbp-doc { padding: 36px 18px 72px; }
+  #pbp .pbp-doc h1 { font-size: 24px; }
+  #pbp .pbp-doc h2 { font-size: 18px; margin-top: 36px; }
+  #pbp .pbp-doc p, #pbp .pbp-doc li { font-size: 15px; }
+}
+</style>
+</head>
+<body>
+
+<header class="pb-top">
+  <div class="pb-top-in">
+    <img class="pb-logo" src="https://cdn.imweb.me/upload/S20210826b814397ca4e6d/2a859fe4ace59.png"
+         alt="함께하는 시민행동" width="145" height="42" decoding="async">
+  </div>
+</header>
+
+<div id="pbp">
+
+<main class="pbp-doc">
+
+{{BODY}}
+
+</main>
+
+<footer>
+  <div>
+    <span><strong>함께하는 시민행동</strong> ·
+      <a href="https://action.or.kr" target="_blank" rel="noopener">action.or.kr</a></span>
+    <span><a href="index.html">시민참여 상담소</a></span>
+  </div>
+</footer>
+
+</div>
+
+</body>
+</html>
