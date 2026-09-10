@@ -330,6 +330,30 @@
   #action-home-v2 .litem .lm .d.is-todo{color:var(--ink-soft);font-weight:700}
   #action-home-v2 .litem:hover{background:var(--brand-tint)}
   #action-home-v2 .litem:hover .lt{color:var(--brand-deep)}
+  /* ── 밑빠진 독상 밑에 붙는 감시사업 줄 (2026-09-10) ──
+     캠페인 줄(.litem)과 같은 무게로 보이면 안 됩니다. 한 칸 들여쓰고 글자를 줄여
+     '이 캠페인 안에서 도는 일'로 읽히게 합니다. 스크립트가 붙입니다 —
+     못 받으면 이 줄 자체가 안 생기고 목록은 지금 모양 그대로입니다. */
+  #action-home-v2 .lsub{
+    display:flex;align-items:center;gap:8px;flex:0 0 auto;
+    padding:9px 14px 9px 46px;border-bottom:1px solid var(--line);
+    background:#fbfdfe;transition:background .2s
+  }
+  #action-home-v2 .lsub:hover{background:var(--brand-tint)}
+  #action-home-v2 .lsub .lsub-pill{
+    flex:0 0 auto;border:1.5px solid var(--line);border-radius:999px;
+    padding:1px 7px;font-size:11px;font-weight:700;color:var(--ink-soft);background:#fff
+  }
+  #action-home-v2 .lsub .lsub-t{
+    font-size:13.5px;font-weight:700;line-height:1.4;letter-spacing:-.02em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+  }
+  #action-home-v2 .lsub:hover .lsub-t{color:var(--brand-deep)}
+  #action-home-v2 .lsub .lsub-m{flex:0 0 auto;margin-left:auto;font-size:11.5px;color:var(--faint)}
+  @media (max-width:640px){
+    #action-home-v2 .lsub{padding-left:36px}
+    #action-home-v2 .lsub .lsub-m{display:none}
+  }
   #action-home-v2 .new-window{font-size:.78em;margin-left:.28em;color:var(--brand-deep);vertical-align:.12em}
   /* 지금 큰 칸에 떠 있는 것 */
   #action-home-v2 .litem.is-on{background:var(--brand-tint)}
@@ -1271,6 +1295,87 @@
   window.addEventListener('ah-campaigns-ready', function (e) {
     render((e && e.detail) || window.AH_DATA);
   });
+})();
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   진행 중인 예산감시 사업을 '밑빠진 독상' 줄 밑에 붙입니다 (2026-09-10)
+
+   밑빠진 독상은 상(賞) 하나가 아니라 그 밑에 감시사업 여러 건이 도는 일입니다.
+   홈에는 상 이름만 있어서, 지금 무엇을 감시하는 중인지 첫 화면에서 안 보였습니다.
+
+   ★ 어디서 오나 — 밑빠진 독상 접수처(구글 Apps Script)의 `?action=campaigns`.
+     밑빠진 독상 사이트가 카드를 그릴 때 쓰는 것과 **같은 주소**입니다.
+     담당자가 구글 설문지로 사업을 올리고 상태를 '진행 중'으로 두면 여기에도 뜹니다.
+
+   ★ 누르면 — `dok.action.or.kr/#camp-<id>` 로 갑니다. 그 사업 팝업이 열린 채로
+     들어갑니다(독상 쪽 코드가 주소를 읽습니다).
+
+   ⚠️ 못 받아도 아무 일도 일어나지 않습니다. 목록은 지금 모양 그대로입니다
+      ('켜는 것만 스크립트가 한다' 원칙).
+   ⚠️ 위 스크립트가 게시판 글로 목록을 **다시 그립니다.** 그래서 그릴 때마다
+      다시 붙여야 합니다 — 아래에서 ah-campaigns-ready 를 같이 듣습니다.
+   ═══════════════════════════════════════════════════════════════ */
+(function () {
+  var EP = 'https://script.google.com/macros/s/'
+         + 'AKfycbxI7UMptIhxwMR7mPtqP72EDQ1z871zJNhBcJeaVBeP5KdIcDhCT4_3CpGSnxPMYgE8hg/exec';
+  var DOK = 'https://dok.action.or.kr/';
+  var MAX = 3;                       /* 너무 많으면 목록이 캠페인보다 길어집니다 */
+  var rows = null;                   /* 한 번만 받아 두고 다시 그릴 때 씁니다 */
+
+  function esc(v) {
+    var d = document.createElement('div');
+    d.textContent = (v === null || v === undefined) ? '' : String(v);
+    return d.innerHTML;
+  }
+
+  /* 목록에서 밑빠진 독상 줄을 찾습니다. 제목은 해마다 바뀌므로(2026 하반기…)
+     주소로 찾습니다 — 게시판에서 다시 그려도 목적지는 독상 사이트입니다. */
+  function dokItem() {
+    var list = document.getElementById('lead-list');
+    if (!list) return null;
+    var items = list.querySelectorAll('.litem');
+    for (var i = 0; i < items.length; i++) {
+      if ((items[i].getAttribute('href') || '').indexOf('dok.action.or.kr') >= 0) return items[i];
+    }
+    return null;
+  }
+
+  function paint() {
+    var item = dokItem();
+    if (!item || !rows || !rows.length) return;
+
+    /* 다시 그릴 때 두 번 붙지 않게, 내가 붙였던 것부터 걷습니다. */
+    var old = item.parentNode.querySelectorAll('.lsub');
+    for (var k = 0; k < old.length; k++) old[k].parentNode.removeChild(old[k]);
+
+    var html = '';
+    rows.slice(0, MAX).forEach(function (c) {
+      html += '<a class="lsub" href="' + esc(DOK) + '#camp-' + esc(c.id) + '"'
+           +    ' target="_blank" rel="noopener"'
+           +    ' aria-label="' + esc(c.title) + ' — 예산감시 사업 (새 창)">'
+           +    '<span class="lsub-pill">감시</span>'
+           +    '<span class="lsub-t">' + esc(c.title) + '</span>'
+           +    (c.period ? '<span class="lsub-m">' + esc(c.period) + '</span>' : '')
+           +  '</a>';
+    });
+    item.insertAdjacentHTML('afterend', html);
+  }
+
+  fetch(EP + '?action=campaigns')
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      var all = Array.prototype.slice.call(
+        Object.prototype.toString.call(d) === '[object Array]' ? d : (d && d.campaigns) || []);
+      rows = all.filter(function (c) { return c && c.status === 'ongoing' && c.id && c.title; });
+      paint();
+    })
+    .catch(function () { /* 못 받으면 목록은 지금 모양 그대로 */ });
+
+  /* 게시판 값으로 목록을 다시 그린 뒤에 붙습니다. 그리는 쪽이 innerHTML 을
+     통째로 갈아 끼우므로, 같은 틱에 붙이면 지워집니다. */
+  window.addEventListener('ah-campaigns-ready', function () { setTimeout(paint, 0); });
 })();
 </script>
 
