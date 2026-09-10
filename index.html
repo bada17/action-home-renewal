@@ -418,7 +418,12 @@
   #action-home-v2 .wrow h3{font-size:clamp(20px,1.8vw,23px);font-weight:800;letter-spacing:-.025em;line-height:1.3}
   /* 이 링크가 줄 전체를 덮습니다 — 줄 아무 데나 눌러도 활동 페이지로 갑니다. */
   #action-home-v2 .wrow h3 a::after{content:"";position:absolute;inset:0;z-index:2}
-  #action-home-v2 .wrow:hover h3 a{color:var(--brand-deep)}
+  /* 2026-09-10 — 제목을 브랜드 진한 색으로 올립니다. 설명이 먹색이라, 색으로
+     '제목 = 누를 것 / 설명 = 읽을 것' 이 갈립니다. 흰 바탕 대비 4.3:1.
+     ⚠️ 브랜드 원색(--brand #00afec)은 쓰지 마세요 — 2.5:1 이라 흐려집니다. */
+  #action-home-v2 .wrow h3 a{color:var(--brand-deep)}
+  /* 평소 색이 --brand-deep 이 됐으니 올렸을 때는 한 단계 더 내려야 반응이 보입니다. */
+  #action-home-v2 .wrow:hover h3 a{color:#00688f}
   /* 2026-09-10 사용자 지시로 감시 대상 알약(<span class="who">)을 뺐습니다.
      활동 화면 셋에서 2026-09-01 에 뺀 것과 같은 칸입니다 — 홈만 남아 있었습니다.
      되살릴 때는 아래 규칙과 index.html 의 <span class="who"> 를 같이 넣으세요.
@@ -427,8 +432,10 @@
   /* 사업 이름만 있고 무엇을 하는 곳인지가 없었습니다. 2026-09-07 사용자 제공 문안입니다.
      ⚠️ 지어낸 말이 아닙니다 — 고칠 때는 사용자에게 새 문안을 받으세요. */
   #action-home-v2 .wrow .wdesc{
+    /* 2026-09-10 — 회색(--ink-soft)이라 흐렸습니다. 볼드에 회색을 씌우면
+       굵기는 올라가고 대비는 내려가 오히려 뿌옇게 뭉칩니다. 먹색으로 올립니다. */
     display:block;margin-top:12px;max-width:none;
-    font-size:15px;line-height:1.7;color:var(--ink-soft);font-weight:700
+    font-size:16px;line-height:1.7;color:var(--ink);font-weight:700
   }
   #action-home-v2 .wrow .go{
     position:absolute;left:28px;bottom:26px;
