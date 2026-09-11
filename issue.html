@@ -173,6 +173,31 @@
 }
 #iss .card.done .due .dday{background:var(--faint)}
 
+/* ── 밑빠진 독상 카드 밑에 붙는 감시사업 줄 (2026-09-11) ──
+   홈 목록에 붙인 것(index.html 의 .lsub)과 같은 것을 카드 폭에 맞춘 것입니다.
+   캠페인 카드와 같은 무게로 보이면 안 되므로 글자를 줄이고 흐린 바탕을 깝니다.
+   ⚠️ 카드는 격자 한 칸입니다. 줄을 카드 **뒤에** 그냥 놓으면 그 줄이 또 한 칸이 되어
+      격자가 어긋납니다. 스크립트가 카드를 .cell 로 감싸고 그 안에 넣습니다. */
+#iss .cell{display:flex; flex-direction:column}
+#iss .cell > .card{flex:1}
+#iss .csub{
+  display:flex; align-items:center; gap:8px;
+  padding:9px 12px; background:#fbfdfe;
+  border:1px solid var(--line); border-top:none;
+  transition:background .2s
+}
+#iss .csub:hover{background:var(--tint)}
+#iss .csub-pill{
+  flex:0 0 auto; border:1.5px solid var(--line); border-radius:999px;
+  padding:1px 7px; font-size:11px; font-weight:700; color:var(--soft); background:#fff
+}
+#iss .csub-t{
+  font-size:13px; font-weight:700; line-height:1.4; letter-spacing:-.02em;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis
+}
+#iss .csub:hover .csub-t{color:var(--deep)}
+#iss .csub-m{flex:0 0 auto; margin-left:auto; font-size:11.5px; color:var(--faint)}
+
 #iss .empty{grid-column:1/-1; border:1px dashed var(--line); padding:56px 20px;
   text-align:center; color:var(--faint); font-size:14.5px}
 
@@ -527,6 +552,100 @@ document.addEventListener('error', function (e) {
     if (days < 0) return;                       // 이미 지난 것은 건드리지 않습니다
     slot.textContent = days === 0 ? '오늘 마감' : 'D-' + days;
   });
+})();
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   진행 중인 예산감시 사업을 '밑빠진 독상' 카드 밑에 붙입니다 (2026-09-11)
+
+   홈 목록에 붙인 것과 **같은 것**입니다(index.html 의 .lsub). 밑빠진 독상은 상(賞)
+   하나가 아니라 그 밑에서 감시사업 여러 건이 도는 일인데, 캠페인을 다 모아 놓은
+   이 화면에도 상 이름만 있어서 지금 무엇을 감시하는 중인지 안 보였습니다.
+
+   ★ 어디서 오나 — 밑빠진 독상 접수처(구글 Apps Script)의 `?action=campaigns`.
+     밑빠진 독상 사이트가 카드를 그릴 때 쓰는 것과 같은 주소입니다.
+     담당자가 구글 설문지로 사업을 올리고 상태를 '진행 중'으로 두면 여기에도 뜹니다.
+     ⚠️ 같은 주소가 index.html 에도 있습니다. 바뀌면 **두 곳 다** 고칠 것.
+
+   ★ 누르면 — `dok.action.or.kr/#camp-<id>` 로 갑니다. 그 사업 팝업이 열린 채로
+     들어갑니다(독상 쪽 코드가 주소를 읽습니다).
+
+   ⚠️ 카드 한 장이 격자 한 칸입니다. 줄을 카드 뒤에 그냥 놓으면 그 줄이 또 한 칸이
+      되어 격자가 어긋납니다. 그래서 카드를 .cell 로 감싸고 그 안에 넣습니다.
+   ⚠️ 위 스크립트가 게시판 값으로 목록을 통째로 다시 그립니다(innerHTML).
+      그때 .cell 도 같이 날아가므로, ah-campaigns-ready 를 듣고 다시 감쌉니다.
+   ⚠️ 못 받아도 아무 일도 일어나지 않습니다 — 카드는 지금 모양 그대로입니다
+      ('켜는 것만 스크립트가 한다' 원칙).
+   ═══════════════════════════════════════════════════════════════ */
+(function () {
+  var EP = 'https://script.google.com/macros/s/'
+         + 'AKfycbxI7UMptIhxwMR7mPtqP72EDQ1z871zJNhBcJeaVBeP5KdIcDhCT4_3CpGSnxPMYgE8hg/exec';
+  var DOK = 'https://dok.action.or.kr/';
+  var MAX = 3;                       /* 너무 많으면 카드 한 장만 길어집니다 */
+  var rows = null;                   /* 한 번만 받아 두고 다시 그릴 때 씁니다 */
+
+  function esc(v) {
+    var d = document.createElement('div');
+    d.textContent = (v === null || v === undefined) ? '' : String(v);
+    return d.innerHTML;
+  }
+
+  /* 진행 중 목록에서 밑빠진 독상 카드를 찾습니다. 제목은 해마다 바뀌므로
+     (2026 하반기…) 주소로 찾습니다 — 다시 그려도 목적지는 독상 사이트입니다. */
+  function dokCard() {
+    var list = document.getElementById('list-on');
+    if (!list) return null;
+    var cards = list.querySelectorAll('.card');
+    for (var i = 0; i < cards.length; i++) {
+      if ((cards[i].getAttribute('href') || '').indexOf('dok.action.or.kr') >= 0) return cards[i];
+    }
+    return null;
+  }
+
+  function paint() {
+    var card = dokCard();
+    if (!card || !rows || !rows.length) return;
+
+    /* 카드와 줄을 한 칸에 묶습니다. 이미 묶여 있으면 그대로 씁니다. */
+    var cell = card.parentNode;
+    if (!cell || !cell.classList || !cell.classList.contains('cell')) {
+      cell = document.createElement('div');
+      cell.className = 'cell';
+      card.parentNode.insertBefore(cell, card);
+      cell.appendChild(card);
+    }
+
+    /* 다시 그릴 때 두 번 붙지 않게, 내가 붙였던 것부터 걷습니다. */
+    var old = cell.querySelectorAll('.csub');
+    for (var k = 0; k < old.length; k++) old[k].parentNode.removeChild(old[k]);
+
+    var html = '';
+    rows.slice(0, MAX).forEach(function (c) {
+      html += '<a class="csub" href="' + esc(DOK) + '#camp-' + esc(c.id) + '"'
+           +    ' target="_blank" rel="noopener"'
+           +    ' aria-label="' + esc(c.title) + ' — 예산감시 사업 (새 창)">'
+           +    '<span class="csub-pill">감시</span>'
+           +    '<span class="csub-t">' + esc(c.title) + '</span>'
+           +    (c.period ? '<span class="csub-m">' + esc(c.period) + '</span>' : '')
+           +  '</a>';
+    });
+    cell.insertAdjacentHTML('beforeend', html);
+  }
+
+  fetch(EP + '?action=campaigns')
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      var all = Array.prototype.slice.call(
+        Object.prototype.toString.call(d) === '[object Array]' ? d : (d && d.campaigns) || []);
+      rows = all.filter(function (c) { return c && c.status === 'ongoing' && c.id && c.title; });
+      paint();
+    })
+    .catch(function () { /* 못 받으면 카드는 지금 모양 그대로 */ });
+
+  /* 게시판 값으로 목록을 다시 그린 뒤에 붙습니다. 그리는 쪽이 innerHTML 을
+     통째로 갈아 끼우므로, 같은 틱에 붙이면 지워집니다. */
+  window.addEventListener('ah-campaigns-ready', function () { setTimeout(paint, 0); });
 })();
 </script>
 <!-- CAMPAIGNERS:PAGE-CODE END -->

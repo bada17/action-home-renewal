@@ -174,6 +174,31 @@
 }
 #iss .card.done .due .dday{background:var(--faint)}
 
+/* ── 밑빠진 독상 카드 밑에 붙는 감시사업 줄 (2026-09-11) ──
+   홈 목록에 붙인 것(index.html 의 .lsub)과 같은 것을 카드 폭에 맞춘 것입니다.
+   캠페인 카드와 같은 무게로 보이면 안 되므로 글자를 줄이고 흐린 바탕을 깝니다.
+   ⚠️ 카드는 격자 한 칸입니다. 줄을 카드 **뒤에** 그냥 놓으면 그 줄이 또 한 칸이 되어
+      격자가 어긋납니다. 스크립트가 카드를 .cell 로 감싸고 그 안에 넣습니다. */
+#iss .cell{display:flex; flex-direction:column}
+#iss .cell > .card{flex:1}
+#iss .csub{
+  display:flex; align-items:center; gap:8px;
+  padding:9px 12px; background:#fbfdfe;
+  border:1px solid var(--line); border-top:none;
+  transition:background .2s
+}
+#iss .csub:hover{background:var(--tint)}
+#iss .csub-pill{
+  flex:0 0 auto; border:1.5px solid var(--line); border-radius:999px;
+  padding:1px 7px; font-size:11px; font-weight:700; color:var(--soft); background:#fff
+}
+#iss .csub-t{
+  font-size:13px; font-weight:700; line-height:1.4; letter-spacing:-.02em;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis
+}
+#iss .csub:hover .csub-t{color:var(--deep)}
+#iss .csub-m{flex:0 0 auto; margin-left:auto; font-size:11.5px; color:var(--faint)}
+
 #iss .empty{grid-column:1/-1; border:1px dashed var(--line); padding:56px 20px;
   text-align:center; color:var(--faint); font-size:14.5px}
 
