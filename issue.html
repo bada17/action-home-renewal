@@ -246,16 +246,30 @@
          ⚠️ 마감일을 손으로 D-day 로 적지 마세요 — data-due 를 스크립트가 셉니다. -->
     <div class="grid" id="list-on" role="tabpanel" aria-labelledby="tab-on">
 
-      <a class="card" href="https://dok.action.or.kr/" target="_blank" rel="noopener" style="--tile:#062330" data-due="2026-09-15">
-        <span class="card-shot">
-          <img src="https://cdn.imweb.me/thumbnail/20260825/c4b8e2d1b259d.png" alt="2026 하반기 밑빠진 독상">
-        </span>
-        <span class="card-in">
-          <h2>2026 하반기 밑빠진 독상</h2>
-          <p>세금이 새는 현장을 시민이 제보하고, 그중 최악의 사업을 함께 고릅니다.</p>
-          <!--<span class="due"><b class="dday" data-dday>9/15</b>9월 15일 제보 마감</span>-->
-        </span>
-      </a>
+      <!-- 카드와 그 밑의 감시사업 줄이 격자 한 칸입니다(.cell). 아래 스크립트 설명 참고. -->
+      <div class="cell">
+        <a class="card" href="https://dok.action.or.kr/" target="_blank" rel="noopener" style="--tile:#062330" data-due="2026-09-15">
+          <span class="card-shot">
+            <img src="https://cdn.imweb.me/thumbnail/20260825/c4b8e2d1b259d.png" alt="2026 하반기 밑빠진 독상">
+          </span>
+          <span class="card-in">
+            <h2>2026 하반기 밑빠진 독상</h2>
+            <p>세금이 새는 현장을 시민이 제보하고, 그중 최악의 사업을 함께 고릅니다.</p>
+            <!--<span class="due"><b class="dday" data-dday>9/15</b>9월 15일 제보 마감</span>-->
+          </span>
+        </a>
+        <!-- ★ 진행 중인 감시사업 — 이것은 **씨앗**입니다 (2026-09-11).
+             접수처에서 받는 데 10초쯤 걸려서, 그동안 이 자리가 비어 있습니다.
+             아래 스크립트가 받으면 이 줄을 통째로 갈아 끼우고, 진행 중인 사업이
+             없으면 걷어 냅니다.
+             ⚠️ 지어낸 값이 아닙니다 — 2026-09-11 에 ?action=campaigns 에서 받은
+                그대로입니다(id: camp-3). 손으로 고치지 마세요. -->
+        <a class="csub" href="https://dok.action.or.kr/#camp-camp-3" target="_blank" rel="noopener" aria-label="기획예산처 미래대응기금 — 예산감시 사업 (새 창)">
+          <span class="csub-pill">감시</span>
+          <span class="csub-t">기획예산처 미래대응기금</span>
+          <span class="csub-m">2026. 8 ~</span>
+        </a>
+      </div>
 
       <!-- ⚠️ 끝나는 날짜가 없습니다. 캠페인에 두려면 마감일이 있어야 합니다. -->
       <a class="card" href="https://pb.action.or.kr/" target="_blank" rel="noopener" style="--tile:#062330">
@@ -604,10 +618,12 @@ document.addEventListener('error', function (e) {
   }
 
   function paint() {
-    var card = dokCard();
-    if (!card || !rows || !rows.length) return;
+    if (!rows) return;                 /* 아직 못 받았습니다 — 씨앗을 그대로 둡니다 */
 
-    /* 카드와 줄을 한 칸에 묶습니다. 이미 묶여 있으면 그대로 씁니다. */
+    var card = dokCard();
+    if (!card) return;
+
+    /* 카드와 줄을 한 칸에 묶습니다. 씨앗이 이미 묶어 놨으면 그대로 씁니다. */
     var cell = card.parentNode;
     if (!cell || !cell.classList || !cell.classList.contains('cell')) {
       cell = document.createElement('div');
@@ -616,9 +632,12 @@ document.addEventListener('error', function (e) {
       cell.appendChild(card);
     }
 
-    /* 다시 그릴 때 두 번 붙지 않게, 내가 붙였던 것부터 걷습니다. */
+    /* 다시 그릴 때 두 번 붙지 않게, 씨앗이든 내가 붙인 것이든 먼저 걷습니다. */
     var old = cell.querySelectorAll('.csub');
     for (var k = 0; k < old.length; k++) old[k].parentNode.removeChild(old[k]);
+
+    /* 진행 중인 사업이 없으면 씨앗까지 걷은 채로 끝냅니다. */
+    if (!rows.length) return;
 
     var html = '';
     rows.slice(0, MAX).forEach(function (c) {

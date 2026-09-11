@@ -691,14 +691,30 @@
             <span class="slide-shot">
               <img class="real" src="https://cdn.imweb.me/thumbnail/20260825/c4b8e2d1b259d.png" alt="2026 하반기 밑빠진 독상">
             </span>
-            <span class="slide-in">
-              <span class="pills">
-                <span class="pill is-kind">캠페인</span>
-                <span class="pill">밑빠진 독상</span>
+            <span class="slide-in has-sub">
+              <span class="slide-txt">
+                <span class="pills">
+                  <span class="pill is-kind">캠페인</span>
+                  <span class="pill">밑빠진 독상</span>
+                </span>
+                <strong class="slide-t"><a class="slide-go" href="https://dok.action.or.kr/" target="_blank" rel="noopener">2026 하반기 밑빠진 독상</a></strong>
+                <span class="slide-d">세금이 새는 현장을 시민이 제보하고, 그중 최악의 사업을 함께 고릅니다.</span>
+                <span class="slide-f"><!--<b class="dday" data-dday>9/15</b><span class="due-line">9월 15일 제보 마감</span>--></span>
               </span>
-              <strong class="slide-t"><a class="slide-go" href="https://dok.action.or.kr/" target="_blank" rel="noopener">2026 하반기 밑빠진 독상</a></strong>
-              <span class="slide-d">세금이 새는 현장을 시민이 제보하고, 그중 최악의 사업을 함께 고릅니다.</span>
-              <span class="slide-f"><!--<b class="dday" data-dday>9/15</b><span class="due-line">9월 15일 제보 마감</span>--></span>
+              <!-- ★ 진행 중인 감시사업 — 이것은 **씨앗**입니다 (2026-09-11).
+                   접수처(구글 Apps Script)에서 받는 데 10초쯤 걸려서, 그동안 이 자리가
+                   비어 있으면 장이 다음으로 넘어가 버립니다(6초마다 넘어갑니다).
+                   그래서 받아 온 값을 그대로 적어 둡니다. 아래 스크립트가 받으면
+                   이 칸을 통째로 갈아 끼우고, 진행 중인 사업이 없으면 걷어 냅니다.
+                   ⚠️ 지어낸 값이 아닙니다 — 2026-09-11 에 ?action=campaigns 에서
+                      받은 그대로입니다(id: camp-3). 손으로 고치지 마세요. -->
+              <span class="ssubs">
+                <span class="ssubs-h">지금 감시 중</span>
+                <a class="ssub" href="https://dok.action.or.kr/#camp-camp-3" target="_blank" rel="noopener" aria-label="기획예산처 미래대응기금 — 예산감시 사업 (새 창)">
+                  <span class="ssub-t">기획예산처 미래대응기금</span>
+                  <span class="ssub-m">2026. 8 ~</span>
+                </a>
+              </span>
             </span>
           </div>
         </article>
@@ -1344,7 +1360,12 @@
    ★ 누르면 — `dok.action.or.kr/#camp-<id>` 로 갑니다. 그 사업 팝업이 열린 채로
      들어갑니다(독상 쪽 코드가 주소를 읽습니다).
 
-   ⚠️ 못 받아도 아무 일도 일어나지 않습니다. 목록은 지금 모양 그대로입니다
+   ★ 화면에 **씨앗**이 심어져 있습니다(위 .ssubs). 접수처가 느려서 — 2026-09-11 에
+     재 보니 10초쯤 걸립니다 — 그동안 빈 채로 두면 장이 다음으로 넘어가 버립니다.
+     그래서 씨앗을 먼저 보여 주고, 받아 온 값으로 통째로 갈아 끼웁니다.
+     받아 보니 진행 중인 사업이 하나도 없으면 씨앗까지 걷습니다.
+
+   ⚠️ 못 받으면 아무 일도 일어나지 않습니다. 씨앗이 그대로 남습니다
       ('켜는 것만 스크립트가 한다' 원칙).
    ⚠️ 위 스크립트가 게시판 글로 목록을 **다시 그립니다.** 그래서 그릴 때마다
       다시 붙여야 합니다 — 아래에서 ah-campaigns-ready 를 같이 듣습니다.
@@ -1397,12 +1418,20 @@
   }
 
   /* 글자 칸은 원래 세로 한 줄입니다. 지금 있는 글을 .slide-txt 로 묶어 왼쪽에 두고,
-     그 옆 빈자리에 감시사업 칸을 놓습니다. has-sub 가 '두 칸으로 나누라'는 표시입니다. */
+     그 옆 빈자리에 감시사업 칸을 놓습니다. has-sub 가 '두 칸으로 나누라'는 표시입니다.
+
+     ⚠️ 걷어 내는 것이 먼저입니다. 씨앗 칸을 남긴 채로 글을 묶으면 그 칸까지
+        .slide-txt 안으로 딸려 들어갑니다(묶을 때 자식을 전부 옮기기 때문입니다). */
   function paint() {
-    if (!rows || !rows.length) return;
+    if (!rows) return;                 /* 아직 못 받았습니다 — 씨앗을 그대로 둡니다 */
 
     var inn = dokSlideIn();
     if (!inn) return;
+
+    wipe(inn, 'ssubs');
+
+    /* 진행 중인 사업이 없으면 씨앗까지 걷습니다 — 끝난 사업이 남아 있으면 안 됩니다. */
+    if (!rows.length) { inn.classList.remove('has-sub'); return; }
 
     if (!inn.querySelector('.slide-txt')) {
       var txt = document.createElement('span');
@@ -1410,7 +1439,6 @@
       while (inn.firstChild) txt.appendChild(inn.firstChild);
       inn.appendChild(txt);
     }
-    wipe(inn, 'ssubs');
     inn.insertAdjacentHTML('beforeend',
       '<span class="ssubs"><span class="ssubs-h">지금 감시 중</span>' + rowsHtml() + '</span>');
     inn.classList.add('has-sub');

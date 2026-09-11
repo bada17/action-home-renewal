@@ -306,10 +306,12 @@ document.addEventListener('error', function (e) {
   }
 
   function paint() {
-    var card = dokCard();
-    if (!card || !rows || !rows.length) return;
+    if (!rows) return;                 /* 아직 못 받았습니다 — 씨앗을 그대로 둡니다 */
 
-    /* 카드와 줄을 한 칸에 묶습니다. 이미 묶여 있으면 그대로 씁니다. */
+    var card = dokCard();
+    if (!card) return;
+
+    /* 카드와 줄을 한 칸에 묶습니다. 씨앗이 이미 묶어 놨으면 그대로 씁니다. */
     var cell = card.parentNode;
     if (!cell || !cell.classList || !cell.classList.contains('cell')) {
       cell = document.createElement('div');
@@ -318,9 +320,12 @@ document.addEventListener('error', function (e) {
       cell.appendChild(card);
     }
 
-    /* 다시 그릴 때 두 번 붙지 않게, 내가 붙였던 것부터 걷습니다. */
+    /* 다시 그릴 때 두 번 붙지 않게, 씨앗이든 내가 붙인 것이든 먼저 걷습니다. */
     var old = cell.querySelectorAll('.csub');
     for (var k = 0; k < old.length; k++) old[k].parentNode.removeChild(old[k]);
+
+    /* 진행 중인 사업이 없으면 씨앗까지 걷은 채로 끝냅니다. */
+    if (!rows.length) return;
 
     var html = '';
     rows.slice(0, MAX).forEach(function (c) {
