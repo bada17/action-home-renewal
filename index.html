@@ -204,14 +204,20 @@
     display:grid;
     background:#fff;border:1px solid var(--line);overflow:hidden
   }
+  /* 세로 flex 인 이유 — 링크 밑에 감시사업 줄(.ssub)이 붙기 때문입니다.
+     그 줄은 링크 **밖**에 있어야 합니다. <a> 안에 <a> 를 넣을 수 없습니다. */
   #action-home-v2 .slide{
-    grid-area:1/1;opacity:0;visibility:hidden;z-index:0
+    grid-area:1/1;opacity:0;visibility:hidden;z-index:0;
+    display:flex;flex-direction:column
   }
   /* 스크립트가 없어도 첫 장은 보입니다 */
   #action-home-v2 .slide:first-child,
   #action-home-v2 .slide.is-on{opacity:1;visibility:visible;z-index:1}
   #action-home-v2 .slide.is-on{transition:opacity .55s ease}
-  #action-home-v2 .slide-link{display:flex;flex-direction:column;height:100%}
+  /* ⚠️ 예전에는 height:100% 였습니다. 그대로 두면 짧은 장이 제일 긴 장 높이만큼
+     늘어난 뒤 그 밑에 감시사업 줄이 더 붙어 칸 밖으로 넘칩니다(stage 가 잘라 냅니다).
+     flex 로 채우게 바꾸면 남는 높이를 링크가 가져가고 줄은 늘 칸 안에 남습니다. */
+  #action-home-v2 .slide-link{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
 
   /* ── 액자 ──
      2026-08-27 사용자 지적: "사진 넣는 칸은 통일해야겠다. 다르니까."
@@ -353,6 +359,32 @@
   @media (max-width:640px){
     #action-home-v2 .lsub{padding-left:36px}
     #action-home-v2 .lsub .lsub-m{display:none}
+  }
+  /* ── 왼쪽 큰 칸(밑빠진 독상 장) 밑에 붙는 감시사업 줄 (2026-09-11) ──
+     오른쪽 목록에 붙인 줄(.lsub)과 같은 것을 큰 칸 폭에 맞춘 것입니다.
+     ⚠️ 링크(.slide-link) 안이 아니라 **밖**에 붙습니다 — <a> 안에 <a> 는 못 넣습니다.
+        그래서 카드 전체를 누르면 독상 첫 화면, 이 줄을 누르면 그 사업으로 갑니다.
+     좌우 여백은 .slide-in 과 같은 값이라 제목과 왼쪽 끝이 맞습니다. */
+  #action-home-v2 .ssub{
+    display:flex;align-items:center;gap:10px;flex:0 0 auto;
+    padding:11px clamp(18px,2.2vw,28px);
+    background:#fbfdfe;border-top:1px solid var(--line);
+    transition:background .2s
+  }
+  #action-home-v2 .ssub .ssub-pill{
+    flex:0 0 auto;border:1.5px solid var(--line);border-radius:999px;
+    padding:1px 8px;font-size:11.5px;font-weight:700;color:var(--ink-soft);background:#fff
+  }
+  #action-home-v2 .ssub .ssub-t{
+    font-size:14px;font-weight:700;line-height:1.4;letter-spacing:-.02em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+  }
+  #action-home-v2 .ssub:hover{background:var(--brand-tint)}
+  #action-home-v2 .ssub:hover .ssub-t{color:var(--brand-deep)}
+  #action-home-v2 .ssub .ssub-m{flex:0 0 auto;margin-left:auto;font-size:12px;color:var(--faint)}
+  @media (max-width:640px){
+    #action-home-v2 .ssub{padding:10px 18px}
+    #action-home-v2 .ssub .ssub-m{display:none}
   }
   #action-home-v2 .new-window{font-size:.78em;margin-left:.28em;color:var(--brand-deep);vertical-align:.12em}
   /* 지금 큰 칸에 떠 있는 것 */
@@ -1300,7 +1332,8 @@
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   진행 중인 예산감시 사업을 '밑빠진 독상' 줄 밑에 붙입니다 (2026-09-10)
+   진행 중인 예산감시 사업을 '밑빠진 독상' 밑에 붙입니다 (2026-09-10)
+   — 오른쪽 목록 줄 밑에(.lsub), 그리고 왼쪽 큰 칸 맨 아래에(.ssub, 2026-09-11)
 
    밑빠진 독상은 상(賞) 하나가 아니라 그 밑에 감시사업 여러 건이 도는 일입니다.
    홈에는 상 이름만 있어서, 지금 무엇을 감시하는 중인지 첫 화면에서 안 보였습니다.
@@ -1342,25 +1375,54 @@
     return null;
   }
 
-  function paint() {
-    var item = dokItem();
-    if (!item || !rows || !rows.length) return;
+  /* 왼쪽 큰 칸에서 밑빠진 독상 장을 찾습니다. 목록과 같은 이유로 주소로 찾습니다. */
+  function dokSlide() {
+    var stage = document.getElementById('lead-stage');
+    if (!stage) return null;
+    var links = stage.querySelectorAll('.slide-link');
+    for (var i = 0; i < links.length; i++) {
+      if ((links[i].getAttribute('href') || '').indexOf('dok.action.or.kr') >= 0) return links[i].parentNode;
+    }
+    return null;
+  }
 
-    /* 다시 그릴 때 두 번 붙지 않게, 내가 붙였던 것부터 걷습니다. */
-    var old = item.parentNode.querySelectorAll('.lsub');
-    for (var k = 0; k < old.length; k++) old[k].parentNode.removeChild(old[k]);
-
+  /* 줄 만들기. 목록(.lsub)과 큰 칸(.ssub)이 같은 값을 쓰고 껍데기 이름만 다릅니다. */
+  function rowsHtml(cls) {
     var html = '';
     rows.slice(0, MAX).forEach(function (c) {
-      html += '<a class="lsub" href="' + esc(DOK) + '#camp-' + esc(c.id) + '"'
+      html += '<a class="' + cls + '" href="' + esc(DOK) + '#camp-' + esc(c.id) + '"'
            +    ' target="_blank" rel="noopener"'
            +    ' aria-label="' + esc(c.title) + ' — 예산감시 사업 (새 창)">'
-           +    '<span class="lsub-pill">감시</span>'
-           +    '<span class="lsub-t">' + esc(c.title) + '</span>'
-           +    (c.period ? '<span class="lsub-m">' + esc(c.period) + '</span>' : '')
+           +    '<span class="' + cls + '-pill">감시</span>'
+           +    '<span class="' + cls + '-t">' + esc(c.title) + '</span>'
+           +    (c.period ? '<span class="' + cls + '-m">' + esc(c.period) + '</span>' : '')
            +  '</a>';
     });
-    item.insertAdjacentHTML('afterend', html);
+    return html;
+  }
+
+  /* 다시 그릴 때 두 번 붙지 않게, 내가 붙였던 것부터 걷습니다. */
+  function wipe(box, cls) {
+    var old = box.querySelectorAll('.' + cls);
+    for (var k = 0; k < old.length; k++) old[k].parentNode.removeChild(old[k]);
+  }
+
+  function paint() {
+    if (!rows || !rows.length) return;
+
+    /* ① 오른쪽 목록 — 독상 줄 바로 밑에 */
+    var item = dokItem();
+    if (item) {
+      wipe(item.parentNode, 'lsub');
+      item.insertAdjacentHTML('afterend', rowsHtml('lsub'));
+    }
+
+    /* ② 왼쪽 큰 칸 — 장 맨 아래에. 링크(.slide-link) 밖이라 이 줄도 링크가 됩니다. */
+    var slide = dokSlide();
+    if (slide) {
+      wipe(slide, 'ssub');
+      slide.insertAdjacentHTML('beforeend', rowsHtml('ssub'));
+    }
   }
 
   fetch(EP + '?action=campaigns')
