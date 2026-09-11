@@ -204,20 +204,14 @@
     display:grid;
     background:#fff;border:1px solid var(--line);overflow:hidden
   }
-  /* 세로 flex 인 이유 — 링크 밑에 감시사업 줄(.ssub)이 붙기 때문입니다.
-     그 줄은 링크 **밖**에 있어야 합니다. <a> 안에 <a> 를 넣을 수 없습니다. */
   #action-home-v2 .slide{
-    grid-area:1/1;opacity:0;visibility:hidden;z-index:0;
-    display:flex;flex-direction:column
+    grid-area:1/1;opacity:0;visibility:hidden;z-index:0
   }
   /* 스크립트가 없어도 첫 장은 보입니다 */
   #action-home-v2 .slide:first-child,
   #action-home-v2 .slide.is-on{opacity:1;visibility:visible;z-index:1}
   #action-home-v2 .slide.is-on{transition:opacity .55s ease}
-  /* ⚠️ 예전에는 height:100% 였습니다. 그대로 두면 짧은 장이 제일 긴 장 높이만큼
-     늘어난 뒤 그 밑에 감시사업 줄이 더 붙어 칸 밖으로 넘칩니다(stage 가 잘라 냅니다).
-     flex 로 채우게 바꾸면 남는 높이를 링크가 가져가고 줄은 늘 칸 안에 남습니다. */
-  #action-home-v2 .slide-link{display:flex;flex-direction:column;flex:1 1 auto;min-height:0}
+  #action-home-v2 .slide-link{display:flex;flex-direction:column;height:100%}
 
   /* ── 액자 ──
      2026-08-27 사용자 지적: "사진 넣는 칸은 통일해야겠다. 다르니까."
@@ -360,31 +354,43 @@
     #action-home-v2 .lsub{padding-left:36px}
     #action-home-v2 .lsub .lsub-m{display:none}
   }
-  /* ── 왼쪽 큰 칸(밑빠진 독상 장) 밑에 붙는 감시사업 줄 (2026-09-11) ──
-     오른쪽 목록에 붙인 줄(.lsub)과 같은 것을 큰 칸 폭에 맞춘 것입니다.
-     ⚠️ 링크(.slide-link) 안이 아니라 **밖**에 붙습니다 — <a> 안에 <a> 는 못 넣습니다.
-        그래서 카드 전체를 누르면 독상 첫 화면, 이 줄을 누르면 그 사업으로 갑니다.
-     좌우 여백은 .slide-in 과 같은 값이라 제목과 왼쪽 끝이 맞습니다. */
-  #action-home-v2 .ssub{
-    display:flex;align-items:center;gap:10px;flex:0 0 auto;
-    padding:11px clamp(18px,2.2vw,28px);
-    background:#fbfdfe;border-top:1px solid var(--line);
-    transition:background .2s
+  /* ── 왼쪽 큰 칸(밑빠진 독상 장) 글 옆에 놓는 감시사업 칸 (2026-09-11) ──
+     처음에는 카드 맨 밑에 가로 줄로 붙였는데, 사용자 지시로 **글 옆 빈자리**로
+     옮겼습니다. 제목·설명이 짧아 그 오른쪽이 늘 비어 있었습니다.
+
+     ★ 글자 칸을 두 칸으로 나눕니다. 왼쪽은 지금까지의 글(.slide-txt), 오른쪽이 이 칸.
+       스크립트가 글을 .slide-txt 로 묶고 이 칸을 그 옆에 놓습니다.
+     ⚠️ 이 칸은 링크(.slide-link) **안**에 있어서 줄 하나하나가 링크가 아닙니다
+        (<a> 안에 <a> 는 못 넣습니다). 눌리는 것은 카드 전체 = 독상 첫 화면입니다.
+        사업별 팝업으로 바로 가는 길은 오른쪽 목록 줄(.lsub)에 있습니다. */
+  #action-home-v2 .slide-in.has-sub{
+    flex-direction:row;align-items:flex-end;gap:clamp(14px,1.6vw,22px)
   }
-  #action-home-v2 .ssub .ssub-pill{
-    flex:0 0 auto;border:1.5px solid var(--line);border-radius:999px;
-    padding:1px 8px;font-size:11.5px;font-weight:700;color:var(--ink-soft);background:#fff
+  #action-home-v2 .slide-txt{
+    flex:1 1 auto;min-width:0;
+    display:flex;flex-direction:column;align-items:flex-start;gap:clamp(7px,.8vw,11px)
+  }
+  #action-home-v2 .ssubs{
+    flex:0 0 auto;width:min(44%,300px);
+    display:flex;flex-direction:column;gap:6px
+  }
+  #action-home-v2 .ssubs-h{
+    font-size:11.5px;font-weight:700;letter-spacing:.02em;color:var(--faint)
+  }
+  #action-home-v2 .ssub{
+    display:block;padding:9px 11px;
+    background:#fbfdfe;border:1px solid var(--line)
   }
   #action-home-v2 .ssub .ssub-t{
-    font-size:14px;font-weight:700;line-height:1.4;letter-spacing:-.02em;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+    font-size:13.5px;font-weight:700;line-height:1.4;letter-spacing:-.02em;
+    /* 긴 이름은 두 줄까지만. 세 줄이 되면 이 칸이 글자 칸보다 높아집니다. */
+    overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2
   }
-  #action-home-v2 .ssub:hover{background:var(--brand-tint)}
-  #action-home-v2 .ssub:hover .ssub-t{color:var(--brand-deep)}
-  #action-home-v2 .ssub .ssub-m{flex:0 0 auto;margin-left:auto;font-size:12px;color:var(--faint)}
+  #action-home-v2 .ssub .ssub-m{display:block;margin-top:2px;font-size:11.5px;color:var(--faint)}
+  /* 좁으면 옆에 둘 자리가 없습니다. 글 밑으로 내리고 폭을 다 씁니다. */
   @media (max-width:640px){
-    #action-home-v2 .ssub{padding:10px 18px}
-    #action-home-v2 .ssub .ssub-m{display:none}
+    #action-home-v2 .slide-in.has-sub{flex-direction:column;align-items:flex-start}
+    #action-home-v2 .ssubs{width:100%}
   }
   #action-home-v2 .new-window{font-size:.78em;margin-left:.28em;color:var(--brand-deep);vertical-align:.12em}
   /* 지금 큰 칸에 떠 있는 것 */
@@ -1386,17 +1392,24 @@
     return null;
   }
 
-  /* 줄 만들기. 목록(.lsub)과 큰 칸(.ssub)이 같은 값을 쓰고 껍데기 이름만 다릅니다. */
+  /* 줄 한 벌. 두 곳이 같은 값을 쓰고 껍데기만 다릅니다.
+
+       목록(.lsub)  — 줄 하나가 링크입니다. 알약을 달고 한 줄로 놓습니다.
+       큰 칸(.ssub) — 카드 링크 안에 있어 링크가 아닙니다(<a> 안에 <a> 는 못 넣습니다).
+                      폭이 좁아 알약을 빼고 제목과 기간을 위아래로 놓습니다. */
   function rowsHtml(cls) {
+    var link = cls === 'lsub';
     var html = '';
     rows.slice(0, MAX).forEach(function (c) {
-      html += '<a class="' + cls + '" href="' + esc(DOK) + '#camp-' + esc(c.id) + '"'
-           +    ' target="_blank" rel="noopener"'
-           +    ' aria-label="' + esc(c.title) + ' — 예산감시 사업 (새 창)">'
-           +    '<span class="' + cls + '-pill">감시</span>'
+      html += (link
+                ? '<a class="lsub" href="' + esc(DOK) + '#camp-' + esc(c.id) + '"'
+                  + ' target="_blank" rel="noopener"'
+                  + ' aria-label="' + esc(c.title) + ' — 예산감시 사업 (새 창)">'
+                  + '<span class="lsub-pill">감시</span>'
+                : '<span class="ssub">')
            +    '<span class="' + cls + '-t">' + esc(c.title) + '</span>'
            +    (c.period ? '<span class="' + cls + '-m">' + esc(c.period) + '</span>' : '')
-           +  '</a>';
+           +  (link ? '</a>' : '</span>');
     });
     return html;
   }
@@ -1417,11 +1430,22 @@
       item.insertAdjacentHTML('afterend', rowsHtml('lsub'));
     }
 
-    /* ② 왼쪽 큰 칸 — 장 맨 아래에. 링크(.slide-link) 밖이라 이 줄도 링크가 됩니다. */
+    /* ② 왼쪽 큰 칸 — 글 옆 빈자리에.
+       글자 칸은 원래 세로 한 줄입니다. 지금 있는 글을 .slide-txt 로 묶어 왼쪽에 두고,
+       그 옆에 감시사업 칸을 놓습니다. has-sub 가 '두 칸으로 나누라'는 표시입니다. */
     var slide = dokSlide();
-    if (slide) {
-      wipe(slide, 'ssub');
-      slide.insertAdjacentHTML('beforeend', rowsHtml('ssub'));
+    var inn = slide && slide.querySelector('.slide-in');
+    if (inn) {
+      if (!inn.querySelector('.slide-txt')) {
+        var txt = document.createElement('span');
+        txt.className = 'slide-txt';
+        while (inn.firstChild) txt.appendChild(inn.firstChild);
+        inn.appendChild(txt);
+      }
+      wipe(inn, 'ssubs');
+      inn.insertAdjacentHTML('beforeend',
+        '<span class="ssubs"><span class="ssubs-h">지금 감시 중</span>' + rowsHtml('ssub') + '</span>');
+      inn.classList.add('has-sub');
     }
   }
 
