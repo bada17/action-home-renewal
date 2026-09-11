@@ -205,13 +205,18 @@
     background:#fff;border:1px solid var(--line);overflow:hidden
   }
   #action-home-v2 .slide{
-    grid-area:1/1;opacity:0;visibility:hidden;z-index:0
+    grid-area:1/1;opacity:0;visibility:hidden;z-index:0;position:relative
   }
   /* 스크립트가 없어도 첫 장은 보입니다 */
   #action-home-v2 .slide:first-child,
   #action-home-v2 .slide.is-on{opacity:1;visibility:visible;z-index:1}
   #action-home-v2 .slide.is-on{transition:opacity .55s ease}
   #action-home-v2 .slide-link{display:flex;flex-direction:column;height:100%}
+  /* ⚠️ 카드 전체가 <a> 가 아닙니다(2026-09-11). 제목 링크가 ::after 로 카드를 덮습니다 —
+     활동 칸(.wrow h3 a)과 같은 방식입니다. 그렇게 해야 카드 안에 다른 링크를 둘 수
+     있습니다(감시사업 줄). 덮개 위에 놓을 것은 z-index:2 를 줘야 따로 눌립니다. */
+  #action-home-v2 .slide-go{color:inherit}
+  #action-home-v2 .slide-go::after{content:"";position:absolute;inset:0;z-index:1}
 
   /* ── 액자 ──
      2026-08-27 사용자 지적: "사진 넣는 칸은 통일해야겠다. 다르니까."
@@ -330,39 +335,18 @@
   #action-home-v2 .litem .lm .d.is-todo{color:var(--ink-soft);font-weight:700}
   #action-home-v2 .litem:hover{background:var(--brand-tint)}
   #action-home-v2 .litem:hover .lt{color:var(--brand-deep)}
-  /* ── 밑빠진 독상 밑에 붙는 감시사업 줄 (2026-09-10) ──
-     캠페인 줄(.litem)과 같은 무게로 보이면 안 됩니다. 한 칸 들여쓰고 글자를 줄여
-     '이 캠페인 안에서 도는 일'로 읽히게 합니다. 스크립트가 붙입니다 —
-     못 받으면 이 줄 자체가 안 생기고 목록은 지금 모양 그대로입니다. */
-  #action-home-v2 .lsub{
-    display:flex;align-items:center;gap:8px;flex:0 0 auto;
-    padding:9px 14px 9px 46px;border-bottom:1px solid var(--line);
-    background:#fbfdfe;transition:background .2s
-  }
-  #action-home-v2 .lsub:hover{background:var(--brand-tint)}
-  #action-home-v2 .lsub .lsub-pill{
-    flex:0 0 auto;border:1.5px solid var(--line);border-radius:999px;
-    padding:1px 7px;font-size:11px;font-weight:700;color:var(--ink-soft);background:#fff
-  }
-  #action-home-v2 .lsub .lsub-t{
-    font-size:13.5px;font-weight:700;line-height:1.4;letter-spacing:-.02em;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis
-  }
-  #action-home-v2 .lsub:hover .lsub-t{color:var(--brand-deep)}
-  #action-home-v2 .lsub .lsub-m{flex:0 0 auto;margin-left:auto;font-size:11.5px;color:var(--faint)}
-  @media (max-width:640px){
-    #action-home-v2 .lsub{padding-left:36px}
-    #action-home-v2 .lsub .lsub-m{display:none}
-  }
+  /* ※ 2026-09-10 에 오른쪽 목록의 독상 줄 밑에도 감시사업 줄(.lsub)을 붙였다가
+       2026-09-11 에 걷었습니다. 큰 칸 옆 칸(.ssubs)과 **같은 글자가 첫 화면에 두 번**
+       나왔기 때문입니다(둘 사이가 100px 남짓이었습니다).
+       되살릴 일이 생기면 커밋 12416c6 에 규칙과 스크립트가 그대로 있습니다. */
   /* ── 왼쪽 큰 칸(밑빠진 독상 장) 글 옆에 놓는 감시사업 칸 (2026-09-11) ──
      처음에는 카드 맨 밑에 가로 줄로 붙였는데, 사용자 지시로 **글 옆 빈자리**로
      옮겼습니다. 제목·설명이 짧아 그 오른쪽이 늘 비어 있었습니다.
 
      ★ 글자 칸을 두 칸으로 나눕니다. 왼쪽은 지금까지의 글(.slide-txt), 오른쪽이 이 칸.
        스크립트가 글을 .slide-txt 로 묶고 이 칸을 그 옆에 놓습니다.
-     ⚠️ 이 칸은 링크(.slide-link) **안**에 있어서 줄 하나하나가 링크가 아닙니다
-        (<a> 안에 <a> 는 못 넣습니다). 눌리는 것은 카드 전체 = 독상 첫 화면입니다.
-        사업별 팝업으로 바로 가는 길은 오른쪽 목록 줄(.lsub)에 있습니다. */
+     ★ 줄 하나하나가 링크입니다 — 그 사업 팝업으로 바로 갑니다(2026-09-11).
+       카드를 덮은 제목 링크 위에 놓아야 눌리므로 z-index 를 올립니다. */
   #action-home-v2 .slide-in.has-sub{
     flex-direction:row;align-items:flex-end;gap:clamp(14px,1.6vw,22px)
   }
@@ -371,6 +355,7 @@
     display:flex;flex-direction:column;align-items:flex-start;gap:clamp(7px,.8vw,11px)
   }
   #action-home-v2 .ssubs{
+    position:relative;z-index:2;
     flex:0 0 auto;width:min(44%,300px);
     display:flex;flex-direction:column;gap:6px
   }
@@ -379,13 +364,16 @@
   }
   #action-home-v2 .ssub{
     display:block;padding:9px 11px;
-    background:#fbfdfe;border:1px solid var(--line)
+    background:#fbfdfe;border:1px solid var(--line);
+    transition:background .2s,border-color .2s
   }
+  #action-home-v2 .ssub:hover{background:var(--brand-tint);border-color:var(--brand)}
   #action-home-v2 .ssub .ssub-t{
     font-size:13.5px;font-weight:700;line-height:1.4;letter-spacing:-.02em;
     /* 긴 이름은 두 줄까지만. 세 줄이 되면 이 칸이 글자 칸보다 높아집니다. */
     overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2
   }
+  #action-home-v2 .ssub:hover .ssub-t{color:var(--brand-deep)}
   #action-home-v2 .ssub .ssub-m{display:block;margin-top:2px;font-size:11.5px;color:var(--faint)}
   /* 좁으면 옆에 둘 자리가 없습니다. 글 밑으로 내리고 폭을 다 씁니다. */
   @media (max-width:640px){
@@ -699,7 +687,7 @@
         <!-- 왼쪽 큰 칸. 네 장이 겹쳐 있고 하나만 보입니다. -->
         <div class="stage" id="lead-stage">
         <article class="slide" data-ah-slide data-due="2026-09-15" style="--tile:#062330">
-          <a class="slide-link" href="https://dok.action.or.kr/" target="_blank" rel="noopener">
+          <div class="slide-link">
             <span class="slide-shot">
               <img class="real" src="https://cdn.imweb.me/thumbnail/20260825/c4b8e2d1b259d.png" alt="2026 하반기 밑빠진 독상">
             </span>
@@ -708,14 +696,14 @@
                 <span class="pill is-kind">캠페인</span>
                 <span class="pill">밑빠진 독상</span>
               </span>
-              <strong class="slide-t">2026 하반기 밑빠진 독상</strong>
+              <strong class="slide-t"><a class="slide-go" href="https://dok.action.or.kr/" target="_blank" rel="noopener">2026 하반기 밑빠진 독상</a></strong>
               <span class="slide-d">세금이 새는 현장을 시민이 제보하고, 그중 최악의 사업을 함께 고릅니다.</span>
               <span class="slide-f"><!--<b class="dday" data-dday>9/15</b><span class="due-line">9월 15일 제보 마감</span>--></span>
             </span>
-          </a>
+          </div>
         </article>
         <article class="slide" data-ah-slide hidden style="--tile:#062330">
-          <a class="slide-link" href="https://pb.action.or.kr/" target="_blank" rel="noopener">
+          <div class="slide-link">
             <span class="slide-shot">
               <img class="real" src="https://pb.action.or.kr/img/citizen-counseling-home-temp.png?v=20260907" alt="시민참여 상담소 질문 접수 화면">
             </span>
@@ -724,14 +712,14 @@
                 <span class="pill is-kind">캠페인</span>
                 <span class="pill">시민참여</span>
               </span>
-              <strong class="slide-t">시민참여 상담소</strong>
+              <strong class="slide-t"><a class="slide-go" href="https://pb.action.or.kr/" target="_blank" rel="noopener">시민참여 상담소</a></strong>
               <span class="slide-d">참여예산을 두고 생기는 궁금증과 고민을 상담합니다.</span>
               <span class="slide-f"><!--<span class="due-line">마감일 확인 필요</span>--></span>
             </span>
-          </a>
+          </div>
         </article>
         <article class="slide" data-ah-slide hidden style="--tile:#0d4f66">
-          <a class="slide-link" href="https://vote.action.or.kr/" target="_blank" rel="noopener">
+          <div class="slide-link">
             <span class="slide-shot">
               <img class="real" src="https://vote.action.or.kr/og-budget-vote-v1.png?v=2" alt="10만원 예산 편성">
             </span>
@@ -740,11 +728,11 @@
                 <span class="pill is-kind">캠페인</span>
                 <span class="pill">예산감시</span>
               </span>
-              <strong class="slide-t">10만원 예산편성 투표</strong>
+              <strong class="slide-t"><a class="slide-go" href="https://vote.action.or.kr/" target="_blank" rel="noopener">10만원 예산편성 투표</a></strong>
               <span class="slide-d">내 몫의 예산 10만원을 어디에 쓸지 직접 편성해 봅니다.</span>
               <span class="slide-f"><!--<span class="due-line">마감일 확인 필요</span>--></span>
             </span>
-          </a>
+          </div>
         </article>
 
         <!-- ⚠️ 캠페인이 아니라 '글'입니다. 2026-09-01 사용자 지시로 이 자리에
@@ -755,7 +743,7 @@
              설명 줄에 요약이 아니라 날짜와 게시판을 적는 이유: RSS 가 본문 요약을
              주지 않습니다. 지어내지 않으려면 있는 것만 적어야 합니다. -->
         <article class="slide" data-ah-slide hidden style="--tile:#3d5765">
-          <a class="slide-link" href="/27/?idx=173415033&amp;bmode=view">
+          <div class="slide-link">
             <span class="slide-shot">
               <img class="real" src="https://cdn.imweb.me/upload/S20210826b814397ca4e6d/21aa8479b6f98.png" alt="미래대응기금 논평">
             </span>
@@ -764,13 +752,13 @@
                 <span class="pill is-kind is-post">논평</span>
                 <span class="pill">예산감시</span>
               </span>
-              <strong class="slide-t">미래대응기금, 대규모 재정운용체계 변화에 걸맞은 촘촘한 설계가 필요하다</strong>
+              <strong class="slide-t"><a class="slide-go" href="/27/?idx=173415033&amp;bmode=view">미래대응기금, 대규모 재정운용체계 변화에 걸맞은 촘촘한 설계가 필요하다</a></strong>
               <span class="slide-d">2026.08.25 · 일반 활동</span>
               <!-- 비어 있는 것이 맞습니다. 마감일 줄이 돌아올 자리입니다
                    (위 세 장은 그 줄이 주석으로 들어 있습니다). 글은 마감이 없어 빈 것입니다. -->
               <span class="slide-f"></span>
             </span>
-          </a>
+          </div>
         </article>
         </div>
 
@@ -1277,17 +1265,22 @@
 
       sHtml += '<article class="slide" data-ah-slide' + (i ? ' hidden' : '') + due
             +    ' style="--tile:' + esc(it.tile || '#0079a6') + '">'
-            +    '<a class="slide-link" href="' + esc(it.url || '#') + '"' + linkAttrs(it) + '>'
+            /* 카드 전체가 <a> 가 아닙니다 — 제목 링크가 ::after 로 카드를 덮습니다.
+               활동 칸(.wrow)과 같은 방식이고, 그래야 카드 안에 다른 링크를 둘 수 있습니다
+               (감시사업 줄). 씨앗 HTML 네 장도 같은 꼴입니다. */
+            +    '<div class="slide-link">'
             +      '<span class="slide-shot">' + shot + '</span>'
             +      '<span class="slide-in">'
             +        '<span class="pills">'
             +          '<span class="pill is-kind' + post + '">' + esc(kind) + '</span>'
             +          (it.cat ? '<span class="pill">' + esc(it.cat) + '</span>' : '')
             +        '</span>'
-            +        '<strong class="slide-t">' + esc(it.title) + newWindowMark(it) + '</strong>'
+            +        '<strong class="slide-t"><a class="slide-go" href="' + esc(it.url || '#') + '"' + linkAttrs(it) + '>'
+            +          esc(it.title) + newWindowMark(it)
+            +        '</a></strong>'
             +        (it.lead ? '<span class="slide-d">' + esc(it.lead) + '</span>' : '')
             +      '</span>'
-            +    '</a>'
+            +    '</div>'
             +  '</article>';
 
       lHtml += '<a class="litem' + (i === 0 ? ' is-on' : '') + '" href="' + esc(it.url || '#') + '"' + linkAttrs(it)
@@ -1338,8 +1331,8 @@
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   진행 중인 예산감시 사업을 '밑빠진 독상' 밑에 붙입니다 (2026-09-10)
-   — 오른쪽 목록 줄 밑에(.lsub), 그리고 왼쪽 큰 칸 맨 아래에(.ssub, 2026-09-11)
+   진행 중인 예산감시 사업을 '밑빠진 독상' 장의 글 옆에 놓습니다
+   (2026-09-10 목록 줄로 시작 → 2026-09-11 큰 칸 글 옆 한 곳으로)
 
    밑빠진 독상은 상(賞) 하나가 아니라 그 밑에 감시사업 여러 건이 도는 일입니다.
    홈에는 상 이름만 있어서, 지금 무엇을 감시하는 중인지 첫 화면에서 안 보였습니다.
@@ -1360,7 +1353,7 @@
   var EP = 'https://script.google.com/macros/s/'
          + 'AKfycbxI7UMptIhxwMR7mPtqP72EDQ1z871zJNhBcJeaVBeP5KdIcDhCT4_3CpGSnxPMYgE8hg/exec';
   var DOK = 'https://dok.action.or.kr/';
-  var MAX = 3;                       /* 너무 많으면 목록이 캠페인보다 길어집니다 */
+  var MAX = 3;                       /* 넷이 되면 이 칸이 글자 칸보다 높아집니다 */
   var rows = null;                   /* 한 번만 받아 두고 다시 그릴 때 씁니다 */
 
   function esc(v) {
@@ -1369,47 +1362,30 @@
     return d.innerHTML;
   }
 
-  /* 목록에서 밑빠진 독상 줄을 찾습니다. 제목은 해마다 바뀌므로(2026 하반기…)
-     주소로 찾습니다 — 게시판에서 다시 그려도 목적지는 독상 사이트입니다. */
-  function dokItem() {
-    var list = document.getElementById('lead-list');
-    if (!list) return null;
-    var items = list.querySelectorAll('.litem');
-    for (var i = 0; i < items.length; i++) {
-      if ((items[i].getAttribute('href') || '').indexOf('dok.action.or.kr') >= 0) return items[i];
-    }
-    return null;
-  }
-
-  /* 왼쪽 큰 칸에서 밑빠진 독상 장을 찾습니다. 목록과 같은 이유로 주소로 찾습니다. */
-  function dokSlide() {
+  /* 큰 칸에서 밑빠진 독상 장의 글자 칸을 찾습니다. 제목은 해마다 바뀌므로
+     (2026 하반기…) 주소로 찾습니다 — 게시판에서 다시 그려도 목적지는 독상 사이트입니다. */
+  function dokSlideIn() {
     var stage = document.getElementById('lead-stage');
     if (!stage) return null;
-    var links = stage.querySelectorAll('.slide-link');
+    var links = stage.querySelectorAll('.slide-go');
     for (var i = 0; i < links.length; i++) {
-      if ((links[i].getAttribute('href') || '').indexOf('dok.action.or.kr') >= 0) return links[i].parentNode;
+      if ((links[i].getAttribute('href') || '').indexOf('dok.action.or.kr') >= 0) {
+        return links[i].closest ? links[i].closest('.slide-in') : null;
+      }
     }
     return null;
   }
 
-  /* 줄 한 벌. 두 곳이 같은 값을 쓰고 껍데기만 다릅니다.
-
-       목록(.lsub)  — 줄 하나가 링크입니다. 알약을 달고 한 줄로 놓습니다.
-       큰 칸(.ssub) — 카드 링크 안에 있어 링크가 아닙니다(<a> 안에 <a> 는 못 넣습니다).
-                      폭이 좁아 알약을 빼고 제목과 기간을 위아래로 놓습니다. */
-  function rowsHtml(cls) {
-    var link = cls === 'lsub';
+  /* 줄 한 벌. 폭이 좁아 알약 없이 제목과 기간을 위아래로 놓습니다. */
+  function rowsHtml() {
     var html = '';
     rows.slice(0, MAX).forEach(function (c) {
-      html += (link
-                ? '<a class="lsub" href="' + esc(DOK) + '#camp-' + esc(c.id) + '"'
-                  + ' target="_blank" rel="noopener"'
-                  + ' aria-label="' + esc(c.title) + ' — 예산감시 사업 (새 창)">'
-                  + '<span class="lsub-pill">감시</span>'
-                : '<span class="ssub">')
-           +    '<span class="' + cls + '-t">' + esc(c.title) + '</span>'
-           +    (c.period ? '<span class="' + cls + '-m">' + esc(c.period) + '</span>' : '')
-           +  (link ? '</a>' : '</span>');
+      html += '<a class="ssub" href="' + esc(DOK) + '#camp-' + esc(c.id) + '"'
+           +    ' target="_blank" rel="noopener"'
+           +    ' aria-label="' + esc(c.title) + ' — 예산감시 사업 (새 창)">'
+           +    '<span class="ssub-t">' + esc(c.title) + '</span>'
+           +    (c.period ? '<span class="ssub-m">' + esc(c.period) + '</span>' : '')
+           +  '</a>';
     });
     return html;
   }
@@ -1420,33 +1396,24 @@
     for (var k = 0; k < old.length; k++) old[k].parentNode.removeChild(old[k]);
   }
 
+  /* 글자 칸은 원래 세로 한 줄입니다. 지금 있는 글을 .slide-txt 로 묶어 왼쪽에 두고,
+     그 옆 빈자리에 감시사업 칸을 놓습니다. has-sub 가 '두 칸으로 나누라'는 표시입니다. */
   function paint() {
     if (!rows || !rows.length) return;
 
-    /* ① 오른쪽 목록 — 독상 줄 바로 밑에 */
-    var item = dokItem();
-    if (item) {
-      wipe(item.parentNode, 'lsub');
-      item.insertAdjacentHTML('afterend', rowsHtml('lsub'));
-    }
+    var inn = dokSlideIn();
+    if (!inn) return;
 
-    /* ② 왼쪽 큰 칸 — 글 옆 빈자리에.
-       글자 칸은 원래 세로 한 줄입니다. 지금 있는 글을 .slide-txt 로 묶어 왼쪽에 두고,
-       그 옆에 감시사업 칸을 놓습니다. has-sub 가 '두 칸으로 나누라'는 표시입니다. */
-    var slide = dokSlide();
-    var inn = slide && slide.querySelector('.slide-in');
-    if (inn) {
-      if (!inn.querySelector('.slide-txt')) {
-        var txt = document.createElement('span');
-        txt.className = 'slide-txt';
-        while (inn.firstChild) txt.appendChild(inn.firstChild);
-        inn.appendChild(txt);
-      }
-      wipe(inn, 'ssubs');
-      inn.insertAdjacentHTML('beforeend',
-        '<span class="ssubs"><span class="ssubs-h">지금 감시 중</span>' + rowsHtml('ssub') + '</span>');
-      inn.classList.add('has-sub');
+    if (!inn.querySelector('.slide-txt')) {
+      var txt = document.createElement('span');
+      txt.className = 'slide-txt';
+      while (inn.firstChild) txt.appendChild(inn.firstChild);
+      inn.appendChild(txt);
     }
+    wipe(inn, 'ssubs');
+    inn.insertAdjacentHTML('beforeend',
+      '<span class="ssubs"><span class="ssubs-h">지금 감시 중</span>' + rowsHtml() + '</span>');
+    inn.classList.add('has-sub');
   }
 
   fetch(EP + '?action=campaigns')
