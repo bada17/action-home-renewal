@@ -98,7 +98,19 @@
   display:grid; grid-auto-flow:column; grid-auto-columns:1fr;
   margin-top:clamp(26px,3vw,40px); border-top:1px solid var(--line)
 }
-#act .num{padding:clamp(16px,1.8vw,22px) 0; border-left:1px solid var(--line); padding-left:clamp(14px,1.6vw,20px)}
+/* ⚠️ display·width·height·background 를 일부러 적어 둡니다 (2026-09-14).
+   캠페이너스(imweb) 전역 CSS 의 `function.css` 에 `.num{display:inline-block;
+   width:22px; height:22px; background-color:#F84A71; line-height:21px}` 이 있습니다
+   — 알림 개수 배지입니다. 우리 규칙이 더 세도 **우리가 안 적은 속성은 그쪽 값이
+   그대로 먹습니다.** 그러면 숫자 칸이 분홍색 22×22 상자가 됩니다.
+   후원 안내 화면(/74)이 실제로 그렇게 깨져 있었습니다.
+   이 칸은 지금 주석으로 접혀 있지만, 되살리는 날 같은 일이 나지 않게 미리 막아 둡니다. */
+#act .num{
+  display:block; width:auto; height:auto; background:none; text-align:left;
+  line-height:inherit; color:inherit;
+  padding:clamp(16px,1.8vw,22px) 0; border-left:1px solid var(--line);
+  padding-left:clamp(14px,1.6vw,20px)
+}
 #act .num:first-child{border-left:none; padding-left:0}
 #act .num b{
   display:block; font-family:GmarketSans,sans-serif; font-weight:700; line-height:1.1;

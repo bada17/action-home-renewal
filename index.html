@@ -179,7 +179,16 @@
     #action-home-v2 .spark{animation:none;opacity:calc(var(--o,.3) * .8);transform:rotate(var(--r,0deg))}
   }
   /* 2026-09-10 사용자 지시 — 띠가 캠페인 칸에 바로 붙어 있었습니다. 위를 띄웁니다. */
-  #action-home-v2 .lead{padding:clamp(30px,3.6vw,56px) 0 clamp(48px,6vw,90px)}
+  /* ⚠️ 앞의 네 줄은 멋이 아니라 **방어**입니다 (2026-09-14).
+     캠페이너스(imweb)가 싣는 부트스트랩에 `.lead{font-size:21px; font-weight:300;
+     line-height:1.4; margin-bottom:20px}` 이 있습니다. 이 칸은 큰 덩이라서,
+     그대로 두면 **안쪽 글자가 전부 21px 가는 글씨로 물려받습니다**
+     (.wrap · .lead-in · .stage · .slide … 실제로 그렇게 되고 있었습니다).
+     클래스 이름이 너무 흔해서 생긴 일입니다 — 값을 우리가 직접 되돌려 막습니다. */
+  #action-home-v2 .lead{
+    font-size:inherit;font-weight:inherit;line-height:inherit;margin-bottom:0;
+    padding:clamp(30px,3.6vw,56px) 0 clamp(48px,6vw,90px)
+  }
   #action-home-v2 .lead-in{
     display:grid;grid-template-columns:minmax(0,1.62fr) minmax(310px,.95fr);
     gap:clamp(16px,1.8vw,26px);align-items:stretch
