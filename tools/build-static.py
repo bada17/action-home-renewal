@@ -342,7 +342,7 @@ def main():
             # 조용히 헛돌고 있었습니다. 그동안 정적 시안의 지도·역대 표는 담아 둔 데이터가
             # 아니라 옛 주소(chatgpt.site)에서 받아오고 있었습니다.
             # ⚠️ 아래 prefix_paths() 의 같은 줄도 함께 고쳐야 합니다.
-            old = "var DATA = isLocal ? '/dok/data/' : LIVE + 'public-data/';"
+            old = "var DATA = isLocal ? '/dok/data/' : LIVE + 'data/';"
             new = ("var DATA = '/dok/data/';   // 정적 시안: 데이터를 같이 담아 CORS 를 피합니다\n"
                    "  void isLocal; void LIVE;")
             if old in body:
