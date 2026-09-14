@@ -62,6 +62,10 @@ PAGE = '(번호 미정)'
 
 SCOPE = 'ah-donate'
 
+# 후원 폼 칸을 걷어내면서 #donate 로 가던 링크들이 갈 곳을 잃습니다. 도너스로 바로 보냅니다.
+# (공통 상단의 떠 있는 후원 버튼 .ah-float 이 쓰는 것과 같은 주소입니다.)
+DONUS_URL = 'https://secure.donus.org/withaction0909/pay/step1'
+
 
 def read(path):
     with io.open(path, encoding='utf-8') as f:
@@ -113,22 +117,60 @@ def scope_selector(sel):
     return '#%s %s' % (SCOPE, s)
 
 
+def comment_mask(css):
+    u"""주석 `/* … */` 안이면 1 인 표를 만듭니다.
+
+    ⚠️ 왜 필요한가 — 주석 안에 중괄호가 있을 수 있습니다. CSS 설명을 적다 보면
+       `.num { display:inline-block }` 처럼 규칙을 예로 드는 일이 흔한데,
+       중괄호를 그냥 세면 그 예시에서 규칙이 시작된 줄 알고 껍데기를 엉뚱한
+       자리에 붙입니다. 실제로 2026-09-14 에 그렇게 돼서
+       `#ah-donate #ah-donate .trust-cell …` 이라는, 아무것도 안 맞는 선택자가
+       만들어졌습니다(자기 자신의 자손일 수는 없으니까요).
+    """
+    mask = bytearray(len(css))
+    i = 0
+    while True:
+        a = css.find('/*', i)
+        if a < 0:
+            break
+        b = css.find('*/', a + 2)
+        end = len(css) if b < 0 else b + 2
+        for k in range(a, end):
+            mask[k] = 1
+        if b < 0:
+            break
+        i = end
+    return mask
+
+
 def scope_block(css):
     u"""중괄호 깊이를 세며 최상위 규칙만 골라 껍데기를 붙입니다.
 
     @font-face · @keyframes 는 선택자가 아니므로 통째로 지나갑니다.
     @media · @supports 는 안쪽을 다시 훑습니다.
+    주석 안의 중괄호는 세지 않습니다 — comment_mask 를 보세요.
     """
     out = []
+    mask = comment_mask(css)
     i, n = 0, len(css)
+
+    def find_brace(frm):
+        k = css.find('{', frm)
+        while k >= 0 and mask[k]:
+            k = css.find('{', k + 1)
+        return k
+
     while i < n:
-        brace = css.find('{', i)
+        brace = find_brace(i)
         if brace < 0:
             out.append(css[i:])
             break
         head = css[i:brace]
         depth, j = 0, brace
         while j < n:
+            if mask[j]:
+                j += 1
+                continue
             if css[j] == '{':
                 depth += 1
             elif css[j] == '}':
@@ -161,8 +203,12 @@ def scope_block(css):
 #  본문에서 걷어낼 것들
 # ══════════════════════════════════════════════════════════════════
 
-def cut(text, begin, end, label, dropped):
-    u"""begin 으로 시작해 end 로 끝나는 첫 덩이를 잘라 냅니다."""
+def cut(text, begin, end, label, dropped, keep_end=False):
+    u"""begin 으로 시작해 end 로 끝나는 첫 덩이를 잘라 냅니다.
+
+    keep_end=True 면 end 표시 자체는 남깁니다 — 그 표시가 잘라 낼 덩이의 것이
+    아니라 **뒤에 이어지는 코드의 첫 줄**일 때 씁니다.
+    """
     i = text.find(begin)
     if i < 0:
         print(u'  ! 못 찾음 — %s' % label)
@@ -172,7 +218,7 @@ def cut(text, begin, end, label, dropped):
         print(u'  ! 끝을 못 찾음 — %s' % label)
         return text
     dropped.append(label)
-    return text[:i] + text[j + len(end):]
+    return text[:i] + text[j if keep_end else j + len(end):]
 
 
 def main():
@@ -220,14 +266,74 @@ def main():
                u'떠 있는 후원 막대(sticky-cta) — 공통 것과 겹칩니다', dropped)
     body = cut(body, u'<section class="news" id="news">', u'</section>',
                u"'지금, 시민행동' 최신 소식 칸 — 2026-09-02 사용자 결정", dropped)
+    # ⚠️ 끝 표시('트랙 무한 루프')는 잘라 낼 덩이가 아니라 **다음 코드의 첫 줄**입니다.
+    #    keep_end 없이 자르면 그 줄의 앞머리만 사라지고 ' (케이스·뉴스 공통) ─────'
+    #    가 코드 한복판에 남습니다. 그러면 SyntaxError 하나로 이 화면의 스크립트가
+    #    통째로 죽습니다 — 숫자 카운트업도, 사례 트랙도 안 돕니다.
+    #    2026-09-14 에 실제로 /74 에서 그러고 있었습니다.
     body = cut(body, u'// ───── 지금, 시민행동 — RSS 연동 최신 소식 카드 ─────',
-               u'// ───── 트랙 무한 루프', u'최신 소식 스크립트', dropped)
+               u'// ───── 트랙 무한 루프', u'최신 소식 스크립트', dropped, keep_end=True)
 
-    # 위에서 '트랙 무한 루프' 머리말까지 함께 잘렸으니 되살립니다
-    if u'───── 트랙 무한 루프' not in body:
-        body = body.replace(
-            u'// 카드를 한 세트 복제해',
-            u'// ───── 트랙 무한 루프 (케이스 공통) ─────\n// 카드를 한 세트 복제해', 1)
+    # ══════════════════════════════════════════════════════════════
+    #  후원 폼 칸과 뉴스레터 칸을 걷어냅니다 (2026-09-14 사용자 결정)
+    #
+    #  "필요없을듯. 걍 후원하기가 홈화면처럼 옆에 따라다니게" —
+    #  후원은 공통 상단이 띄우는 떠 있는 버튼(.ah-float, 도너스로 바로 감)이
+    #  맡고, 뉴스레터 신청은 홈에 같은 폼이 있습니다. 두 벌을 두지 않습니다.
+    #  ⚠️ 랜딩(donate.action.or.kr)에는 그대로 남습니다 — 여기서만 걷어냅니다.
+    # ══════════════════════════════════════════════════════════════
+    body = cut(body, u'<section class="donate" id="donate">', u'</section>',
+               u"'미래를 만드는 힘 +1!' 후원 폼 칸 — 2026-09-14 사용자 결정", dropped)
+    body = cut(body, u'<section class="newsletter" id="newsletter">', u'</section>',
+               u"'시민행동의 소식을 받아보세요' 뉴스레터 칸 — 2026-09-14 사용자 결정", dropped)
+    body = cut(body, u'<script type="text/javascript" src="https://resource.stibee.com/subscribe/stb_subscribe_form.js">',
+               u'</script>', u'스티비 폼 스크립트 (뉴스레터 칸과 함께)', dropped)
+
+    # 칸이 사라졌으니 그 칸을 만지던 자바스크립트도 함께 걷습니다.
+    # ⚠️ 안 걷으면 document.getElementById('donate-go').addEventListener 에서
+    #    바로 죽습니다. 캠페이너스는 코드 위젯들의 스크립트를 <script> 하나로
+    #    이어 붙이므로, 여기서 한 번 죽으면 **공통 상단 코드까지 같이 죽습니다.**
+    body = cut(body, u'// ───── 상태 ─────', u'// ───── 사례 카드 클릭 추적 ─────',
+               u'후원 폼·뉴스레터 스크립트 (금액 고르기 · 임팩트 문구 · 구독 추적)',
+               dropped, keep_end=True)
+
+    # 첫 임팩트 문구를 채우던 한 줄. 함수가 사라졌으니 이것도 걷습니다
+    # (남겨 두면 ReferenceError 로 그 뒤 코드가 통째로 안 돕니다).
+    body, nu = re.subn(r'\n*^updateImpact\(\);\s*$', u'', body, count=1, flags=re.M)
+    if nu:
+        dropped.append(u'updateImpact() 첫 호출 — 그 함수와 함께 없앴습니다')
+
+    # 남은 '3가지 방법' 칸의 뉴스레터 카드 — 갈 곳이 없어졌으니 함께 걷고 둘로 만듭니다.
+    body, nc = re.subn(
+        r'\s*<div class="cta-card">\s*<div class="cta-num">2</div>.*?</div>'
+        r'\s*(?=<div class="cta-card cta-card-primary">)',
+        u'\n      ', body, count=1, flags=re.S)
+    if nc:
+        body = body.replace(u'<div class="cta-num">3</div>', u'<div class="cta-num">2</div>', 1)
+        body = body.replace(u'함께하는 <span class="accent">3가지 방법</span>',
+                            u'함께하는 <span class="accent">2가지 방법</span>', 1)
+        dropped.append(u"'3가지 방법' 중 뉴스레터 카드 — 뉴스레터 칸이 없어져 둘로 줄였습니다")
+
+    # 후원 폼이 없어졌으니 #donate 로 가던 링크는 도너스로 바로 보냅니다.
+    # ⚠️ 자바스크립트 안의 선택자가 먼저입니다. 이것까지 통째로 바꾸면
+    #    'a[href="…" target="_blank" …]' 이라는 말이 안 되는 선택자가 되어
+    #    querySelectorAll 이 던지고, 그 뒤 코드가 전부 안 돕니다.
+    body = body.replace(
+        u"""document.querySelectorAll('a[href="#donate"]')""",
+        u"""document.querySelectorAll('a[href^="https://secure.donus.org/"]')""")
+    body, nd = re.subn(r'href="#donate"',
+                       u'href="%s" target="_blank" rel="noopener"' % DONUS_URL, body)
+    if nd:
+        dropped.append(u'#donate 로 가던 링크 %d 개를 도너스 주소로 바꿨습니다' % nd)
+    if u'href="#newsletter"' in body:
+        print(u'  ! 갈 곳 없는 #newsletter 링크가 남았습니다 — 확인하세요')
+
+    # 스티비 폼이 없어졌으니 그 CSS 도 부르지 않습니다(쓸모없는 바깥 요청 하나).
+    if u'stb_subscribe' not in body:
+        before = len(head_bits)
+        head_bits = [t for t in head_bits if 'stibee' not in t]
+        if len(head_bits) < before:
+            dropped.append(u'스티비 폼 CSS — 뉴스레터 칸과 함께 필요 없어졌습니다')
 
     # 사진은 본문뿐 아니라 CSS 의 url('img/…') 에도 있습니다.
     pat = r'(?<=["\'(])img/([A-Za-z0-9_\-./]+)'
