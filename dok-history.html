@@ -127,7 +127,16 @@ html { scroll-behavior: smooth; }
   text-anchor: middle; pointer-events: none; paint-order: stroke;
   stroke: #fff; stroke-width: 4px; stroke-linejoin: round;
 }
+/* 2026-09-03 원본 결정 — 진하게 칠해진 지역만 흰 글씨가 되어 서울 하나만 튀어
+   보였습니다. 이름은 전부 같은 검은색으로 둡니다(흰 테두리가 있어 읽힙니다).
+   스크립트가 이 클래스를 안 붙이므로 규칙만 남아 있습니다. */
 #dok .dok-map-label.is-light { fill: #fff; stroke: none; }
+/* 이름을 도형 밖으로 뺀 지역(세종)을 잇는 가는 선.
+   non-scaling-stroke 라 지도가 작아져도 굵기는 화면에서 그대로다. */
+#dok .dok-map-leader {
+  stroke: var(--ink-soft); stroke-width: 1.2px; opacity: .5;
+  stroke-linecap: round; pointer-events: none;
+}
 /* 지도 위 건수 숫자. 지금은 그려지지 않습니다 —
    스크립트의 SHOW_MAP_COUNT 를 true 로 바꾸면 다시 나옵니다. */
 #dok .dok-map-dot {
@@ -137,15 +146,6 @@ html { scroll-behavior: smooth; }
   paint-order: stroke; stroke: #fff; stroke-width: 5px; stroke-linejoin: round;
 }
 
-#dok .dok-map-modes { display: flex; gap: 8px; margin-bottom: 18px; }
-#dok .dok-map-mode {
-  display: inline-flex; align-items: center; min-height: 44px;
-  font-size: 13.5px; font-weight: 700; padding: 0 18px; border-radius: 999px;
-  border: 1.5px solid var(--line); background: #fff; color: var(--ink-soft); cursor: pointer;
-}
-#dok .dok-map-mode[aria-pressed="true"] {
-  background: var(--ink); border-color: var(--ink); color: #fff;
-}
 
 #dok .dok-map-side {
   border: 1px solid var(--line); border-radius: 16px; padding: 28px 26px;
@@ -153,13 +153,25 @@ html { scroll-behavior: smooth; }
 }
 #dok .dok-map-side h3 { font-size: 22px; margin-bottom: 4px; }
 #dok .dok-map-side .dok-map-sub { font-size: 14px; color: var(--ink-soft); margin-bottom: 20px; }
-#dok .dok-map-stats { display: flex; gap: 10px; margin-bottom: 22px; }
+#dok .dok-map-stats { display: flex; gap: 12px; margin-bottom: 22px; }
 #dok .dok-map-stat {
-  flex: 1; background: var(--brand-tint); border-radius: 10px;
-  padding: 14px 12px; text-align: center;
+  flex: 1; background: var(--brand-tint); border-radius: 12px;
+  padding: 15px 16px; text-align: left;
+  border-left: 4px solid var(--brand);
 }
-#dok .dok-map-stat b { display: block; font-size: 26px; line-height: 1.2; color: var(--brand-deep); }
-#dok .dok-map-stat span { font-size: 12.5px; color: var(--ink-soft); font-weight: 600; }
+#dok .dok-map-stat b {
+  display: block; font-size: 42px; line-height: 1.02; color: var(--brand-deep);
+  /* 숫자가 0부터 올라가며 세어지는 칸이라, 자릿수가 바뀔 때 글자가 덜컹거린다.
+     tabular-nums 로 폭을 고정한다. */
+  font-variant-numeric: tabular-nums; letter-spacing: -.02em;
+}
+/* ⚠️ **직계 자식(`>`)이어야 한다.** 세어 올라가는 숫자가 `<b><span class="dok-count2">`
+   라서, 그냥 `span` 으로 적으면 이 규칙이 **숫자까지 같이 잡아** 라벨 크기로
+   줄여 버린다. 원본에서 숫자가 커 보이지 않던 진짜 이유가 이것이었다. */
+#dok .dok-map-stat > span {
+  display: block; margin-top: 4px;
+  font-size: 13.5px; color: var(--ink); font-weight: 700;
+}
 #dok .dok-map-list {
   list-style: none;
   /* 중앙정부 목록은 21건이라 패널이 화면보다 길어진다.
@@ -175,37 +187,147 @@ html { scroll-behavior: smooth; }
 #dok .dok-map-proj { font-size: 15px; font-weight: 700; word-break: keep-all; margin-top: 2px; }
 #dok .dok-map-who { font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
 #dok .dok-map-none { font-size: 14.5px; color: var(--ink-soft); padding: 18px 0; word-break: keep-all; }
-#dok .dok-map-report-cta {
-  display: inline-flex; align-items: center; min-height: 44px;
-  margin-top: 16px; padding: 0 20px; border-radius: 999px;
-  font-family: 'GmarketSans', sans-serif; font-size: 14px; font-weight: 700;
-  color: #fff; background: var(--brand-deep); border: 0;
-  text-decoration: none; cursor: pointer; transition: background .15s;
-}
-#dok .dok-map-report-cta:hover { background: var(--ink); }
 #dok .dok-map-offmap {
   margin-top: 26px; padding: 18px 20px; border: 1px dashed var(--line);
   border-radius: 12px; font-size: 14px; color: var(--ink-soft); word-break: keep-all;
 }
-#dok .dok-map-offmap b { color: var(--ink); }
+/* 2026-09-03: 버튼이 알약이 되면서 문구와 한 줄에 붙어 버렸습니다. 줄을 나눕니다. */
+#dok .dok-map-offmap b { display: block; color: var(--ink); font-size: 15px; }
+/* 2026-09-03 원본 결정 — 밑줄 글자에서 알약 버튼으로 바꾸고 키웠습니다. */
 #dok .dok-map-offmap button {
-  margin-top: 6px; min-height: 44px; font-size: 14px; font-weight: 700; cursor: pointer;
-  background: none; border: 0; color: var(--brand-deep); text-decoration: underline; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-top: 14px; min-height: 52px; padding: 0 26px; border-radius: 999px;
+  font-family: 'GmarketSans', sans-serif; font-size: 16px; font-weight: 700;
+  color: #fff; background: var(--brand-deep); border: 0;
+  text-decoration: none; cursor: pointer; transition: background .15s;
 }
+#dok .dok-map-offmap button:hover { background: var(--ink); }
 @media (max-width: 860px) {
   #dok .dok-map-wrap { grid-template-columns: 1fr; gap: 24px; }
   #dok .dok-map-side { position: static; padding: 22px 20px; }
   /* 지도가 작아지므로 라벨은 상대적으로 키운다 */
   #dok .dok-map-label { font-size: var(--dok-map-label, 30px); }
   #dok .dok-map-dot { font-size: var(--dok-map-dot, 24px); }
-  #dok .dok-map-mode { min-height: 44px; padding: 0 18px; }
-  #dok .dok-map-offmap button { min-height: 44px; }
-  #dok .dok-map-stat b { font-size: 30px; }
+  #dok .dok-map-offmap button { min-height: 52px; width: 100%; }
+  #dok .dok-map-stat b { font-size: 38px; }
   #dok .dok-map-list { max-height: 60vh; }
 }
-@media (max-width: 700px) {
-  #dok.dok-has-bar { padding-bottom: 84px; }
+
+/* ═══ 지도 칸을 다시 짰습니다 (원본 2026-09-03) ═══
+   전에는 이랬습니다 — 지도만 세로로 길고, 오른쪽 칸은 안내문 한 줄과 숫자 둘만
+   담은 채 400px 넘게 비어 있었습니다. 지역을 눌러야만 목록이 생겨서, 처음 온
+   사람은 "여기에 볼 것이 있다"는 것 자체를 알 수 없었습니다.
+   고친 것 — (1) 기본 화면에도 최근 수상을 채우고 (2) 두 칸의 높이를 맞췄습니다. */
+@media (min-width: 861px) {
+  #dok .dok-map-wrap {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: stretch;
+  }
+  /* 높이를 맞추면 sticky 는 할 일이 없습니다 — 패널이 지도만큼 깁니다. */
+  #dok .dok-map-side { position: static; display: flex; flex-direction: column; }
+  /* 목록이 남은 높이를 채우고, 넘치면 목록 안에서만 스크롤합니다.
+     자식 선택자인 이유 — 사례 목록(.dok-map-list-case)까지 늘리면 안 됩니다. */
+  #dok .dok-map-side > .dok-map-list { flex: 1 1 auto; min-height: 140px; max-height: none; }
+  #dok .dok-map-figure { display: flex; flex-direction: column; justify-content: center; }
+  #dok .dok-map-svg { margin-inline: auto; }
 }
+
+/* ── 지도 위 말풍선 ──
+   마우스를 올린 지역의 이름과 건수를 따라다니며 보여 줍니다. 색만으로는
+   "몇 건인지"도 "눌러도 되는지"도 알 수 없었습니다.
+   손가락에는 hover 가 없으므로 그런 기기에서는 뜨지 않습니다(눌러야 열립니다). */
+#dok .dok-map-tip {
+  position: absolute; z-index: 3; left: 0; top: 0;
+  transform: translate(-50%, -150%);
+  padding: 7px 13px; border-radius: 999px;
+  background: var(--ink); color: #fff;
+  font-size: 13px; font-weight: 700; white-space: nowrap;
+  pointer-events: none; opacity: 0;
+  box-shadow: 0 6px 18px rgba(13,28,38,.22);
+  transition: opacity .14s ease, transform .14s ease;
+}
+#dok .dok-map-tip.is-on { opacity: 1; transform: translate(-50%, -130%); }
+#dok .dok-map-tip b { color: #7fdcff; margin-left: 7px; }
+#dok .dok-map-tip::after {
+  content: ''; position: absolute; left: 50%; top: 100%;
+  margin-left: -5px; border: 5px solid transparent; border-top-color: var(--ink);
+}
+
+/* ── 지도에서 고른 곳을 확실히 보이게 ── */
+#dok .dok-map-area {
+  transform-box: fill-box; transform-origin: center;
+  transition: fill .18s ease, stroke-width .18s ease, opacity .2s ease;
+}
+#dok .dok-map-area:hover { stroke-width: 3; }
+#dok .dok-map-area.is-on { stroke: var(--ink); stroke-width: 2.5; }
+/* 한 곳을 고르면 나머지는 뒤로 물러납니다 — 어디를 보고 있는지 헷갈리지 않게. */
+#dok .dok-map-figure.is-picked .dok-map-area:not(.is-on) { opacity: .42; }
+#dok .dok-map-figure.is-picked .dok-map-label { opacity: .5; }
+#dok .dok-map-label { transition: opacity .2s ease; }
+
+/* 처음 화면에 들어올 때 지역이 차례로 물듭니다. 지연은 스크립트가 넣습니다. */
+#dok .dok-map-figure.is-filling .dok-map-area {
+  transition: fill .6s cubic-bezier(.22,.61,.36,1);
+  transition-delay: var(--dok-fill-delay, 0ms);
+}
+/* 색이 다 찬 뒤, 수상이 많은 곳이 두 번 두근거립니다.
+   "이건 누르는 지도" 라고 말없이 알려 주려는 것입니다. */
+@keyframes dok-map-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.05); }
+}
+#dok .dok-map-area.is-hint { animation: dok-map-pulse 1.15s ease-in-out 2; }
+
+/* ── 패널 목록 ── */
+/* 줄이 하나씩 올라옵니다. 지역을 바꿀 때 목록이 툭 갈리지 않게. */
+@keyframes dok-item-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+#dok .dok-map-list li {
+  animation: dok-item-in .44s cubic-bezier(.22,.61,.36,1) both;
+  animation-delay: var(--dok-item-delay, 0ms);
+}
+#dok .dok-map-listhead {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 10px; margin: 2px 0 8px;
+}
+#dok .dok-map-listhead b { font-size: 14.5px; }
+#dok .dok-map-listhead span { font-size: 12.5px; color: var(--ink-soft); }
+#dok .dok-map-foot { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+#dok .dok-map-allbtn {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px;
+  border-radius: 999px; border: 1.5px solid var(--line); background: #fff;
+  font-family: 'GmarketSans', sans-serif; font-size: 14px; font-weight: 700;
+  color: var(--ink); cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s;
+}
+#dok .dok-map-allbtn:hover {
+  border-color: var(--brand); color: var(--brand-deep); background: var(--brand-tint);
+}
+
+/* 「월간 좋은예산」 사례 목록. 수상 목록과 같은 모양이되 위에 실선 한 줄로 가릅니다
+   — 같은 칸에 있지만 다른 자료라는 것을 보여 주려는 것입니다. */
+#dok .dok-map-cases { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
+#dok .dok-map-cases-t {
+  font-size: 12.5px; font-weight: 700; color: var(--ink-soft);
+  margin-bottom: 10px; letter-spacing: -.01em;
+}
+#dok .dok-map-list-case .dok-map-round { color: var(--ink-soft); }
+
+/* 검수 전 초안 딱지. 확인 안 된 값을 화면에 낼 때는 반드시 표시해 둔다는 것이
+   이 저장소 규칙입니다. cases.json 의 draft 가 false 가 되면 딱지가 사라집니다. */
+#dok .dok-draft {
+  display: inline-block; margin-left: 6px; padding: 1px 7px;
+  border-radius: 999px; background: var(--alert-tint); color: #b4271c;
+  font-size: 11.5px; font-weight: 700; vertical-align: middle;
+}
+#dok .dok-draft-bar {
+  margin: 0 0 14px; padding: 11px 14px; border-radius: 10px;
+  background: var(--alert-tint); border: 1px solid #ffc9c3;
+  font-size: 13px; line-height: 1.6; color: #7a2a22; word-break: keep-all;
+}
+#dok .dok-draft-bar b { color: #b4271c; }
 
 /* ── 시도 칩 ──
    작은 시도(인천·대전·세종…)는 지도에서 손가락으로 누르기 어렵다.
@@ -225,6 +347,13 @@ html { scroll-behavior: smooth; }
   background: var(--brand-deep); border-color: var(--brand-deep); color: #fff;
 }
 #dok .dok-map-chip .dok-chip-n:empty { display: none; }
+#dok .dok-map-chip:active { transform: scale(.94); }
+#dok .dok-map-chip[aria-pressed="true"] { animation: dok-chip-pop .34s ease; }
+@keyframes dok-chip-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.13); }
+  100% { transform: scale(1); }
+}
 #dok .dok-map-chip .dok-chip-n {
   font-size: 12.5px; font-weight: 700; color: var(--alert);
   background: var(--alert-tint); border-radius: 999px; padding: 1px 7px;
@@ -316,79 +445,6 @@ html { scroll-behavior: smooth; }
   font-size: 15px; cursor: pointer;
 }
 #dok .dok-map-panel-close:hover { background: var(--line); color: var(--ink); }
-
-/* ── 제보 사진 ── */
-#dok .dok-or {
-  font-size: 12px; font-weight: 600; color: rgba(255,255,255,.55);
-  margin-left: 6px; word-break: keep-all;
-}
-#dok .dok-photo-label {
-  display: block; font-size: 13.5px; font-weight: 700;
-  margin: 18px 0 8px; color: rgba(255,255,255,.9);
-}
-#dok .dok-photo-box { }
-#dok .dok-photo-pick {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 4px; padding: 22px 16px; cursor: pointer;
-  border: 1.5px dashed rgba(255,255,255,.28); border-radius: 12px;
-  background: rgba(255,255,255,.04); transition: all .15s;
-  text-align: center;
-}
-#dok .dok-photo-pick:hover { border-color: var(--brand); background: rgba(0,175,236,.08); }
-#dok .dok-photo-icon { font-size: 22px; color: var(--brand); line-height: 1; }
-#dok .dok-photo-pick > span:nth-child(2) { font-size: 14.5px; font-weight: 700; color: #fff; }
-#dok .dok-photo-hint { font-size: 12.5px; color: rgba(255,255,255,.5); word-break: keep-all; }
-#dok .dok-photo-list {
-  display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px;
-}
-#dok .dok-photo-thumb {
-  position: relative; width: 84px; height: 84px; border-radius: 10px;
-  overflow: hidden; background: rgba(255,255,255,.08);
-}
-#dok .dok-photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-#dok .dok-photo-del {
-  position: absolute; top: 3px; right: 3px;
-  width: 24px; height: 24px; border: 0; border-radius: 50%;
-  background: rgba(13,28,38,.78); color: #fff; font-size: 12px; cursor: pointer;
-  line-height: 1;
-}
-#dok .dok-photo-warn {
-  font-size: 12.5px; color: rgba(255,255,255,.5);
-  margin-top: 10px; word-break: keep-all; line-height: 1.6;
-}
-
-/* ── Top bar ── */
-#dok .dok-topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 24px;
-  border-bottom: 1px solid var(--line);
-  position: sticky;
-  top: 0;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(8px);
-  z-index: 50;
-}
-#dok .dok-topbar .dok-org {
-  display: flex; align-items: center; gap: 10px;
-  font-weight: 700; font-size: 15px; text-decoration: none;
-}
-#dok .dok-topbar .dok-org img { height: 26px; display: block; }
-#dok .dok-topbar nav { display: flex; gap: 8px; align-items: center; }
-#dok .dok-topbar .dok-nav-link {
-  font-size: 13.5px; font-weight: 600; color: var(--ink-soft);
-  text-decoration: none; padding: 8px 12px;
-}
-#dok .dok-topbar .dok-nav-link:hover { color: var(--brand-deep); }
-#dok .dok-topbar .dok-top-cta {
-  font-family: 'GmarketSans', sans-serif;
-  font-weight: 700; font-size: 13px; color: #fff;
-  background: var(--brand); text-decoration: none;
-  padding: 10px 18px; border-radius: 999px;
-  transition: background 0.15s;
-}
-#dok .dok-topbar .dok-top-cta:hover { background: var(--brand-deep); }
 
 /* ── Hero ── */
 #dok .dok-hero {
@@ -587,6 +643,16 @@ html { scroll-behavior: smooth; }
 #dok .dok-all-table tr:last-child td { border-bottom: none; }
 #dok .dok-all-table tr:nth-child(even) td { background: #f7fbfd; }
 #dok .dok-all-table .dok-no { font-weight: 700; color: var(--brand-deep); white-space: nowrap; }
+/* 표 아래에 「월간 좋은예산」 사례를 이어 붙입니다(원본 2026-09-03).
+   수상 회차가 아니므로 구분선을 두고, 회차 칸에는 출처를 적습니다. */
+#dok .dok-all-table .dok-case-sep td {
+  padding: 16px; background: var(--brand-tint) !important;
+  font-weight: 700; font-size: 13.5px; color: var(--brand-deep);
+  border-top: 2px solid var(--brand); word-break: keep-all;
+}
+#dok .dok-all-table.is-clickable tbody tr.dok-case-sep { cursor: default; }
+#dok .dok-all-table.is-clickable tbody tr.dok-case-sep:hover td { background: var(--brand-tint) !important; }
+#dok .dok-all-table .dok-case-row .dok-no { color: var(--ink-soft); font-size: 13px; }
 /* 맨 오른쪽 '요약 →' 칸. 표 전체가 눌린다는 것을 알려 줍니다.
    .is-clickable 이 없으면(스크립트가 막히면) 아예 숨어서 헛되이 꾀지 않습니다. */
 #dok .dok-all-table .dok-go {
@@ -810,45 +876,14 @@ html { scroll-behavior: smooth; }
 }
 
 
-/* ── Footer CTA ── */
-#dok .dok-bottom-cta {
-  text-align: center;
-  padding: 88px 24px;
-}
-#dok .dok-bottom-cta h2 {
-  font-family: 'GmarketSans', sans-serif;
-  font-weight: 700; font-size: clamp(24px, 3.4vw, 34px);
-  margin-bottom: 16px; word-break: keep-all;
-}
-#dok .dok-bottom-cta p { color: var(--ink-soft); margin-bottom: 30px; word-break: keep-all; }
-#dok .dok-bottom-cta .dok-btn-donate {
-  display: inline-block;
-  font-family: 'GmarketSans', sans-serif;
-  font-weight: 700; font-size: 16px; color: #fff;
-  background: var(--brand); text-decoration: none;
-  padding: 18px 38px; border-radius: 14px;
-  box-shadow: 0 6px 20px rgba(0,175,236,0.35);
-  transition: transform 0.15s, background 0.15s;
-}
-#dok .dok-bottom-cta .dok-btn-donate:hover { background: var(--brand-deep); transform: translateY(-2px); }
-
-#dok footer { border-top: 1px solid var(--line); padding: 36px 24px; }
-#dok .dok-footer-inner {
-  max-width: 1080px; margin: 0 auto;
-  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px;
-  font-size: 13px; color: var(--ink-soft);
-}
-#dok .dok-footer-inner a { color: var(--brand-deep); text-decoration: none; }
-#dok .dok-footer-inner a:hover { text-decoration: underline; }
-
 @media (max-width: 820px) {
-      #dok .dok-section { padding: 60px 20px; }
-  #dok .dok-topbar nav .dok-nav-link { display: none; }
+  #dok .dok-section { padding: 60px 20px; }
 }
+
 /* hidden 을 붙인 것은 무조건 숨깁니다.
    브라우저 기본 규칙은 [hidden]{display:none} 하나뿐이라, 우리가 클래스에
-   display 를 주면 우선순위에서 밀려 hidden 이 무시됩니다. 원본에서 대비책
-   제보 폼이 그렇게 화면에 그대로 나온 적이 있습니다(2026-09-02). */
+   display 를 주면 우선순위에서 밀려 hidden 이 무시됩니다. 실제로 대비책
+   제보 폼이 그렇게 화면에 그대로 나왔습니다(2026-09-02). */
 #dok [hidden] { display: none !important; }
 
 #dok :focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
@@ -2064,7 +2099,12 @@ html { scroll-behavior: smooth; }
         '수상 사실과 대상 사업은 위에 있는 그대로입니다.' +
         '</div>';
     }
+    return renderSummary(s);
+  }
 
+  /* 요약 한 덩이를 화면으로 만듭니다. 회차 요약(DOK_SUMMARY)과 「월간 좋은예산」
+     사례(cases.json)가 칸 이름이 같아서(lead · figs · body · src) 함께 씁니다. */
+  function renderSummary(s) {
     var out = '';
     if (s.lead) out += '<p class="lead">' + s.lead + '</p>';
 
@@ -2090,6 +2130,39 @@ html { scroll-behavior: smooth; }
       }).join('') + '</div>';
     }
     return out;
+  }
+
+  /* 「월간 좋은예산」 사례를 회차 요약과 같은 팝업으로 엽니다.
+     회차가 없는 자료라 앞뒤로 넘기지 않고, 주소에도 남기지 않습니다. */
+  function openCase(id) {
+    var c = CASES[id];
+    if (!c || !modal) return;
+    curRound = null;
+
+    modalHd.innerHTML =
+      '<span class="dok-modal-no">월간 좋은예산</span>' +
+      '<span class="dok-modal-when">' + esc(ymText(c.ym)) + '</span>' +
+      '<h3>' + esc(c.title) + '</h3>' +
+      '<div class="dok-modal-who">' + esc(c.who || '') + '</div>';
+    modalBody.innerHTML =
+      (casesDraft
+        ? '<p class="dok-draft-bar"><b>검수 전 초안입니다.</b> ' +
+          '좋은예산센터 원문을 요약한 것이라 아직 확인을 거치지 않았습니다. ' +
+          '숫자는 모두 원문에 있는 값입니다.</p>'
+        : '') + renderSummary(c);
+    modalBody.scrollTop = 0;
+
+    btnPrev.disabled = true;
+    btnNext.disabled = true;
+    btnPrev.dataset.go = '';
+    btnNext.dataset.go = '';
+
+    if (!modal.classList.contains('open')) {
+      lastFocus = document.activeElement;
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    modal.querySelector('.dok-modal-x').focus();
   }
 
   function byRound(n) {
@@ -2193,33 +2266,38 @@ html { scroll-behavior: smooth; }
   function wireOpeners() {
     buildModal();
 
+    /* 한 줄을 누르면 무엇을 여는가 — 회차 요약이거나(data-round),
+       「월간 좋은예산」 사례이거나(data-case). 두 경우를 한 곳에서 가릅니다. */
+    function openFromRow(el) {
+      if (!el) return false;
+      if (el.dataset.round) { openModal(parseInt(el.dataset.round, 10)); return true; }
+      if (el.dataset.case) { openCase(el.dataset.case); return true; }
+      return false;
+    }
+
     // 지도 옆 목록 — 다시 그려져도 계속 동작하도록 바깥 칸에 걸어 둡니다.
     ['dok-map-side', 'dok-map-offmap'].forEach(function (id) {
       var box = document.getElementById(id);
       if (!box) return;
       box.addEventListener('click', function (e) {
-        var li = e.target.closest('.dok-map-list li');
-        if (li && li.dataset.round) openModal(parseInt(li.dataset.round, 10));
+        openFromRow(e.target.closest('.dok-map-list li'));
       });
       box.addEventListener('keydown', function (e) {
         if (e.key !== 'Enter' && e.key !== ' ') return;
-        var li = e.target.closest('.dok-map-list li');
-        if (li && li.dataset.round) { e.preventDefault(); openModal(parseInt(li.dataset.round, 10)); }
+        if (openFromRow(e.target.closest('.dok-map-list li'))) e.preventDefault();
       });
     });
 
-    // 역대 표
+    // 역대 표 (아래쪽에 「월간 좋은예산」 사례 줄이 이어 붙습니다)
     var table = document.querySelector('#dok .dok-all-table');
     if (table) {
       table.classList.add('is-clickable');
       table.addEventListener('click', function (e) {
-        var tr = e.target.closest('tbody tr');
-        if (tr && tr.dataset.round) openModal(parseInt(tr.dataset.round, 10));
+        openFromRow(e.target.closest('tbody tr'));
       });
       table.addEventListener('keydown', function (e) {
         if (e.key !== 'Enter' && e.key !== ' ') return;
-        var tr = e.target.closest('tbody tr');
-        if (tr && tr.dataset.round) { e.preventDefault(); openModal(parseInt(tr.dataset.round, 10)); }
+        if (openFromRow(e.target.closest('tbody tr'))) e.preventDefault();
       });
     }
   }
@@ -2266,6 +2344,8 @@ html { scroll-behavior: smooth; }
 
   // ── 지역 지도 ──
   // 원본 코드입니다. 시도 단위(16개)까지만 그립니다.
+  // 2026-09-14 에 원본(2026-09-03 개편본)에 맞췄습니다 — 말풍선 · 기본 화면의
+  // '최근 수상' · 전체 보기 버튼 · 세종 지시선 · 처음 물드는 연출 · 알약 정렬.
   var svg = document.getElementById('dok-map-svg');
   var side = document.getElementById('dok-map-side');
   var off = document.getElementById('dok-map-offmap');
@@ -2274,10 +2354,15 @@ html { scroll-behavior: smooth; }
     '11': [14, -20],   // 서울
     '23': [-46, 4],    // 인천
     '31': [46, 34],    // 경기
-    '29': [-30, -10],  // 세종
+    // 세종은 도형이 너무 작아 이름이 어떤 크기로도 충남과 겹쳤습니다.
+    // 위쪽 빈 곳으로 빼고 아래 LEADER 로 가는 선을 이어 줍니다.
+    '29': [-15, -61],  // 세종
     '25': [16, 14],    // 대전
     '22': [10, -6]     // 대구
   };
+
+  // 이름을 도형 밖으로 뺀 지역. 어디를 가리키는지 가는 선으로 이어 줍니다.
+  var LEADER = { '29': true };
 
   // 지도 위 건수 숫자는 원본과 똑같이 꺼 둡니다(바로 아래 칩에 같은 숫자가 나옵니다).
   var SHOW_MAP_COUNT = false;
@@ -2289,6 +2374,10 @@ html { scroll-behavior: smooth; }
     return awards.filter(function (a) { return a.sido === code; });
   }
   function countOf(code) { return awardsOf(code).length; }
+
+  function figure() {
+    return svg && svg.closest ? svg.closest('.dok-map-figure') : null;
+  }
 
   function paint() {
     if (!svg) return;
@@ -2304,8 +2393,10 @@ html { scroll-behavior: smooth; }
       el.style.fill = n === 0 ? '#eaf1f5' : 'rgba(0, 135, 184, ' + (0.34 + t * 0.56) + ')';
       el.classList.toggle('is-on', selected === a.code);
 
+      // 2026-09-03 원본 결정: 진한 칸만 흰 글씨가 되어 서울 하나만 튀어 보였습니다.
+      // 이름은 전부 같은 검은색으로 둡니다 — 흰 테두리가 있어 진한 칠 위에서도 읽힙니다.
       var label = svg.querySelector('.dok-map-label[data-code="' + a.code + '"]');
-      if (label) label.classList.toggle('is-light', t > 0.55);
+      if (label) label.classList.remove('is-light');
       var dot = svg.querySelector('.dok-map-dot[data-code="' + a.code + '"]');
       if (dot) dot.textContent = n ? n : '';
 
@@ -2316,6 +2407,16 @@ html { scroll-behavior: smooth; }
         chip.querySelector('.dok-chip-n').textContent = n ? n : '';
       }
     });
+
+    // 한 곳을 골랐으면 나머지를 물러나게 합니다 (CSS 의 .is-picked).
+    var fig = figure();
+    if (fig) fig.classList.toggle('is-picked', !!selected);
+  }
+
+  // 패널 안 숫자를 0 에서 올립니다. 위쪽 지표와 같은 함수를 씁니다.
+  function countPanel() {
+    if (!side) return;
+    side.querySelectorAll('.dok-count2').forEach(countOne);
   }
 
   var PANEL_BAR =
@@ -2334,31 +2435,80 @@ html { scroll-behavior: smooth; }
     });
   }
 
+  /* 「월간 좋은예산」이 다룬 사례. 수상작과 성격이 달라 목록을 따로 둡니다
+     (수상 기록에 섞으면 '몇 회 수상'이 흐려집니다). 자료를 못 읽었으면 빈 문자열. */
+  function caseList(code) {
+    var cs = casesOf(code);
+    if (!cs.length) return '';
+    return '<div class="dok-map-cases">' +
+      '<div class="dok-map-cases-t">월간 좋은예산이 다룬 사례' +
+        (casesDraft ? ' <span class="dok-draft">검수 전 초안</span>' : '') +
+      '</div>' +
+      '<ul class="dok-map-list dok-map-list-case">' + cs.map(function (c) {
+        return '<li data-case="' + esc(c.id) + '" tabindex="0" role="button" ' +
+               'aria-label="' + esc(c.title) + ' 요약 보기">' +
+          '<div class="dok-map-round">월간 좋은예산 · ' + esc(ymText(c.ym)) + '</div>' +
+          '<div class="dok-map-proj">' + esc(c.title) + '</div>' +
+          '<div class="dok-map-who">' + esc(c.who || '') + '</div>' +
+          '</li>';
+      }).join('') + '</ul></div>';
+  }
+
+  /* 목록 한 줄. 누르면 그 회차 요약 팝업이 열립니다.
+     ⚠️ 팝업 쪽이 li[data-round] 를 위임으로 받습니다 — 이름을 바꾸면 조용히 죽습니다. */
+  function awardLi(a, i) {
+    return '<li data-round="' + esc(a.round) + '" tabindex="0" role="button" ' +
+           'style="--dok-item-delay:' + (Math.min(i, 8) * 45) + 'ms" ' +
+           'aria-label="제' + esc(a.round) + '회 ' + esc(a.project) + ' 요약 보기">' +
+      '<div class="dok-map-round">제' + esc(a.round) + '회 · ' + esc(a.date) + '</div>' +
+      '<div class="dok-map-proj">' + esc(a.project) + '</div>' +
+      '<div class="dok-map-who">' + esc(a.awardee) + '</div>' +
+      '<span class="dok-map-open">요약 보기 →</span>' +
+      '</li>';
+  }
+
   function listHtml(list) {
     // is-clickable 은 '누를 수 있다'는 표시를 켜는 클래스입니다.
     // 팝업 코드가 죽으면 이 함수도 안 돌아가므로, 헛되이 누를 일이 생기지 않습니다.
-    return '<ul class="dok-map-list is-clickable">' + list.map(function (a) {
-      return '<li data-round="' + esc(a.round) + '" tabindex="0" role="button" ' +
-             'aria-label="제' + esc(a.round) + '회 ' + esc(a.project) + ' 요약 보기">' +
-        '<div class="dok-map-round">제' + esc(a.round) + '회 · ' + esc(a.date) + '</div>' +
-        '<div class="dok-map-proj">' + esc(a.project) + '</div>' +
-        '<div class="dok-map-who">' + esc(a.awardee) + '</div>' +
-        '<span class="dok-map-open">요약 보기</span>' +
-        '</li>';
-    }).join('') + '</ul>';
+    return '<ul class="dok-map-list is-clickable">' + list.map(awardLi).join('') + '</ul>';
   }
 
   function renderSide() {
     if (!side) return;
     if (!selected) {
       var totalAwards = awards.filter(function (a) { return a.scope === 'local'; }).length;
+      /* 기본 화면에도 읽을 것을 내놓습니다 — 최근 수상 6건 (원본 2026-09-03).
+         전에는 이 칸이 안내문 한 줄과 숫자 둘뿐이라, 지역을 누르기 전까지
+         오른쪽 절반이 통째로 비어 있었습니다. */
+      var recent = awards.slice().sort(function (a, b) { return b.round - a.round; }).slice(0, 6);
       side.innerHTML =
         '<h3>전국</h3>' +
-        '<p class="dok-map-sub">지도나 아래 지역 목록을 눌러보세요.</p>' +
         '<div class="dok-map-stats">' +
-          '<div class="dok-map-stat"><b>' + totalAwards + '</b><span>지역에 수여된 독상</span></div>' +
-          '<div class="dok-map-stat"><b>' + awards.length + '</b><span>전체 수상</span></div>' +
+          '<div class="dok-map-stat"><b><span class="dok-count2" data-to="' + totalAwards + '">0</span></b>' +
+            '<span>지역 밑빠진 독상</span></div>' +
+          '<div class="dok-map-stat"><b><span class="dok-count2" data-to="' + awards.length + '">0</span></b>' +
+            '<span>전체 수상</span></div>' +
+        '</div>' +
+        (recent.length
+          ? '<div class="dok-map-listhead"><b>최근 수상</b><span>지도나 아래 지역 목록을 눌러보세요</span></div>' +
+            listHtml(recent)
+          : '') +
+        '<div class="dok-map-foot">' +
+          (awards.length
+            ? '<button type="button" class="dok-map-allbtn">역대 ' + awards.length + '회 전체 보기</button>'
+            : '') +
         '</div>';
+
+      countPanel();
+
+      var all = side.querySelector('.dok-map-allbtn');
+      if (all) all.addEventListener('click', function () {
+        // 역대 표는 접혀 있는 것이 기본입니다. 닫혀 있으면 펴 준 뒤 데려갑니다.
+        var t = document.getElementById('dok-all-toggle');
+        var w = document.getElementById('dok-all-table');
+        if (t && w && !w.classList.contains('open')) t.click();
+        if (w) w.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
       return;
     }
 
@@ -2370,12 +2520,15 @@ html { scroll-behavior: smooth; }
       '<h3>' + esc(area.name) + '</h3>' +
       '<p class="dok-map-sub">밑빠진 독상 수여 기록</p>' +
       '<div class="dok-map-stats">' +
-        '<div class="dok-map-stat"><b>' + list.length + '</b><span>수여된 독상</span></div>' +
+        '<div class="dok-map-stat"><b><span class="dok-count2" data-to="' + list.length + '">0</span></b>' +
+          '<span>수여된 독상</span></div>' +
       '</div>' +
       (list.length
         ? listHtml(list)
-        : '<p class="dok-map-none">아직 이 지역에 수여된 밑빠진 독상은 없습니다.</p>');
+        : '<p class="dok-map-none">아직 이 지역에 수여된 밑빠진 독상은 없습니다.</p>') +
+      caseList(selected);
 
+    countPanel();
     wirePanelBar();
   }
 
@@ -2385,12 +2538,10 @@ html { scroll-behavior: smooth; }
     var multi = awards.filter(function (a) { return a.scope === 'multi'; });
     var unknown = awards.filter(function (a) { return a.scope === 'unknown'; });
 
+    // 2026-09-03 원본 결정으로 갈래별 건수와 '절반 이상은…' 문장을 지웠습니다.
     off.innerHTML =
-      '<b>지도에 찍히지 않는 ' + (central.length + multi.length + unknown.length) + '건</b><br>' +
-      '중앙정부·공공기관 ' + central.length + '건, 여러 지자체에 걸친 사업 ' + multi.length + '건' +
-      (unknown.length ? ', 지역 확인이 필요한 ' + unknown.length + '건' : '') +
-      '. 밑빠진 독상의 절반 이상은 특정 지역이 아니라 중앙정부를 향했습니다.' +
-      '<br><button type="button" id="dok-map-central">중앙정부 수상 내역 보기</button>';
+      '<b>중앙정부, 공공기관 사업 ' + (central.length + multi.length + unknown.length) + '건</b>' +
+      '<button type="button" id="dok-map-central">중앙정부 수상 내역 보기</button>';
 
     document.getElementById('dok-map-central').addEventListener('click', function () {
       selected = null;
@@ -2400,7 +2551,9 @@ html { scroll-behavior: smooth; }
         PANEL_BAR +
         '<h3>중앙정부·공공기관</h3>' +
         '<p class="dok-map-sub">특정 지역에 속하지 않는 수상 내역 ' + list.length + '건</p>' +
-        listHtml(list);
+        listHtml(list) +
+        // 지역이 없는 「월간 좋은예산」 사례는 여기로 모입니다.
+        caseList('');
       wirePanelBar();
       if (window.matchMedia('(max-width: 860px)').matches) {
         side.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2416,6 +2569,12 @@ html { scroll-behavior: smooth; }
         return '<path class="dok-map-area" data-code="' + a.code + '" d="' + a.d + '">' +
                '<title>' + esc(a.name) + '</title></path>';
       }).join('') +
+      // 이름을 도형 밖으로 뺀 지역만 가는 선으로 이어 줍니다.
+      areas.filter(function (a) { return LEADER[a.code]; }).map(function (a) {
+        var nud = NUDGE[a.code] || [0, 0];
+        return '<line class="dok-map-leader" x1="' + (a.cx + nud[0]) + '" y1="' + (a.cy + nud[1] + 14) + '"' +
+               ' x2="' + a.cx + '" y2="' + (a.cy - 4) + '" vector-effect="non-scaling-stroke"></line>';
+      }).join('') +
       areas.map(function (a) {
         var nud = NUDGE[a.code] || [0, 0];
         var x = a.cx + nud[0], y = a.cy + nud[1];
@@ -2428,8 +2587,82 @@ html { scroll-behavior: smooth; }
 
     svg.querySelectorAll('.dok-map-area').forEach(function (el) {
       el.addEventListener('click', function () { select(el.dataset.code); });
+      // 마우스가 있는 기기에서만 말풍선을 띄웁니다(showTip 안에서 다시 봅니다).
+      el.addEventListener('pointerenter', function (ev) { showTip(el, ev); });
+      el.addEventListener('pointermove', function (ev) { showTip(el, ev); });
+      el.addEventListener('pointerleave', hideTip);
     });
+    svg.addEventListener('pointerleave', hideTip);
     fitMapText();
+  }
+
+  /* ── 지도 위 말풍선 ──
+     색만으로는 몇 건인지 알 수 없었고, 누를 수 있다는 신호도 없었습니다.
+     ⚠️ 손가락 기기에서는 띄우지 않습니다 — 누르면 바로 패널이 열리므로
+        말풍선이 손가락 밑에 깔려 방해만 됩니다. */
+  var tipEl = null;
+  function hoverable() { return !window.matchMedia('(hover: none)').matches; }
+
+  function showTip(el, ev) {
+    if (!hoverable()) return;
+    var fig = figure();
+    var a = areas.filter(function (x) { return x.code === el.dataset.code; })[0];
+    if (!fig || !a) return;
+    if (!tipEl) {
+      tipEl = document.createElement('div');
+      tipEl.className = 'dok-map-tip';
+      tipEl.setAttribute('aria-hidden', 'true');   // 낭독기에는 도형의 <title> 이 있습니다
+      fig.appendChild(tipEl);
+    }
+    tipEl.innerHTML = esc(a.name) + '<b>' + countOf(a.code) + '건 수상</b>';
+    var box = fig.getBoundingClientRect();
+    tipEl.style.left = (ev.clientX - box.left) + 'px';
+    tipEl.style.top = (ev.clientY - box.top) + 'px';
+    tipEl.classList.add('is-on');
+  }
+  function hideTip() { if (tipEl) tipEl.classList.remove('is-on'); }
+
+  /* ── 처음 화면에 들어올 때 한 번 ──
+     지역이 차례로 물들고, 그다음 수상이 많은 세 곳이 두 번 두근거립니다.
+     "이건 누르는 지도"라고 말없이 알려 주려는 것입니다.
+     ★ 색은 이미 paint() 가 칠해 둔 상태입니다. 여기서는 잠깐 되돌렸다가 다시 칠해
+       전환이 눈에 보이게만 합니다 — 그래서 이 함수가 아예 안 돌아도 색은 늘 맞습니다. */
+  var introDone = false;
+  function playIntro() {
+    if (introDone) return;
+    introDone = true;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var fig = figure();
+    if (!fig || !areas.length) return;
+
+    var order = areas.slice().sort(function (a, b) { return countOf(b.code) - countOf(a.code); });
+    order.forEach(function (a, i) {
+      var el = svg.querySelector('.dok-map-area[data-code="' + a.code + '"]');
+      if (!el) return;
+      el.style.setProperty('--dok-fill-delay', Math.min(i, 15) * 45 + 'ms');
+      el.style.fill = '#eaf1f5';
+    });
+    fig.classList.add('is-filling');
+    // 되돌린 색이 실제로 그려진 다음에 다시 칠해야 전환이 생깁니다.
+    requestAnimationFrame(function () { requestAnimationFrame(paint); });
+
+    // 색이 다 찬 뒤에 두근거림을 시작합니다. 겹치면 둘 다 흐려집니다.
+    setTimeout(function () {
+      if (selected) return;                       // 그 사이 사람이 눌렀으면 그만둡니다
+      order.slice(0, 3).forEach(function (a) {
+        if (!countOf(a.code)) return;
+        var el = svg.querySelector('.dok-map-area[data-code="' + a.code + '"]');
+        if (el) el.classList.add('is-hint');
+      });
+    }, 1000);
+    setTimeout(function () { fig.classList.remove('is-filling'); }, 2000);
+  }
+
+  function stopHint() {
+    if (!svg) return;
+    svg.querySelectorAll('.dok-map-area.is-hint').forEach(function (el) {
+      el.classList.remove('is-hint');
+    });
   }
 
   // SVG 안 글자는 viewBox 단위라 지도가 좁아지면 같이 줄어듭니다.
@@ -2440,8 +2673,14 @@ html { scroll-behavior: smooth; }
     if (!w) return;
     var vb = svg.viewBox.baseVal.width || 857;
     var scale = w / vb;
-    var label = Math.max(18, Math.min(46, Math.round(13.5 / scale)));
-    var dot = Math.max(16, Math.min(42, Math.round(13 / scale)));
+    var unit = function (target, lo, hi) {
+      return Math.max(lo, Math.min(hi, Math.round(target / scale)));
+    };
+    // 지도가 좁아지면 글자가 상대적으로 커져 이름끼리 부딪칩니다.
+    // 화면 폭에 따라 조금씩 줄입니다(360px 에서 대구·울산이 겹치던 것).
+    var target = w < 380 ? 12.5 : (w < 460 ? 13 : 13.5);
+    var label = unit(target, 18, 46);
+    var dot = unit(target - 0.5, 16, 42);
     svg.style.setProperty('--dok-map-label', label + 'px');
     svg.style.setProperty('--dok-map-dot', dot + 'px');
     svg.querySelectorAll('.dok-map-dot').forEach(function (el) {
@@ -2451,6 +2690,8 @@ html { scroll-behavior: smooth; }
   }
 
   function select(code) {
+    stopHint();          // 사람이 이미 알아챘습니다. 더 흔들 이유가 없습니다.
+    hideTip();
     selected = selected === code ? null : code;
     paint();
     renderSide();
@@ -2462,7 +2703,14 @@ html { scroll-behavior: smooth; }
   function drawChips() {
     var box = document.getElementById('dok-map-chips');
     if (!box) return;
-    box.innerHTML = areas.map(function (a) {
+    /* 수상이 많은 지역부터 놓습니다 (원본 2026-09-03).
+       행정코드 순으로 늘어놓으면 5건인 경기와 0건인 세종이 같은 무게로 보여서,
+       어디를 눌러야 볼 것이 있는지 알 수 없었습니다. */
+    var ordered = areas.slice().sort(function (a, b) {
+      return awardsOf(b.code).length - awardsOf(a.code).length ||
+             String(a.short || a.name).localeCompare(String(b.short || b.name), 'ko');
+    });
+    box.innerHTML = ordered.map(function (a) {
       return '<button type="button" class="dok-map-chip" data-code="' + a.code + '" aria-pressed="false">' +
              '<span>' + esc(a.short || a.name) + '</span><span class="dok-chip-n"></span></button>';
     }).join('');
@@ -2471,9 +2719,91 @@ html { scroll-behavior: smooth; }
     });
   }
 
+  // 지도가 화면에 들어오는 순간 한 번만 연출을 재생합니다.
+  // 관찰자가 없는 환경에서는 그냥 재생하지 않습니다(색은 이미 칠해져 있습니다).
+  function watchIntro() {
+    var fig = figure();
+    if (!fig || !('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        playIntro();
+      });
+    }, { threshold: 0.25 });
+    io.observe(fig);
+  }
+
   if (svg) {
     if ('ResizeObserver' in window) new ResizeObserver(fitMapText).observe(svg);
     else window.addEventListener('resize', fitMapText);
+  }
+
+  /* ── 「월간 좋은예산」이 다룬 사례 ──
+     밑빠진 독상 수상작이 아니라 좋은예산센터 월간지가 다룬 예산낭비 사례입니다.
+     회차가 없어 awards 에 섞지 않고 원본의 data/cases.json 으로 따로 옵니다.
+     지도 옆 목록과 역대 표 아래에 붙고, 누르면 회차 요약과 같은 팝업이 열립니다.
+     못 받아도 나머지 화면은 그대로 돕니다. */
+  var CASES = {};
+  var casesDraft = true;
+
+  function ymText(ym) {
+    return String(ym || '').replace('-0', '. ').replace('-', '. ') + '.';
+  }
+
+  function casesOf(code) {
+    var out = [];
+    for (var id in CASES) {
+      var c = CASES[id];
+      var sido = c.sido || [];
+      if (code ? sido.indexOf(code) >= 0 : !sido.length) out.push(c);
+    }
+    return out.sort(function (a, b) { return a.ym < b.ym ? 1 : -1; });
+  }
+
+  /* 역대 수상 내역 표 아래에 사례를 이어 붙입니다 (원본 2026-09-03).
+     회차 숫자가 없는 줄이라 '몇 회 수상' 집계에는 안 들어갑니다. */
+  function fillCaseRows() {
+    var tb = document.getElementById('dokh-rows');
+    if (!tb || tb.querySelector('.dok-case-row')) return;
+    var all = [];
+    for (var id in CASES) all.push(CASES[id]);
+    if (!all.length) return;
+    all.sort(function (a, b) { return a.ym < b.ym ? 1 : -1; });
+
+    var cols = document.querySelectorAll('#dok .dok-all-table thead th').length || 4;
+    var html = '<tr class="dok-case-sep"><td colspan="' + cols + '">' +
+      '「월간 좋은예산」이 다룬 예산낭비 사례 ' + all.length + '건' +
+      (casesDraft ? ' <span class="dok-draft">검수 전 초안</span>' : '') +
+      '</td></tr>';
+
+    html += all.map(function (c) {
+      return '<tr class="dok-case-row" data-case="' + esc(c.id) + '" tabindex="0">' +
+        '<td class="dok-no">월간<br>좋은예산</td>' +
+        '<td>' + esc(ymText(c.ym)) + '</td>' +
+        '<td>' + esc(c.who || '') + '</td>' +
+        '<td>' + esc(c.title) + '</td>' +
+        (cols > 4 ? '<td class="dok-go" aria-hidden="true">요약 →</td>' : '') +
+        '</tr>';
+    }).join('');
+
+    tb.insertAdjacentHTML('beforeend', html);
+  }
+
+  function loadCases() {
+    fetch(DATA + 'cases.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        // cases.json 의 draft 를 화면으로 끌어옵니다. 검수가 끝나면 그 파일에서
+        // draft 를 false 로 바꾸세요 — 딱지가 함께 사라집니다.
+        casesDraft = d.draft !== false;
+        (d.cases || []).forEach(function (c) { CASES[c.id] = c; });
+        fillCaseRows();
+        // 사례가 지도보다 늦게 도착하면 옆 칸을 다시 그립니다.
+        renderSide();
+        renderOffmap();
+      })
+      .catch(function () { /* 못 읽어도 나머지 화면은 그대로 돕니다 */ });
   }
 
   // ── 원본에서 받아오기 ──
@@ -2502,6 +2832,10 @@ html { scroll-behavior: smooth; }
     // 수상 기록이 들어온 뒤에 팝업을 겁니다. 데이터가 없으면 열 것도 없습니다.
     wireOpeners();
     openFromHash();
+    // 지도가 화면에 들어오면 한 번 물들이는 연출을 재생합니다.
+    if (svg) watchIntro();
+    // 「월간 좋은예산」 사례는 따로 받습니다 — 못 받아도 위 화면은 그대로입니다.
+    loadCases();
   }).catch(failed);
 
   /* ── 주소로 회차 열기 ──
@@ -2535,32 +2869,36 @@ html { scroll-behavior: smooth; }
   }
 
   // ── 숫자 올리기 ──
-  // 화면에 들어왔을 때 한 번만 0 에서 목표까지 올립니다.
+  /* 숫자 한 칸을 0 에서 목표까지 올립니다.
+     data-dec="1" 을 붙이면 소수점 한 자리까지 셉니다(17.6조 처럼).
+     ⚠️ 함수로 빼 둔 이유 — 지도 옆 패널도 이것을 부릅니다(countPanel).
+        패널은 지역을 고를 때마다 새로 그려져서 아래 관찰자가 못 잡습니다. */
+  function countOne(el) {
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var to = Number(el.getAttribute('data-to')) || 0;
+    var dec = Number(el.getAttribute('data-dec')) || 0;
+    // 여섯 자리(175,824억)가 들어오므로 쉼표를 찍습니다. 안 찍으면 자릿수를 세게 됩니다.
+    var show = function (v) {
+      return dec ? v.toFixed(dec) : Math.round(v).toLocaleString('ko-KR');
+    };
+    if (still || !('requestAnimationFrame' in window)) { el.textContent = show(to); return; }
+    var t0 = null, dur = 900;
+    var tick = function (t) {
+      if (t0 === null) t0 = t;
+      var p = Math.min(1, (t - t0) / dur);
+      el.textContent = show(to * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(tick);
+      else el.textContent = show(to);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  // 화면에 들어왔을 때 한 번만 올립니다.
   function startCounters() {
     var nums = document.querySelectorAll('#dok .dok-count');
     if (!nums.length) return;
 
-    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // data-dec="1" 을 붙이면 소수점 한 자리까지 셉니다(17.6조 처럼).
-    // 없으면 예전처럼 정수입니다.
-    var run = function (el) {
-      var to = Number(el.getAttribute('data-to')) || 0;
-      var dec = Number(el.getAttribute('data-dec')) || 0;
-      // 여섯 자리(175,824억)가 들어오므로 쉼표를 찍습니다. 안 찍으면 자릿수를 세게 됩니다.
-      var show = function (v) {
-        return dec ? v.toFixed(dec) : Math.round(v).toLocaleString('ko-KR');
-      };
-      if (still || !('requestAnimationFrame' in window)) { el.textContent = show(to); return; }
-      var t0 = null, dur = 900;
-      var tick = function (t) {
-        if (t0 === null) t0 = t;
-        var p = Math.min(1, (t - t0) / dur);
-        el.textContent = show(to * (1 - Math.pow(1 - p, 3)));
-        if (p < 1) requestAnimationFrame(tick);
-        else el.textContent = show(to);
-      };
-      requestAnimationFrame(tick);
-    };
+    var run = countOne;
 
     if (!('IntersectionObserver' in window)) {
       nums.forEach(run);

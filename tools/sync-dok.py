@@ -31,8 +31,18 @@ MINE = os.path.join(HERE, "dok-history.html")
 ORIGIN = os.path.normpath(os.path.join(HERE, "..", "dokseong", "public", "index.html"))
 
 # 일부러 안 가져온 것들 — 이 접두어가 원본에만 있는 건 정상이다
+#   2026-09-14 에 다섯을 더했다. 그날 지도·역대·이야기 쪽을 원본에 맞추고 나니
+#   남은 차이가 전부 '여기 없는 기능'이었는데, 그것들이 목록에 섞여 있어
+#   무엇을 더 가져와야 하는지 읽기 어려웠다.
 SKIPPED = ("dok-report", "dok-camp", "dok-vote", "dok-join", "dok-sample",
-           "dok-deadline", "dok-donate", "dok-hero-actions", "dok-btn-main", "dok-btn-line")
+           "dok-deadline", "dok-donate", "dok-hero-actions", "dok-btn-main", "dok-btn-line",
+           "dok-photo",          # 제보 사진 고르기
+           "dok-topbar",         # 원본 자체 상단 바 — 여기는 캠페이너스 공통 상단을 쓴다
+           "dok-map-mode",       # 지도의 '시민 제보' 보기 모드
+           "dok-map-report-cta", # 지도 패널의 제보 버튼
+           "dok-section-tag",    # 제보 칸 머리말에만 쓰는 딱지
+           "dok-more",           # 제보 폼의 '지역·기관 더 적기'
+           "dok-voice")          # 후원자 소감 — 원본에서도 꺼져 있고 문구가 전부 예시다
 
 
 def read(path):
