@@ -621,6 +621,50 @@
     #action-home-v2 .pcard strong{-webkit-line-clamp:3}
   }
 
+  /* ───────── 들어오자마자 뜨는 공지 팝업 (2026-09-17) ─────────
+     27주년 창립행사 웹자보 한 장. 누르면 행사 페이지로 갑니다.
+
+     왜 <dialog> 인가
+       Esc 로 닫기 · 뒤 배경 어둡게 · 뒤쪽 누르기 막기를 브라우저가 해 줍니다.
+       밑빠진 독상의 글 팝업(dok-history.html)과 같은 방식입니다.
+       ⚠️ #action-home-v2 에 overflow:hidden 이 걸려 있지만, showModal() 로 연
+          <dialog> 는 최상위 층(top layer)에 올라가 잘리지 않습니다.
+
+     폭을 세 값 중 작은 것으로 잡는 까닭
+       웹자보가 세로로 깁니다(1 : 1.415). 폭만 정해 두면 낮은 화면에서 아래가
+       잘립니다. 그래서 남은 높이를 비율로 거꾸로 나눠 폭을 구합니다.
+       140px 은 아래 두 줄(88px)과 위아래 여백을 뺀 몫입니다.
+       (dvh 를 모르는 브라우저를 위해 vh 로 한 번 먼저 씁니다.) */
+  #action-home-v2 .ah-pop{
+    width:min(420px, calc(100vw - 32px), calc((100vh - 140px) / 1.415));
+    width:min(420px, calc(100vw - 32px), calc((100dvh - 140px) / 1.415));
+    max-width:none;max-height:none;margin:auto;padding:0;border:0;border-radius:14px;
+    overflow:hidden;background:#fff;color:var(--ink);font-family:inherit;
+    box-shadow:0 18px 50px rgba(13,28,38,.32)
+  }
+  #action-home-v2 .ah-pop::backdrop{background:rgba(13,28,38,.55)}
+  #action-home-v2 .ah-pop img{width:100%;height:auto}
+  /* 웹자보 아래 QR 둘과 계좌가 가리면 안 되어 그림 위에는 아무것도 얹지 않습니다.
+     누를 수 있다는 것은 아래 띠의 버튼이 알립니다. */
+  #action-home-v2 .ah-pop-go{
+    display:block;height:44px;line-height:44px;text-align:center;
+    background:var(--brand-deep);color:#fff;font-weight:700;font-size:15px
+  }
+  #action-home-v2 .ah-pop-go:hover{background:var(--ink)}
+  #action-home-v2 .ah-pop-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    height:44px;padding:0 6px 0 13px;background:var(--paper);border-top:1px solid var(--line)
+  }
+  #action-home-v2 .ah-pop-bar label{
+    display:flex;align-items:center;gap:7px;font-size:13.5px;color:var(--ink-soft);cursor:pointer
+  }
+  #action-home-v2 .ah-pop-bar input{width:16px;height:16px;margin:0;accent-color:var(--brand)}
+  #action-home-v2 .ah-pop-x{
+    border:0;background:none;font:inherit;font-size:14px;font-weight:700;color:var(--ink);
+    padding:8px 11px;border-radius:8px;cursor:pointer
+  }
+  #action-home-v2 .ah-pop-x:hover{background:var(--line)}
+
   @media(prefers-reduced-motion:reduce){
     #action-home-v2 *{transition:none!important;animation:none!important}
   }
@@ -1134,6 +1178,58 @@
   })();
   </script>
 
+  <!-- ───────── 들어오자마자 뜨는 공지 팝업 ─────────
+       그림은 행사 사이트가 냅니다 — https://event.action.or.kr/poster.jpg
+       (원본은 후원주점 페이지 저장소 site/public/poster.jpg. 여기에 두지 않는
+        까닭은 이 저장소의 굽는 스크립트가 assets/ 를 담지 않기 때문입니다.)
+       행사가 지나면 저절로 안 뜹니다 — 아래 스크립트의 UNTIL. -->
+  <dialog id="ah-pop" class="ah-pop" aria-label="함께하는 시민행동 27주년 창립행사 안내">
+    <a href="https://event.action.or.kr" target="_blank" rel="noopener">
+      <img src="https://event.action.or.kr/poster.jpg" width="1100" height="1556"
+           alt="시민행동, 이어 칠하다 — 함께하는 시민행동 27주년 창립행사. 2026년 10월 28일(수) 오후 5시부터, 설맥 신촌점(서울 서대문구 신촌로 63 더이음 106호). 문의 02-921-4709">
+    </a>
+    <a class="ah-pop-go" href="https://event.action.or.kr" target="_blank" rel="noopener">행사 안내 보기 →</a>
+    <div class="ah-pop-bar">
+      <label><input type="checkbox" class="ah-pop-skip">오늘 하루 보지 않기</label>
+      <button type="button" class="ah-pop-x">닫기</button>
+    </div>
+  </dialog>
+
+  <script>
+  (function () {
+    /* 공지 팝업 — 첫 화면이 그려지면 바로 엽니다.
+
+       스스로 멈춥니다
+         · 행사(2026-10-28)가 지나면 UNTIL 에 걸려 안 뜹니다. 지울 일이 없습니다.
+         · '오늘 하루 보지 않기'는 오늘 자정까지입니다. 이 브라우저에만 남습니다.
+       localStorage 를 막아 둔 브라우저(사생활 보호 창)에서는 그냥 매번 뜹니다 —
+       오류로 페이지를 죽이지 않게 try 로 감쌉니다. */
+    var KEY = 'ah-pop-2026-pub';
+    var UNTIL = new Date('2026-10-29T00:00:00+09:00');   /* 이 시각부터 안 뜸 */
+
+    var dlg = document.getElementById('ah-pop');
+    if (!dlg || !dlg.showModal) return;                  /* <dialog> 를 모르는 옛 브라우저 */
+    if (new Date() >= UNTIL) return;
+
+    try {
+      var hide = parseInt(localStorage.getItem(KEY) || '0', 10);
+      if (hide && Date.now() < hide) return;
+    } catch (e) {}
+
+    dlg.showModal();
+
+    dlg.querySelector('.ah-pop-x').addEventListener('click', function () { dlg.close(); });
+
+    /* 닫기 · Esc · 웹자보를 눌러 새 창으로 나가는 경우를 한자리에 모읍니다 */
+    dlg.addEventListener('close', function () {
+      var skip = dlg.querySelector('.ah-pop-skip');
+      if (!skip || !skip.checked) return;
+      var midnight = new Date();
+      midnight.setHours(24, 0, 0, 0);
+      try { localStorage.setItem(KEY, String(midnight.getTime())); } catch (e) {}
+    });
+  })();
+  </script>
 </div>
 
 <script>
