@@ -640,14 +640,23 @@
        ⚠️ #action-home-v2 에 overflow:hidden 이 걸려 있지만, showModal() 로 연
           <dialog> 는 최상위 층(top layer)에 올라가 잘리지 않습니다.
 
+     ★ 2026-09-17 — 웹자보 **윗부분만** 씁니다(1 : 1.768). 사용자 지적이
+       "너무 작아서 웹에서 안 보이고 손전화로는 글씨가 너무 작다" 였습니다.
+       재 보니 웹자보 본문은 A4 기준 2.6mm 라, 다 읽히려면 팝업 폭이 970px 은
+       돼야 합니다. 그런데 세로로 긴 그림은 팝업 높이가 화면을 못 넘어서
+       1280×900 화면에서도 폭 537px 이 한계입니다(그때 본문 7px, 손전화는 4px).
+       → **전체를 읽게 만드는 것은 불가능합니다.** 그래서 큰 글씨만 있는 윗부분
+         (제목 띠 ~ 문의 줄)을 잘라 씁니다. 가로로 누우니 같은 폭에서 글씨가
+         네 배 커지고, 팝업도 낮아져 화면을 덜 가립니다.
+
      폭을 세 값 중 작은 것으로 잡는 까닭
-       웹자보가 세로로 깁니다(1 : 1.415). 폭만 정해 두면 낮은 화면에서 아래가
-       잘립니다. 그래서 남은 높이를 비율로 거꾸로 나눠 폭을 구합니다.
+       그림이 가로로 누웠어도(1.768:1) 낮은 화면에서는 아래 두 줄이 밀려납니다.
+       남은 높이에 비율을 곱해 폭을 거꾸로 구합니다(세로로 길 때는 나눴습니다).
        140px 은 아래 두 줄(88px)과 위아래 여백을 뺀 몫입니다.
        (dvh 를 모르는 브라우저를 위해 vh 로 한 번 먼저 씁니다.) */
   #action-home-v2 .ah-pop{
-    width:min(420px, calc(100vw - 32px), calc((100vh - 140px) / 1.415));
-    width:min(420px, calc(100vw - 32px), calc((100dvh - 140px) / 1.415));
+    width:min(560px, calc(100vw - 32px), calc((100vh - 140px) * 1.768));
+    width:min(560px, calc(100vw - 32px), calc((100dvh - 140px) * 1.768));
     max-width:none;max-height:none;margin:auto;padding:0;border:0;border-radius:14px;
     overflow:hidden;background:#fff;color:var(--ink);font-family:inherit;
     box-shadow:0 18px 50px rgba(13,28,38,.32)
@@ -1188,13 +1197,15 @@
   </script>
 
   <!-- ───────── 들어오자마자 뜨는 공지 팝업 ─────────
-       그림은 행사 사이트가 냅니다 — https://event.action.or.kr/poster.jpg
+       그림은 행사 사이트가 냅니다 — https://event.action.or.kr/poster-top.jpg
+       (웹자보 **윗부분만** 자른 것입니다. 통째로 띄우면 글씨를 못 읽습니다 —
+        까닭은 위 CSS 주석에 적었습니다. 웹자보 전체는 /poster.jpg 로 남아 있습니다.)
        (원본은 후원주점 페이지 저장소 site/public/poster.jpg. 여기에 두지 않는
         까닭은 이 저장소의 굽는 스크립트가 assets/ 를 담지 않기 때문입니다.)
        행사가 지나면 저절로 안 뜹니다 — 아래 스크립트의 UNTIL. -->
   <dialog id="ah-pop" class="ah-pop" aria-label="함께하는 시민행동 27주년 창립행사 안내">
     <a href="https://event.action.or.kr" target="_blank" rel="noopener">
-      <img src="https://event.action.or.kr/poster.jpg" width="1100" height="1556"
+      <img src="https://event.action.or.kr/poster-top.jpg" width="1200" height="679"
            alt="시민행동, 이어 칠하다 — 함께하는 시민행동 27주년 창립행사. 2026년 10월 28일(수) 오후 5시부터, 설맥 신촌점(서울 서대문구 신촌로 63 더이음 106호). 문의 02-921-4709">
     </a>
     <a class="ah-pop-go" href="https://event.action.or.kr" target="_blank" rel="noopener">행사 안내 보기 →</a>
