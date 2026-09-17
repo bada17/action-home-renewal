@@ -64,10 +64,14 @@
 
      ⚠️ 사진 비율 주의 — 우리 글 썸네일은 대부분 가로 16:9(700×394)이고
         포스터(700×990)는 몇 장뿐이라, 한 틀에 다 넣으면 뭔가는 잘립니다.
-        그래서 4:3 틀에 object-position 을 위쪽으로 두었습니다.
-        카드뉴스는 제목이 위에 있어서 이렇게 해야 글자가 안 잘립니다.
+        카드뉴스는 제목이 사진 안에 박혀 있어서, 잘리면 글자가 날아갑니다.
+
+        ★ 2026-09-17 — 액자를 4:3 에서 **16:9** 로 바꿨습니다(사용자 지시: 사진이
+          액자를 못 채운다). 자르지 않고 **액자를 사진에 맞추는** 쪽입니다. 재 봤습니다 —
+          지금 여덟 장 중 넷(1.78:1)이 딱 맞고, 4:3 일 때는 그 넷이 위아래 25% 씩 비었습니다.
+          비는 자리는 흰 바탕이 아니라 같은 사진을 흐리게 깐 .fill 이 채웁니다.
         나중에 포스터 비율을 통일하면 --card-ratio 만 3/4 로 바꾸면 됩니다. */
-  #action-home-v2 .pgrid{--card-ratio:4/3;
+  #action-home-v2 .pgrid{--card-ratio:16/9;
     display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(20px,2.2vw,30px)}
   #action-home-v2 .pcard{display:flex;flex-direction:column;background:#fff;
     border:1px solid var(--line);transition:border-color .18s,transform .18s}
@@ -250,9 +254,15 @@
     position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
     filter:blur(26px) saturate(1.25);transform:scale(1.18);opacity:.55
   }
-  /* 앞에 오는 진짜 사진. contain 이라 한 귀퉁이도 안 잘립니다. */
+  /* 앞에 오는 진짜 사진.
+     ★ 2026-09-17 사용자 지시로 contain 에서 **cover** 로 바꿨습니다 — 액자 가장자리가
+       비는 것이 눈에 걸린다는 지적이었습니다. 여기 넉 장은 잘려도 안전합니다:
+       16:9 가 둘(밑빠진 독상 700×394 · 창립행사 배너 1600×900)이라 한 점도 안 잘리고,
+       투표 og(1.90:1)는 좌우 7%, 상담소 화면(1.46:1)은 위아래 18% 만 잘립니다.
+       ⚠️ 소식 카드(.pcard-media)는 **그대로 contain 입니다.** 거기 사진은 글자가 박힌
+          카드뉴스·띠라 cover 로 두면 제목이 날아갑니다(2026-08-31 에 겪었습니다). */
   #action-home-v2 .slide-shot .real{
-    position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;
     transform:scale(1.03);transition:transform 7s linear
   }
   #action-home-v2 .slide.is-on .slide-shot .real{transform:scale(1)}
@@ -814,7 +824,7 @@
         <article class="slide" data-ah-slide hidden style="--tile:#0079a6">
           <div class="slide-link">
             <span class="slide-shot">
-              <img class="real" src="https://event.action.or.kr/og.png" alt="시민행동, 이어 칠하다 — 함께하는 시민행동 27주년 창립행사">
+              <img class="real" src="https://event.action.or.kr/banner.jpg" width="1600" height="900" alt="시민행동, 이어 칠하다 — 함께하는 시민행동 27주년 창립행사">
             </span>
             <span class="slide-in">
               <span class="pills">
