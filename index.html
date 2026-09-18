@@ -653,10 +653,15 @@
        그림이 가로로 누웠어도(1.768:1) 낮은 화면에서는 아래 두 줄이 밀려납니다.
        남은 높이에 비율을 곱해 폭을 거꾸로 구합니다(세로로 길 때는 나눴습니다).
        140px 은 아래 두 줄(88px)과 위아래 여백을 뺀 몫입니다.
-       (dvh 를 모르는 브라우저를 위해 vh 로 한 번 먼저 씁니다.) */
+       (dvh 를 모르는 브라우저를 위해 vh 로 한 번 먼저 씁니다.)
+
+     ★ 2026-09-18 — 웹에서 작다는 지적으로 위 한계를 560px → 900px 로 올렸습니다.
+       그림 원본이 1200px 폭이라 900px 까지는 늘려 써도 흐려지지 않습니다.
+       높이는 900 / 1.768 + 88 = 597px 이라 세로 700px 넘는 화면이면 다 들어갑니다.
+       더 낮은 화면·손전화에서는 뒤의 두 값이 먼저 걸려 저절로 작아집니다. */
   #action-home-v2 .ah-pop{
-    width:min(560px, calc(100vw - 32px), calc((100vh - 140px) * 1.768));
-    width:min(560px, calc(100vw - 32px), calc((100dvh - 140px) * 1.768));
+    width:min(900px, calc(100vw - 32px), calc((100vh - 140px) * 1.768));
+    width:min(900px, calc(100vw - 32px), calc((100dvh - 140px) * 1.768));
     max-width:none;max-height:none;margin:auto;padding:0;border:0;border-radius:14px;
     overflow:hidden;background:#fff;color:var(--ink);font-family:inherit;
     box-shadow:0 18px 50px rgba(13,28,38,.32)
