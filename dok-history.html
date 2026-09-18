@@ -3000,17 +3000,18 @@ html { scroll-behavior: smooth; }
     if (!Array.isArray(stories)) stories = [];
 
     let shown = [];          // 지금 화면에 그려진 목록
-    let remote = false;      // 시트에서 온 목록인가 (본문을 받아 와야 한다)
+    let source = 'inline';   // 이 목록이 어디서 왔나 — inline | snap | sheet
+    let snapBodies = {};     // 사본에 담긴 본문 (id → html). 원본 저장소의 tools/bake.py 가 굽는다
     let openId = '';         // 지금 창에 떠 있는 글
 
     const inlineBody = (id) => document.querySelector(`#dok-story-bodies [data-story="${id}"]`);
     const metaOf = (s) => [s.author, s.role, s.date].filter(Boolean).map(esc).join(' · ');
 
-    function draw(list, fromSheet) {
+    function draw(list, kind) {
       shown = list;
-      remote = fromSheet;
+      source = kind;
       grid.innerHTML = list.map((s, i) => {
-        const has = fromSheet || inlineBody(s.id);
+        const has = kind !== 'inline' || inlineBody(s.id);
         let tail = '';
         if (has) {
           tail = `<button type="button" class="dok-story-more" data-i="${i}">글 읽기 →</button>`
@@ -3037,29 +3038,59 @@ html { scroll-behavior: smooth; }
       wrap.hidden = !list.length;
     }
 
+    // 이 HTML 은 우리 Apps Script 가 만든 것이다. 문서의 글자는 거기서 escape 하고
+    // 정해 둔 태그(문단·목록·표·사진·굵게·링크)만 나온다 — Code.gs 의 storyHtml.
+    // 링크 주소만은 문서에 적힌 것이 그대로 온다. javascript: 는 걷어낸다.
+    function paintBody(box, html) {
+      box.innerHTML = html;
+      box.querySelectorAll('a').forEach((a) => {
+        if (/^\s*javascript:/i.test(a.getAttribute('href') || '')) a.removeAttribute('href');
+      });
+    }
+
+    /* 사본에 담긴 본문과 시트 본문이 같은 글인가.
+       ⚠️ 글자 그대로 견주면 안 된다 — 굽는 스크립트가 사진을 img/story-* 파일로
+          꺼내면서 주소를 바꿔 놓기 때문에, 한 글자도 안 바뀐 글도 달라 보인다.
+          그러면 열 때마다 사진이 base64 판으로 도로 갈리고 화면이 깜빡인다. */
+    function sameBody(a, b) {
+      const wipe = (h) => String(h || '')
+        .replace(/src="data:image\/[a-z+]+;base64,[^"]*"/g, 'src="#"')
+        .replace(/src="[^"]*img\/story-[^"]*"/g, 'src="#"');
+      return wipe(a) === wipe(b);
+    }
+
     // 본문은 고른 뒤에 받아 온다. 열 편을 미리 받으면 사진까지 딸려 와 무겁다.
+    // ★ 2026-09-18 — 사본에 본문이 담겨 있으면 **곧바로** 편다.
+    //   Apps Script 왕복이 3~7초라, 그동안 '불러오는 중입니다…' 만 떠 있었다.
     function fillBody(box, s) {
-      if (!remote) {                       // 페이지에 박아 둔 대비책 글
+      const kept = snapBodies[s.id];
+      if (source === 'inline' && !kept) {   // 페이지에 박아 둔 대비책 글
         const el = inlineBody(s.id);
         box.innerHTML = el ? el.innerHTML : '<p class="dok-story-wait">본문이 없습니다.</p>';
         return;
       }
-      box.innerHTML = '<p class="dok-story-wait">글을 불러오는 중입니다…</p>';
+      if (kept) paintBody(box, kept);
+      else box.innerHTML = '<p class="dok-story-wait">글을 불러오는 중입니다…</p>';
+
+      if (typeof DOK_SHEET_ENDPOINT !== 'string' || !DOK_SHEET_ENDPOINT) return;
       fetch(DOK_SHEET_ENDPOINT + '?action=story&id=' + encodeURIComponent(s.id))
         .then((r) => r.json())
         .then((d) => {
-          if (!d || !d.ok || !d.html) throw new Error((d && d.why) || '본문이 비어 있습니다');
-          // 이 HTML 은 우리 Apps Script 가 만든 것이다. 문서의 글자는 거기서 escape 하고
-          // 정해 둔 태그(문단·목록·표·사진·굵게·링크)만 나온다 — Code.gs 의 storyHtml.
-          box.innerHTML = d.html;
-          // 링크 주소만은 문서에 적힌 것이 그대로 온다. javascript: 는 걷어낸다.
-          box.querySelectorAll('a').forEach((a) => {
-            if (/^\s*javascript:/i.test(a.getAttribute('href') || '')) a.removeAttribute('href');
-          });
-          box.scrollTop = 0;
+          if (d && d.ok && d.html) {
+            if (kept && sameBody(d.html, kept)) return;   // 같은 글이면 손대지 않는다
+            paintBody(box, d.html);
+            if (!kept) box.scrollTop = 0;   // 읽던 자리를 뺏지 않는다
+            return;
+          }
+          // 접수처가 '공개된 글이 아닙니다' 라고 답한 경우다. 내린 글일 수 있으니
+          // 담아 둔 사본도 함께 걷는다. (연결이 끊긴 것은 아래 catch 로 간다.)
+          delete snapBodies[s.id];
+          box.innerHTML = '<p class="dok-story-wait">글을 열지 못했습니다.</p>';
         })
         .catch((e) => {
-          box.innerHTML = '<p class="dok-story-wait">글을 불러오지 못했습니다. 잠시 후 다시 눌러 주세요.</p>';
+          if (!kept) {
+            box.innerHTML = '<p class="dok-story-wait">글을 불러오지 못했습니다. 잠시 후 다시 눌러 주세요.</p>';
+          }
           console.error('활동가의 글 본문을 못 받았습니다', e);
         });
     }
@@ -3123,8 +3154,33 @@ html { scroll-behavior: smooth; }
       if (i >= 0) openStory(i);
     }
 
-    draw(stories, false);
+    draw(stories, 'inline');
     openFromHash();
+
+    /* 원본 사이트가 구워 둔 사본을 먼저 읽는다 (2026-09-18).
+       목록과 본문이 함께 들어 있어서, 누르면 기다리지 않고 바로 열린다.
+       (원본 저장소 dokseong 의 tools/bake.py 가 굽는다. 수상 기록·지도와 같은
+        자리에서 같은 방식으로 읽는다 — DATA 를 보라.)
+
+       ⚠️ **여기는 원본 사이트가 아니다.** 사본 속 사진 주소가 'img/…' 로 적혀
+          있으므로 그대로 쓰면 캠페이너스 주소에서 찾다가 깨진다. 절대 주소로 바꾼다.
+       ⚠️ 없어도 아무 일도 없다 — 접수처 재배포 전에는 아예 굽히지 않으므로
+          404 가 정상이고, 그때는 아래 시트 경로와 대비책 글이 그대로 쓰인다. */
+    const IMG_BASE = isLocal ? '/dok/' : LIVE;
+    const absShots = (h) => String(h || '').replace(/src="img\//g, 'src="' + IMG_BASE + 'img/');
+
+    fetch(DATA + 'stories.json')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        const items = (d && d.items) || [];
+        if (!items.length || source === 'sheet') return;   // 시트 것이 이미 왔다
+        const got = (d && d.bodies) || {};
+        snapBodies = {};
+        Object.keys(got).forEach((k) => { snapBodies[k] = absShots(got[k]); });
+        draw(items, 'snap');
+        openFromHash();
+      })
+      .catch(() => {});
 
     // 시트에서 목록을 받아 온다. 못 받으면 위에 그려 둔 것이 그대로 남는다.
     if (typeof DOK_SHEET_ENDPOINT === 'string' && DOK_SHEET_ENDPOINT) {
@@ -3132,7 +3188,7 @@ html { scroll-behavior: smooth; }
         .then((r) => r.json())
         .then((d) => {
           if (!d || !d.ok || !Array.isArray(d.items) || !d.items.length) return;
-          draw(d.items, true);
+          draw(d.items, 'sheet');
           openFromHash();
         })
         .catch((e) => console.error('활동가의 글 목록을 못 받았습니다', e));
