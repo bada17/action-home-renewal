@@ -340,15 +340,40 @@ document.addEventListener('error', function (e) {
     cell.insertAdjacentHTML('beforeend', html);
   }
 
+  /* ★ 2026-09-18 — **원본 사이트가 구워 둔 사본을 먼저 읽습니다.**
+     접수처(Apps Script)는 1~10초가 걸립니다. 씨앗이 그동안 버텨 주기는 하지만
+     진짜 목록으로 바뀌는 데 그만큼 걸렸습니다. 사본은 같은 목록을 0.1초에 줍니다.
+     (dok.action.or.kr 은 깃허브 페이지라 다른 도메인에서도 읽힙니다 —
+      Access-Control-Allow-Origin: *. 원본 저장소의 tools/bake.py 가 굽습니다.)
+     ⚠️ 사본은 낡을 수 있으므로, 접수처 것이 오면 그것으로 갈아 끼웁니다.
+     ⚠️ 사본이 먼저 오고 접수처가 뒤에 오는 것이 보통이지만, 순서가 뒤집혀도
+        낡은 것이 새것을 덮지 않게 fromSheet 로 막습니다. */
+  var SNAP = DOK + 'data/campaigns.json';
+  var fromSheet = false;
+
+  function take(d) {
+    var all = Array.prototype.slice.call(
+      Object.prototype.toString.call(d) === '[object Array]' ? d : (d && d.campaigns) || []);
+    return all.filter(function (c) { return c && c.status === 'ongoing' && c.id && c.title; });
+  }
+
+  fetch(SNAP)
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) {
+      if (fromSheet || !d) return;     /* 접수처 것이 이미 왔습니다 */
+      rows = take(d);
+      paint();
+    })
+    .catch(function () { /* 사본이 없어도 아래 접수처 경로가 그대로 돕니다 */ });
+
   fetch(EP + '?action=campaigns')
     .then(function (r) { return r.json(); })
     .then(function (d) {
-      var all = Array.prototype.slice.call(
-        Object.prototype.toString.call(d) === '[object Array]' ? d : (d && d.campaigns) || []);
-      rows = all.filter(function (c) { return c && c.status === 'ongoing' && c.id && c.title; });
+      fromSheet = true;
+      rows = take(d);
       paint();
     })
-    .catch(function () { /* 못 받으면 카드는 지금 모양 그대로 */ });
+    .catch(function () { /* 못 받으면 사본이나 씨앗이 그대로 남습니다 */ });
 
   /* 게시판 값으로 목록을 다시 그린 뒤에 붙습니다. 그리는 쪽이 innerHTML 을
      통째로 갈아 끼우므로, 같은 틱에 붙이면 지워집니다. */
