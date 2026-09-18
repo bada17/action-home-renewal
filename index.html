@@ -898,9 +898,9 @@
        2026-08-26 — 넷에서 **여덟**으로 늘리고 ‹ › 로 넘기게 했습니다.
        넷씩 두 장이고, 끝에서 다음을 누르면 처음으로 돌아옵니다(루프).
 
-       ★ 여기는 나중에 **캠페이너스 기본 게시판 위젯으로 바뀔 자리**입니다.
-         지금 목록은 코드에 박아 둔 것이라 새 글이 자동으로 안 올라옵니다.
-         지금 이 칸의 값어치는 '어떻게 보일지'를 정해 두는 데 있습니다.
+       ★ 2026-09-18 부터 **새 글이 자동으로 올라옵니다** — 아래 RSS 연결 스크립트가
+         캠페인 게시판(/81·/82)이 아닌 글을 최신순 여덟까지 채웁니다.
+         아래 카드 여덟은 이제 **씨앗**입니다(RSS 가 끊겼을 때만 보입니다). 낡았습니다.
 
        뱃지는 그 글이 실린 게시판 이름입니다 — 제가 붙인 분류가 아니라 주소로 정해집니다.
          /51 주민참여예산 · /27 일반 활동 · /57 예산 모니터링
@@ -1261,10 +1261,16 @@
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   캠페이너스 캠페인 게시판 자동 연결
+   캠페이너스 게시판 자동 연결
 
      /81  진행 중 → 홈 첫 화면 + /77 진행 중 탭
      /82  종료     → /77 종료 탭
+     나머지 게시판 → 홈 '최신 소식' 사진 카드 여덟 (2026-09-18 부터)
+
+   ★ 2026-09-18 — 소식 칸이 코드에 박혀 있어서 새 글이 안 올라왔습니다.
+     그날 연대 활동(/54)에 올린 글이 RSS 에는 있는데 화면에 없었습니다.
+     이제 캠페인 게시판(/81·/82)이 아닌 글을 최신순 여덟까지 그대로 씁니다.
+     아래 HTML 에 박아 둔 카드 여덟은 **씨앗**으로 남습니다(RSS 가 끊길 때 쓰입니다).
 
    action.or.kr/rss 의 글 주소에 들어 있는 게시판 번호로 나눕니다.
    제목을 `[링크:https://외부주소] 제목 — 한 줄 설명`으로 쓰면 카드가 그 주소를
@@ -1313,6 +1319,32 @@
     try { return new URL(link, window.location.href).pathname.replace(/\/+$/, ''); }
     catch (e) { return ''; }
   }
+
+  /* 소식 카드의 뱃지 = 그 글이 실린 게시판. 주소의 번호로 정합니다.
+     모르는 번호면 뱃지 없이 제목만 나옵니다(CONTENT.md 의 news.board 는 선택). */
+  var BOARD = {
+    '/27': '일반 활동', '/57': '예산 모니터링', '/51': '주민참여예산',
+    '/54': '연대 활동', '/49': '지자체 감시', '/26': '공지사항',
+    '/23': '발행물',   '/24': '뉴스룸',       '/35': '회원 총회'
+  };
+  var MON = { Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06',
+              Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12' };
+  function ymd(pub) {
+    /* 'Fri, 18 Sep 2026 14:20:00 +0900' → '2026.09.18' */
+    var m = String(pub || '').match(/(\d{1,2})\s+(\w{3})\s+(\d{4})/);
+    if (!m) return '';
+    return m[3] + '.' + (MON[m[2]] || '01') + '.' + (m[1].length < 2 ? '0' + m[1] : m[1]);
+  }
+  function newsRow(item, path) {
+    var media = item.getElementsByTagName('media:content')[0];
+    return {
+      title: nodeText(item, 'title'),
+      url: nodeText(item, 'link'),
+      date: ymd(nodeText(item, 'pubDate')),
+      board: BOARD[path] || '',
+      img: media ? (media.getAttribute('url') || '') : ''
+    };
+  }
   function post(item) {
     var postUrl = nodeText(item, 'link');
     var raw = campaignTitle(nodeText(item, 'title'), postUrl);
@@ -1338,20 +1370,23 @@
       var xml = new DOMParser().parseFromString(xmlText, 'application/xml');
       if (xml.getElementsByTagName('parsererror').length) throw new Error('RSS XML');
 
-      var on = [], off = [];
+      var on = [], off = [], news = [];
       Array.prototype.forEach.call(xml.getElementsByTagName('item'), function (item) {
         var row = post(item);
         // 카드 목적지가 외부여도 어느 게시판 글인지는 원래 글 주소로 판별합니다.
         var path = boardPath(row.postUrl);
-        if (path === '/81') on.push(row);
-        if (path === '/82') off.push(row);
+        if (path === '/81') { on.push(row); return; }
+        if (path === '/82') { off.push(row); return; }
+        // 캠페인 게시판이 아닌 글은 '최신 소식' 으로. RSS 가 이미 최신순입니다.
+        if (news.length < 8) news.push(newsRow(item, path));
       });
 
       // 빈 새 게시판 때문에 지금 카드가 사라지지 않게, 글이 있을 때만 켭니다.
-      if (!on.length && !off.length) return;
+      if (!on.length && !off.length && !news.length) return;
       var data = window.AH_DATA && typeof window.AH_DATA === 'object' ? window.AH_DATA : {};
       if (on.length) data.issues = on;
       if (off.length) data.issuesDone = off;
+      if (news.length) data.news = news;
       window.AH_DATA = data;
       window.dispatchEvent(new CustomEvent('ah-campaigns-ready', { detail: data }));
     })

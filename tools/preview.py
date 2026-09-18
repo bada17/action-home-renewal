@@ -385,6 +385,32 @@ def wrap(path, body, title):
     return (SHELL % d).encode('utf-8')
 
 
+_RSS_CACHE = []
+
+
+def live_rss():
+    """action.or.kr/rss 를 한 번만 받아 기억해 둡니다. 실패하면 받아 둔 파일."""
+    if _RSS_CACHE:
+        return _RSS_CACHE[0]
+    body = b''
+    try:
+        try:
+            from urllib.request import Request, urlopen
+        except ImportError:
+            from urllib2 import Request, urlopen
+        # 사람이 쓰는 브라우저처럼 보여야 통과합니다(기본 User-Agent 는 403).
+        req = Request('https://action.or.kr/rss', headers={
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                          'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36'})
+        body = urlopen(req, timeout=8).read()
+    except Exception:
+        f = os.path.join(ROOT, 'tools', 'data', 'action-rss.xml')
+        if os.path.isfile(f):
+            body = open(f, 'rb').read()
+    _RSS_CACHE.append(body)
+    return body
+
+
 class H(BaseHTTPRequestHandler):
     def log_message(self, fmt, *a):
         pass  # 조용히
@@ -406,6 +432,15 @@ class H(BaseHTTPRequestHandler):
     def do_GET(self):
         path = self.path.split('?', 1)[0].split('#', 1)[0]
         query = self.path.split('?', 1)[1] if '?' in self.path else ''
+
+        # ── /rss ──
+        # 화면 코드가 fetch('/rss') 로 캠페이너스 게시판을 읽습니다(첫 화면 캠페인 ·
+        # 최신 소식). 미리보기에도 없으면 늘 씨앗만 보여 자동 연결을 확인할 수 없어,
+        # 진짜 action.or.kr/rss 를 한 번 받아 두었다가 그대로 내줍니다.
+        # 못 받으면 받아 둔 tools/data/action-rss.xml 로 갑니다(낡았지만 모양은 같습니다).
+        if path == '/rss':
+            self.send_bytes(live_rss(), 'application/rss+xml; charset=utf-8')
+            return
 
         # ── 옆 저장소 그대로 물려 주기 ──
         for prefix in SIBLINGS:
