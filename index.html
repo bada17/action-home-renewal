@@ -423,18 +423,38 @@
   }
 
   /* ───────── 소식 ─────────
-     카드 여덟을 넷씩 두 장으로 나눠 옆으로 밉니다.
-     격자(.pgrid)를 두 배 폭으로 만들어 통째로 옮기는 방식이라, 카드 수가 늘어도
-     아래 --news-page 값(한 장에 몇 개인지)만 맞으면 그대로 돕니다. */
+     카드를 한 줄로 늘어놓고 **한 번에 넷씩** 옆으로 넘깁니다.
+
+     ★ 2026-09-21 — 밀어내는 방식을 바꿨습니다.
+       전에는 격자를 두 배 폭으로 만들어 transform 으로 밀었습니다. 그 방식은
+       '카드가 여덟'이라는 것을 CSS 와 스크립트가 각각 알고 있어야 해서,
+       게시판에서 받아 온 글로 카드를 갈아끼우면 어긋났습니다(실제로 어긋났습니다).
+       이제는 **칸 자체를 옆으로 굴립니다**(overflow-x + scroll-snap).
+       카드가 몇 장이든, 한 장에 몇 개가 보이든 CSS 가 알아서 맞춥니다.
+       손가락으로 미는 것도 브라우저가 해 줍니다.
+
+     한 장에 몇 개인지는 카드 폭이 정합니다 — 넓은 화면 넷, 1100px 이하 둘.
+     간격은 --ngap 한 곳에서만 고칩니다(카드 폭 계산이 이 값을 씁니다). */
   #action-home-v2 .news{background:var(--paper);padding:clamp(48px,6vw,86px) 0}
-  /* 넘어가는 칸만 잘라 냅니다 */
-  #action-home-v2 .news-view{overflow:hidden}
   #action-home-v2 .news .pgrid{
-    /* 여덟이 한 줄로 늘어서고, 그중 넷만 보입니다.
-       스크립트가 transform 으로 밀어 다음 넷을 보여 줍니다. */
-    grid-template-columns:repeat(8,minmax(0,1fr));
-    width:calc(200% + clamp(20px,2.2vw,30px));
-    transition:transform .45s cubic-bezier(.22,.61,.36,1)
+    --ngap:clamp(20px,2.2vw,30px);
+    display:flex;grid-template-columns:none;gap:var(--ngap);
+    /* 카드가 hover 로 3px 떠오릅니다 — 굴리는 칸 안이라 자리를 비워 두지 않으면 잘립니다 */
+    padding:4px 0;
+    overflow-x:auto;overscroll-behavior-x:contain;
+    scroll-snap-type:x mandatory;scroll-behavior:smooth;
+    /* 가로 스크롤 막대는 감춥니다 — 넘기기는 ‹ › 와 손가락으로 합니다 */
+    scrollbar-width:none;-ms-overflow-style:none
+  }
+  #action-home-v2 .news .pgrid::-webkit-scrollbar{display:none}
+  /* 넷이 보이는 폭 = (칸 폭 - 간격 셋) / 4 */
+  #action-home-v2 .news .pgrid > .pcard{
+    flex:0 0 calc((100% - 3 * var(--ngap)) / 4);scroll-snap-align:start
+  }
+  /* 움직임을 줄여 달라고 한 사람에게는 미끄러지지 않고 바로 넘어갑니다.
+     (위 reveal 규칙과 같은 취지인데, 순서상 여기 있어야 덮어씁니다.) */
+  @media(prefers-reduced-motion:reduce){
+    #action-home-v2 .news .pgrid{scroll-behavior:auto}
   }
   #action-home-v2 .news-tools{display:flex;align-items:center;gap:16px;flex:none;padding-bottom:4px}
   /* ‹ › 는 스크립트가 켭니다(.is-on). 막히면 안 보이고 카드는 여덟 다 보입니다. */
@@ -571,8 +591,8 @@
   /* 알약이 7개라 폭이 줄면 헤더 밖으로 밀려 잘립니다.
      사라지기 전에 먼저 작아지게 하고, 정말 좁아지면 그때 햄버거로 넘깁니다. */
   @media(max-width:1100px){
-    /* 좁으면 한 장에 둘씩 = 네 장이 됩니다. 폭은 400%. */
-    #action-home-v2 .news .pgrid{width:calc(400% + 3 * clamp(20px,2.2vw,30px))}
+    /* 좁으면 한 장에 둘씩 = (카드 여덟이면) 네 장이 됩니다. */
+    #action-home-v2 .news .pgrid > .pcard{flex-basis:calc((100% - var(--ngap)) / 2)}
   }
   @media(max-width:820px){
     #action-home-v2 .wrap{width:min(100% - 36px,1120px)}
@@ -591,6 +611,8 @@
     #action-home-v2 .lead-list{border-top:none}
     #action-home-v2 .litem{padding:13px 12px 14px}
     #action-home-v2 .pgrid{gap:16px 14px}
+    /* 소식은 간격을 한 곳에서만 정합니다(카드 폭 계산이 이 값을 씁니다) */
+    #action-home-v2 .news .pgrid{--ngap:14px}
     #action-home-v2 .pcard-body{padding:13px 14px 15px;gap:8px}
     #action-home-v2 .pcard strong{font-size:14.5px;line-height:1.45}
     #action-home-v2 .news{padding:40px 0}
@@ -614,8 +636,10 @@
      ⚠️ 이 폭에서는 ‹ › 도 스크립트가 스스로 감춥니다(한 칸짜리 격자를 알아봅니다). */
   @media(max-width:620px){
     #action-home-v2 .news .pgrid{
-      width:100%;grid-template-columns:minmax(0,1fr);gap:12px;transform:none!important
+      --ngap:12px;flex-direction:column;padding:0;
+      overflow:visible;scroll-snap-type:none
     }
+    #action-home-v2 .news .pgrid > .pcard{flex:0 0 auto}
     #action-home-v2 .news .pgrid .pcard:nth-child(n+5){display:none}
     #action-home-v2 .pgrid .pcard{flex-direction:row}
     #action-home-v2 .pgrid .pcard-media{flex:none;width:118px;aspect-ratio:1;
@@ -919,8 +943,8 @@
       </div>
     </div>
 
-    <div class="news-view" id="news-view">
-      <div class="pgrid" id="news-grid">
+    <!-- 이 칸이 통째로 옆으로 굴러갑니다(CSS 의 overflow-x). 감싸는 칸이 따로 없습니다. -->
+    <div class="pgrid" id="news-grid">
 
       <a class="pcard reveal" href="/27/?idx=173415033&amp;bmode=view">
         <span class="pcard-media"><img class="fill" src="https://cdn.imweb.me/upload/S20210826b814397ca4e6d/21aa8479b6f98.png" alt="" aria-hidden="true" loading="lazy"><img class="real" src="https://cdn.imweb.me/upload/S20210826b814397ca4e6d/21aa8479b6f98.png" alt="미래대응기금 논평" loading="lazy"></span>
@@ -994,7 +1018,6 @@
         </span>
       </a>
 
-      </div>
     </div>
 
     <!-- 공지사항·회원 총회·예산 브리핑은 홈에서 뺐습니다(2026-08-25).
@@ -1798,25 +1821,28 @@
 /* 소식 — ‹ › 로 넷씩 넘깁니다. 끝에서 다음을 누르면 처음으로 돌아옵니다(루프).
 
    ★ 이 칸은 나중에 캠페이너스 기본 게시판 위젯으로 바뀔 자리입니다.
-     지금은 '어떻게 보일지'를 정해 두는 용도라, 목록이 코드에 박혀 있습니다.
+     지금은 '어떻게 보일지'를 정해 두는 용도라, 씨앗 목록이 코드에 박혀 있습니다.
 
-   한 장에 몇 개를 보여 줄지는 화면 폭이 정합니다(CSS 와 짝을 맞춰야 합니다).
-       넓은 화면   4개  → 두 장
-       1100px 이하 2개  → 네 장
+   한 장에 몇 개를 보여 줄지는 **CSS 가** 정합니다(카드 폭). 여기서는 세지 않고
+   그때그때 재기만 합니다.
+       넓은 화면   4개
+       1100px 이하 2개
        620px 이하  밀지 않습니다 — 카드 넷이 아래로 쌓입니다
-   여기서 직접 세지 않고 **첫 카드의 실제 폭**을 재서 한 장에 몇 개가 들어가는지
-   계산합니다. 그래야 CSS 를 고쳐도 스크립트를 같이 안 고쳐도 됩니다.
 
-   스크립트가 막히면 : ‹ › 가 안 보이고(.is-on 을 안 붙임) 카드 여덟이
-   한 줄로 늘어선 채 그대로 있습니다. 보기에 좁지만 내용은 다 살아 있습니다. */
+   ★ 2026-09-21 — 다시 짰습니다. 전에는 시작할 때 카드를 한 번 붙잡아 두고
+     transform 으로 밀었는데, 게시판에서 글을 받아 오면 카드를 통째로 갈아끼우기
+     때문에(윗쪽 '내용 갈아 끼우는 자리') 붙잡아 둔 것이 화면에서 떨어져 나간
+     헌 카드가 됐습니다. 폭을 재면 0 이라 '한 장에 1개'로 계산했고, 다음을 눌러도
+     간격 한 칸(28px)만 밀리면서 '2 / 8' 같은 숫자가 나왔습니다.
+     → 이제 **카드를 붙잡아 두지 않습니다.** 누를 때마다 다시 셉니다.
+     → 미는 것도 브라우저의 가로 스크롤에 맡깁니다(손가락으로 미는 것이 덤으로 됩니다).
+
+   스크립트가 막히면 : ‹ › 가 안 보이고(.is-on 을 안 붙임) 카드가 한 줄로
+   늘어선 채 옆으로 굴려 볼 수 있습니다. 내용은 다 살아 있습니다. */
 (function () {
-  var view = document.getElementById('news-view');
   var grid = document.getElementById('news-grid');
   var nav  = document.getElementById('news-nav');
-  if (!view || !grid || !nav) return;
-
-  var cards = grid.querySelectorAll('.pcard');
-  if (cards.length < 2) return;
+  if (!grid || !nav) return;
 
   var prev = nav.querySelector('[data-news="prev"]');
   var next = nav.querySelector('[data-news="next"]');
@@ -1824,72 +1850,82 @@
   var ofEl = document.getElementById('news-of');
   if (!prev || !next) return;
 
-  var page = 0;
+  // 카드를 들고 있지 않습니다 — 갈아끼워져도 어긋나지 않게 그때그때 셉니다.
+  function cards() { return grid.querySelectorAll('.pcard'); }
+  function gap() { return parseFloat(getComputedStyle(grid).columnGap) || 0; }
+
+  // 좁은 화면에서는 카드가 아래로 쌓입니다(@media 620px). 그때는 밀 것이 없습니다.
+  function stacked() { return getComputedStyle(grid).flexDirection === 'column'; }
 
   // 한 장에 몇 개가 보이는가 — 보이는 칸 폭 ÷ 카드 한 장 폭(간격 포함)
   function perPage() {
-    var w = cards[0].getBoundingClientRect().width;
+    var list = cards();
+    if (!list.length) return 1;
+    var w = list[0].getBoundingClientRect().width;
     if (!w) return 1;
-    var gap = parseFloat(getComputedStyle(grid).columnGap) || 0;
-    var n = Math.round(view.clientWidth / (w + gap));
-    return Math.max(1, Math.min(n, cards.length));
-  }
-
-  /* 좁은 화면에서는 격자가 한 칸짜리로 바뀌어 카드가 아래로 쌓입니다(@media 620px).
-     그때는 밀 것이 없으므로 ‹ › 를 감추고 옮겨 둔 것도 되돌립니다. */
-  function stacked() {
-    var cols = getComputedStyle(grid).gridTemplateColumns || '';
-    return cols.split(' ').filter(Boolean).length < 2;
+    var n = Math.round((grid.clientWidth + gap()) / (w + gap()));
+    return Math.max(1, Math.min(n, list.length));
   }
 
   function pages() {
     if (stacked()) return 1;
-    return Math.ceil(cards.length / perPage());
+    return Math.max(1, Math.ceil(cards().length / perPage()));
+  }
+
+  // 한 장을 넘기는 거리 = 보이는 칸 폭 + 간격 하나.
+  // 그래야 다음 장의 첫 카드가 왼쪽 끝에 딱 붙습니다.
+  function step() { return grid.clientWidth + gap(); }
+  function maxLeft() { return Math.max(0, grid.scrollWidth - grid.clientWidth); }
+
+  // 지금 몇째 장인가. 마지막 장은 카드가 모자라 끝까지 못 밀리므로 따로 봅니다.
+  function at() {
+    if (stacked()) return 0;
+    var last = pages() - 1;
+    var max = maxLeft();
+    if (max <= 1) return 0;
+    if (grid.scrollLeft >= max - 2) return last;
+    return Math.min(last, Math.round(grid.scrollLeft / step()));
   }
 
   function draw() {
-    if (stacked()) {
-      page = 0;
-      grid.style.transform = '';
-      nav.classList.remove('is-on');
-      return;
-    }
     var total = pages();
-    if (page >= total) page = 0;
-    if (page < 0) page = total - 1;
-
-    var w = cards[0].getBoundingClientRect().width;
-    var gap = parseFloat(getComputedStyle(grid).columnGap) || 0;
-    var shift = page * perPage() * (w + gap);
-    grid.style.transform = 'translateX(-' + shift + 'px)';
-
-    if (atEl) atEl.textContent = page + 1;
+    if (atEl) atEl.textContent = at() + 1;
     if (ofEl) ofEl.textContent = total;
     // 넘길 것이 없으면(카드가 한 장에 다 들어가면) 단추를 감춥니다.
-    nav.classList.toggle('is-on', total > 1);
+    nav.classList.toggle('is-on', !stacked() && total > 1);
   }
 
   // 루프 — 끝에서 다음을 누르면 처음으로, 처음에서 이전을 누르면 끝으로.
-  next.addEventListener('click', function () { page = (page + 1) % pages(); draw(); });
-  prev.addEventListener('click', function () { page = (page - 1 + pages()) % pages(); draw(); });
+  function go(dir) {
+    var total = pages();
+    var p = (at() + dir + total) % total;
+    grid.scrollLeft = Math.min(p * step(), maxLeft());
+    // 미끄러지는 동안에도 숫자는 바로 바뀌게 합니다(아래 scroll 이 다시 맞춥니다).
+    if (atEl) atEl.textContent = p + 1;
+  }
 
-  // 손가락으로 미는 것도 받습니다(모바일).
-  var x0 = null;
-  view.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
-  view.addEventListener('touchend', function (e) {
-    if (x0 === null) return;
-    var dx = e.changedTouches[0].clientX - x0;
-    x0 = null;
-    if (Math.abs(dx) < 40) return;
-    page = (page + (dx < 0 ? 1 : -1) + pages()) % pages();
-    draw();
+  next.addEventListener('click', function () { go(1); });
+  prev.addEventListener('click', function () { go(-1); });
+
+  // 손가락으로 민 것도 숫자에 반영합니다. 미끄러지는 중에는 계속 들어오므로 늦춥니다.
+  var settling;
+  grid.addEventListener('scroll', function () {
+    clearTimeout(settling);
+    settling = setTimeout(draw, 90);
   }, { passive: true });
 
   var pending;
   window.addEventListener('resize', function () {
     clearTimeout(pending);
     // 폭이 바뀌면 한 장에 들어가는 수가 달라지므로 처음으로 되돌립니다.
-    pending = setTimeout(function () { page = 0; draw(); }, 120);
+    pending = setTimeout(function () { grid.scrollLeft = 0; draw(); }, 120);
+  });
+
+  // 게시판에서 받아 온 글로 카드가 갈렸을 때 — 처음으로 돌리고 다시 셉니다.
+  // (갈아끼우는 쪽이 이 이벤트를 먼저 받아 카드를 이미 바꿔 둔 뒤입니다.)
+  window.addEventListener('ah-campaigns-ready', function () {
+    grid.scrollLeft = 0;
+    draw();
   });
 
   draw();
