@@ -629,21 +629,22 @@
     /* 좁으면 이메일·이름을 한 줄에 둘 수 없으니 한 칸씩 */
     #action-home-v2 .nl-form form{grid-template-columns:1fr}
   }
-  /* ── 손안 화면에서는 소식을 옆으로 밀지 않습니다 (2026-09-07 사용자 지시) ──
-     한 장에 하나씩 넘겨 보는 꼴이 답답하다는 지적이었습니다. 옆으로 미는 것을
-     그만두고 아래로 넷을 세웁니다(나머지 넷은 '전체보기'로 갑니다).
-     사진은 왼쪽에 작게 붙여 네 줄이 한눈에 들어오게 합니다.
-     ⚠️ 이 폭에서는 ‹ › 도 스크립트가 스스로 감춥니다(한 칸짜리 격자를 알아봅니다). */
+  /* ── 손안 화면 (2026-09-21 사용자 지시로 되돌림) ──
+     2026-09-07 에는 옆으로 미는 것을 그만두고 넷을 아래로 세웠습니다.
+     그때 이유는 '한 장에 하나씩 ‹ › 로 넘기는 꼴이 답답하다' 였습니다.
+     그런데 그러면서 뒤 넷이 **갈 길이 없어졌습니다** — '전체보기로 간다'고 적어
+     뒀지만 그 링크는 끝내 안 달렸습니다. 손전화에서 소식 여덟 중 넷이 사라진
+     셈이었습니다.
+
+     이제는 다시 옆으로 밉니다. 단, 2026-09-07 에 답답하다던 그것과 다릅니다 —
+     ‹ › 로 한 장씩 넘기는 것이 아니라 **손가락으로 그냥 미는** 가로 스크롤이고,
+     다음 카드가 옆에 살짝 보여서 더 있다는 것이 눈에 띕니다.
+
+     카드 폭은 300px 로 묶습니다. 620px 에 가까운 폭에서 84% 를 그대로 쓰면
+     카드 하나가 500px 넘게 부풀어 사진만 한 화면을 먹습니다. */
   @media(max-width:620px){
-    #action-home-v2 .news .pgrid{
-      --ngap:12px;flex-direction:column;padding:0;
-      overflow:visible;scroll-snap-type:none
-    }
-    #action-home-v2 .news .pgrid > .pcard{flex:0 0 auto}
-    #action-home-v2 .news .pgrid .pcard:nth-child(n+5){display:none}
-    #action-home-v2 .pgrid .pcard{flex-direction:row}
-    #action-home-v2 .pgrid .pcard-media{flex:none;width:118px;aspect-ratio:1;
-      border-bottom:none;border-right:1px solid var(--line)}
+    #action-home-v2 .news .pgrid{--ngap:12px}
+    #action-home-v2 .news .pgrid > .pcard{flex-basis:min(84%,300px)}
   }
   /* 아주 좁은 화면(360px 안팎) — 두 칸으로 두면 글자가 뭉개지는 것만 한 칸으로 */
   @media(max-width:430px){
@@ -1827,7 +1828,7 @@
    그때그때 재기만 합니다.
        넓은 화면   4개
        1100px 이하 2개
-       620px 이하  밀지 않습니다 — 카드 넷이 아래로 쌓입니다
+       620px 이하  1개 (+ 다음 카드가 살짝 보임)
 
    ★ 2026-09-21 — 다시 짰습니다. 전에는 시작할 때 카드를 한 번 붙잡아 두고
      transform 으로 밀었는데, 게시판에서 글을 받아 오면 카드를 통째로 갈아끼우기
@@ -1854,32 +1855,34 @@
   function cards() { return grid.querySelectorAll('.pcard'); }
   function gap() { return parseFloat(getComputedStyle(grid).columnGap) || 0; }
 
-  // 좁은 화면에서는 카드가 아래로 쌓입니다(@media 620px). 그때는 밀 것이 없습니다.
-  function stacked() { return getComputedStyle(grid).flexDirection === 'column'; }
-
-  // 한 장에 몇 개가 보이는가 — 보이는 칸 폭 ÷ 카드 한 장 폭(간격 포함)
-  function perPage() {
+  // 카드 한 장이 차지하는 자리 = 카드 폭 + 간격 하나
+  function pitch() {
     var list = cards();
-    if (!list.length) return 1;
-    var w = list[0].getBoundingClientRect().width;
-    if (!w) return 1;
-    var n = Math.round((grid.clientWidth + gap()) / (w + gap()));
-    return Math.max(1, Math.min(n, list.length));
+    if (!list.length) return 0;
+    return list[0].getBoundingClientRect().width + gap();
+  }
+
+  // 한 장에 몇 개가 보이는가 — 보이는 칸 폭 ÷ 카드 한 장 자리
+  function perPage() {
+    var p = pitch();
+    if (!p) return 1;
+    var n = Math.round((grid.clientWidth + gap()) / p);
+    return Math.max(1, Math.min(n, cards().length || 1));
   }
 
   function pages() {
-    if (stacked()) return 1;
     return Math.max(1, Math.ceil(cards().length / perPage()));
   }
 
-  // 한 장을 넘기는 거리 = 보이는 칸 폭 + 간격 하나.
-  // 그래야 다음 장의 첫 카드가 왼쪽 끝에 딱 붙습니다.
-  function step() { return grid.clientWidth + gap(); }
+  /* 한 장을 넘기는 거리 = 보이는 카드 수 × 카드 한 장 자리.
+     '보이는 칸 폭 + 간격'으로 재지 않습니다 — 넓은 화면에서는 그것과 같은 값이지만,
+     손전화처럼 카드가 칸을 딱 채우지 않을 때(다음 카드가 살짝 보일 때) 어긋납니다.
+     이렇게 재면 넘긴 자리가 언제나 카드 왼쪽 끝과 맞습니다. */
+  function step() { return perPage() * pitch(); }
   function maxLeft() { return Math.max(0, grid.scrollWidth - grid.clientWidth); }
 
   // 지금 몇째 장인가. 마지막 장은 카드가 모자라 끝까지 못 밀리므로 따로 봅니다.
   function at() {
-    if (stacked()) return 0;
     var last = pages() - 1;
     var max = maxLeft();
     if (max <= 1) return 0;
@@ -1892,7 +1895,7 @@
     if (atEl) atEl.textContent = at() + 1;
     if (ofEl) ofEl.textContent = total;
     // 넘길 것이 없으면(카드가 한 장에 다 들어가면) 단추를 감춥니다.
-    nav.classList.toggle('is-on', !stacked() && total > 1);
+    nav.classList.toggle('is-on', total > 1);
   }
 
   // 루프 — 끝에서 다음을 누르면 처음으로, 처음에서 이전을 누르면 끝으로.
