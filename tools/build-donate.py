@@ -48,7 +48,8 @@ ROOT = os.path.dirname(HERE)
 # 랜딩 저장소는 이 저장소 밖에 있습니다. 환경변수로 덮어쓸 수 있습니다.
 LANDING = os.environ.get(
     'ACTION_LANDING',
-    os.path.join(os.path.expanduser('~'), 'action-landing', 'index.html'))
+    # 2026-10-12 랜딩을 걷으면서 원본을 _source/ 로 옮겼습니다(주소로는 안 열립니다).
+    os.path.join(os.path.expanduser('~'), 'action-landing', '_source', 'index.html'))
 
 OUT = os.path.join(ROOT, 'donate-guide.html')
 
