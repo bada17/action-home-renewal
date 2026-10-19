@@ -61,6 +61,9 @@
 지방재정 사이트(local-finance)도 읽어 갑니다(2026-10-15) — 깃허브의 이 파일을 달마다 봇이 받아 가므로
 따로 굽지 않아도 다음 달에 따라옵니다. 바로 맞추려면 `local-finance` 에서 `python scripts/port_footer.py`.
 
+시민의 숲(budget-mbti-survey, https://forest.action.or.kr/game/ 소개 페이지 끝)도 읽어 갑니다(2026-10-19).
+저절로 따라오지 않습니다 — 하단을 고쳤으면 그 저장소에서 `npm run port:footer` 를 돌리고 다시 굽습니다.
+
 **활동 셋은 게시판을 사이에 두고 나눠 붙입니다** — `/49` 지자체 감시 · `/27` 예산감시 ·
 `/51` 시민참여. 순서는 `activity-<이름>-before-board.html` → 그 페이지 기본 게시판 위젯 →
 `activity-<이름>-after-board.html` → 공통 하단. 미리보기용 전체 파일
