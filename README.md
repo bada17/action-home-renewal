@@ -26,6 +26,13 @@
 - 밑빠진 독상 `https://dok.action.or.kr` — 깃허브 페이지
 - 시민참여 상담소 `https://pb.action.or.kr` — 깃허브 페이지, 원본은 `participatory-budget` 저장소
 - 10만원 예산편성 투표 `https://vote.action.or.kr`
+- 함께해요 시민의 숲 `https://forest.action.or.kr` — 깃허브 페이지, 원본은 `budget-mbti-survey` 저장소.
+  **메인 첫 칸·상단 캠페인 메뉴·함께하기(/77) 진행 중 셋 다 맨 앞**(2026-10-26 사용자 「게임하러 가기로 밖으로 나가게 — 메인·상단·캠페인 화면 세 군데」).
+  누르면 새 창으로 게임. 주소에 `utm_source=action-home&utm_medium=home|menu|campaign` — 게임이 「유입」 으로 센다.
+  그림은 `forest.action.or.kr/landing/home-card.jpg`(16:9 마을, 시민의 숲 저장소가 낸다 — **그 사이트를 올린 뒤에 붙여야 그림이 뜬다**).
+  /81 게시판에 글이 하나라도 올라오면 씨앗 다섯 장이 통째로 덮이므로, 그때는 게시판에도 한 줄 —
+  `[링크:https://forest.action.or.kr/] 함께해요 시민의 숲 — 우리 동네 살림, 같이 들여다봐요`.
+  붙일 곳: `index.html`(메인) · `tools/parts/header.html`(상단 반복 섹션) · `campaign-together-layout.html`(/77 첫 위젯) — 캠페이너스 PC·모바일 둘씩.
 
 `*.pages.dev` 주소는 어디에도 걸지 않습니다.
 
