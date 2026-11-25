@@ -47,6 +47,7 @@ CAMPAIGNERS = {'/aboutus', '/login', '/join', '/search'}
 # 그래서 h1 이 없는 것이 맞습니다.
 FRAGMENTS = {
     'activity-budget-after-board.html',
+    'activity-budget-tracker.html',
     'activity-civic-after-board.html',
     'activity-local-after-board.html',
     'activity-budget-before-board.html',

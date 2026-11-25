@@ -36,6 +36,10 @@
 
 활동 세 페이지의 규칙:
 
+- **`/27` 에는 `activity-budget-tracker.html` 을 게시판 바로 위에 붙입니다**(2026-11-25, 손으로 고치는 파일).
+  최근 글 2장 · 추적기 · 글 목록 표. 앞 코드(`activity-budget-before-board.html`)도 최근 글 2장을 그리므로
+  둘을 같이 붙이지 않습니다. 추적기 자료는 `dok.action.or.kr/data/timeline.json` 한 곳에서 읽습니다
+  — 독상 팝업과 홈이 어긋나지 않게 하려고 굽는 곳을 독상 하나로 두었습니다.
 - 뒤 코드는 게시판 아래의 `시민행동이 하는 다른 일`만 담습니다. 사이트 공통 하단과
   합치지 않습니다. 활동 페이지마다 자기 활동을 제외한 링크가 달라 페이지별 파일을 씁니다.
 - `activity-local.html`, `activity-budget.html`, `activity-civic.html`은 로컬 미리보기용
